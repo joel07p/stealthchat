@@ -35,7 +35,9 @@ jobs:
           # using the same path as in the build workflow "restores" the state from the end of the build workflow
           path: backend/dist
       - name: check contents
-        run: ls
+        run: |
+            cd backend
+            ls
 
       - name: Download frontend artifact
         # https://github.com/actions/download-artifact
