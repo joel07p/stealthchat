@@ -58,7 +58,7 @@ jobs:
         with:
           switches: -avzr --delete
           path: backend/dist/
-          remote_path: ${{ secrets.BACKEND_DIR }}dist
+          remote_path: ${{ secrets.BACKEND_DIR }}/dist
           remote_host: ${{ secrets.SSH_HOST }}
           remote_port: ${{ secrets.SSH_PORT }}
           remote_user: ${{ secrets.SSH_USERNAME }}
@@ -73,7 +73,7 @@ jobs:
         with:
           switches: -avzr --delete
           path: frontend/dist/
-          remote_path: ${{ secrets.FRONTEND_DIR }}dist
+          remote_path: ${{ secrets.FRONTEND_DIR }}/dist
           remote_host: ${{ secrets.SSH_HOST }}
           remote_port: ${{ secrets.SSH_PORT }}
           remote_user: ${{ secrets.SSH_USERNAME }}
