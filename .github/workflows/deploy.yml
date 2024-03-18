@@ -36,6 +36,7 @@ jobs:
           path: backend/dist
       - name: check contents
         run: |
+            pwd
             cd backend
             ls
             cd dist
