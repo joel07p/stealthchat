@@ -6,3 +6,6 @@ npm i class-validator
 
 Typeorm
 yarn add @nestjs/typeorm typeorm mysql2
+
+Nest/Config
+npm i --save @nestjs/config
