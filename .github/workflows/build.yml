@@ -47,13 +47,6 @@ jobs:
         run: npm i
         
       # lint steps, test steps, etc go here. adapt to your needs
-      - name: Build backend
-        working-directory: backend
-        run: sudo npm run build
-
-      - name: Build frontend
-        working-directory: frontend
-        run: sudo npm run build
         
       - name: change rights
         run: |
