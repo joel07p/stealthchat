@@ -49,7 +49,7 @@ jobs:
       # lint steps, test steps, etc go here. adapt to your needs
       - name: Build backend
         working-directory: backend
-        run: npm run build
+        run: sudo npm run build
       - name: change rights
         run: |
             sudo find . -path ./node_modules -prune -o -type f -print -exec chmod 644 {} \;
