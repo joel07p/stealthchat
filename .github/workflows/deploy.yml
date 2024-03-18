@@ -38,6 +38,8 @@ jobs:
         run: |
             cd backend
             ls
+            cd dist
+            ls
 
       - name: Download frontend artifact
         # https://github.com/actions/download-artifact
@@ -59,7 +61,7 @@ jobs:
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avzr --delete
-          path: backend/dist/
+          path: backend/dist
           remote_path: ${{ secrets.BACKEND_DIR }}/dist
           remote_host: ${{ secrets.SSH_HOST }}
           remote_port: ${{ secrets.SSH_PORT }}
@@ -74,7 +76,7 @@ jobs:
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avzr --delete
-          path: frontend/dist/
+          path: frontend/dist
           remote_path: ${{ secrets.FRONTEND_DIR }}/dist
           remote_host: ${{ secrets.SSH_HOST }}
           remote_port: ${{ secrets.SSH_PORT }}
