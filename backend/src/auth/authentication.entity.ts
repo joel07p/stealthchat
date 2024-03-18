@@ -9,7 +9,7 @@ export class Authentication {
         this.id = randomUUID()
     }
 
-    @PrimaryColumn({ type: 'uuid', name: "id", unique: true, nullable: false })
+    @PrimaryColumn({ type: "uuid", name: "id", unique: true, nullable: false })
     @IsUUID()
     readonly id: string
 

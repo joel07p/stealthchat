@@ -8,11 +8,9 @@ import { UserService } from './user/user.service';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     UserModule,
     AuthModule,
-    ConfigModule.forRoot({
-      envFilePath: "./../.env"
-    }),
   ],
   controllers: [AppController],
   providers: [AppService, UserService],
