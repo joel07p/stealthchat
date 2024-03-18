@@ -50,15 +50,18 @@ jobs:
       - name: Build backend
         working-directory: backend
         run: sudo npm run build
+
+      - name: Build frontend
+        working-directory: frontend
+        run: sudo npm run build
+        
       - name: change rights
         run: |
             sudo find . -path ./node_modules -prune -o -type f -print -exec chmod 644 {} \;
             sudo find . -path ./node_modules -prune -o -type d -print -exec chmod 755 {} \;
             sudo chmod -R 777 frontend/
 
-      - name: Build frontend
-        working-directory: frontend
-        run: sudo npm run build
+     
 
       # upload the artifact for use in either CD
       # here, the 'dist' directory is compressed and uploaded to GitHub asset storage as 'build-artifact'
