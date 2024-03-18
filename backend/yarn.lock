@@ -716,7 +716,6 @@
     iterare "1.2.1"
     tslib "2.6.2"
     uid "2.0.2"
-
 "@nestjs/core@^10.0.0", "@nestjs/core@^8.0.0 || ^9.0.0 || ^10.0.0":
   version "10.3.3"
   resolved "https://registry.npmjs.org/@nestjs/core/-/core-10.3.3.tgz"
