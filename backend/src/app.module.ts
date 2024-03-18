@@ -3,18 +3,16 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { UserService } from './user/user.service';
+import { GroupModule } from './group/group.module';
+import { InvitationModule } from './invitation/invitation.module';
+import { RoomModule } from './room/room.module';
+import { MessageService } from './message/message.service';
+import { MessageController } from './message/message.controller';
+import { MessageModule } from './message/message.module';
 
 @Module({
-  imports: [
-    UserModule,
-    AuthModule,
-    ConfigModule.forRoot({
-      envFilePath: "./../.env"
-    }),
-  ],
-  controllers: [AppController],
-  providers: [AppService, UserService],
+  imports: [UserModule, AuthModule, GroupModule, InvitationModule, RoomModule, MessageModule],
+  controllers: [AppController, MessageController],
+  providers: [AppService, UserService, MessageService],
 })
 export class AppModule {}
