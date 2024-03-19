@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { UserContext } from "src/user/user-context";
+import { UserContext } from "src/modules/user/user-context";
 
 @Injectable()
 export class OTPService {

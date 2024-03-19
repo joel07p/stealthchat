@@ -1,7 +1,7 @@
 import { IsString, IsUUID, Max, Min } from "class-validator";
 import { Column, Entity, OneToOne, PrimaryColumn } from "typeorm";
 import { randomUUID } from "crypto";
-import { User } from "src/user/user.entity";
+import { User } from "src/modules/user/user.entity";
 
 @Entity({ name: "authentications" })
 export class Authentication {
