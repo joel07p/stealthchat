@@ -1,11 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { UserContext } from "src/modules/user/user-context";
+import { MailService } from "src/service/mail.service";
 
 @Injectable()
 export class OTPService {
     private readonly lenght: number = 6
 
-    constructor(private userContext: UserContext) {}
+    constructor(
+        private userContext: UserContext,
+        private mailService: MailService
+    ) {}
 
     generateOTP(): Array<number> {
         const accessCode = []

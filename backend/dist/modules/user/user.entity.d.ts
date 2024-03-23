@@ -4,6 +4,5 @@ export declare class User {
     readonly id: string;
     username: string;
     email: string;
-    createdAt: Date;
     authentication: Authentication;
 }

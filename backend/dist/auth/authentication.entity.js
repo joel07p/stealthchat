@@ -52,13 +52,13 @@ __decorate([
     __metadata("design:type", String)
 ], Authentication.prototype, "hash", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "varchar", name: "refreshToken" }),
+    (0, typeorm_1.Column)({ type: "varchar", name: "refreshToken", nullable: true }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.Min)(50),
     __metadata("design:type", String)
 ], Authentication.prototype, "refreshToken", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "varchar", name: "identityCode" }),
+    (0, typeorm_1.Column)({ type: "varchar", name: "identityCode", nullable: true }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.Max)(20),
     __metadata("design:type", String)

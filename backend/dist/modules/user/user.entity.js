@@ -40,10 +40,6 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
-    __metadata("design:type", Date)
-], User.prototype, "createdAt", void 0);
-__decorate([
     (0, typeorm_1.OneToOne)(() => authentication_entity_1.Authentication),
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", authentication_entity_1.Authentication)

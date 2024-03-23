@@ -18,6 +18,10 @@ const message_module_1 = require("./modules/message/message.module");
 const permission_module_1 = require("./modules/permission/permission.module");
 const room_module_1 = require("./modules/room/room.module");
 const user_module_1 = require("./modules/user/user.module");
+const typeorm_1 = require("@nestjs/typeorm");
+const user_entity_1 = require("./modules/user/user.entity");
+const user_service_1 = require("./modules/user/user.service");
+const authentication_entity_1 = require("./auth/authentication.entity");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -32,10 +36,21 @@ exports.AppModule = AppModule = __decorate([
             invitation_module_1.InvitationModule,
             room_module_1.RoomModule,
             message_module_1.MessageModule,
-            permission_module_1.PermissionModule
+            permission_module_1.PermissionModule,
+            typeorm_1.TypeOrmModule.forRoot({
+                type: 'mysql',
+                host: '193.135.10.73',
+                port: 3306,
+                username: 'deployment',
+                password: '37F(MmN.(YAI',
+                database: 'dev1',
+                entities: [user_entity_1.User, authentication_entity_1.Authentication],
+                synchronize: true
+            }),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication])
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService, user_service_1.UserService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

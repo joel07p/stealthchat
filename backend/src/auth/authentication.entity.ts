@@ -17,12 +17,12 @@ export class Authentication {
     @IsString()
     private hash: string
 
-    @Column({ type: "varchar", name: "refreshToken" })
+    @Column({ type: "varchar", name: "refreshToken", nullable: true })
     @IsString()
     @Min(50)
     private refreshToken: string
 
-    @Column({ type: "varchar", name: "identityCode" })
+    @Column({ type: "varchar", name: "identityCode", nullable: true })
     @IsString()
     @Max(20)
     private identityCode: string
