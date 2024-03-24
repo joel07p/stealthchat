@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export const AuthenticationPage = () => {
@@ -22,12 +23,16 @@ export const AuthenticationPage = () => {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         <div className="space-y-1">
-                        <Label htmlFor="username">Username</Label>
-                        <Input id="username" defaultValue="Pedro Duarte" />
+                            <Label htmlFor="username">Username</Label>
+                            <Input id="username" defaultValue="Pedro Duarte" />
                         </div>
                         <div className="space-y-1">
-                        <Label htmlFor="password">Password</Label>
-                        <Input id="password" defaultValue="@peduarte" />
+                            <Label htmlFor="password">Password</Label>
+                            <Input id="password" defaultValue="@peduarte" />
+                        </div>
+                        <div className="flex items-center space-x-3">
+                            <Switch id="airplane-mode" className="mt-3" />
+                            <Label htmlFor="airplane-mode" className="mt-3">Enable 2FA</Label>
                         </div>
                     </CardContent>
                     <CardFooter>
