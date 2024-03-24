@@ -1,10 +1,25 @@
 import { AuthenticationPage } from '@/pages/auth-page'
+import { ChatPage } from '@/pages/chat-page'
+import { HomePage } from '@/pages/home-page'
+import { LandingPage } from '@/pages/landing-page'
 import { createBrowserRouter } from 'react-router-dom'
 
 
 export const router = createBrowserRouter([
     {
-        path: '/',
+        path: '/auth',
         element: <AuthenticationPage />
+    },
+    {
+        path: '/',
+        element: <HomePage />
+    },
+    {
+        path: '/chat/:id',
+        element: <ChatPage />
+    },
+    {
+        path: '/landing',
+        element: <LandingPage />
     }
 ])
