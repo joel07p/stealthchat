@@ -25,15 +25,15 @@ jobs:
 
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idsteps
     steps:
-      - name: Download backend artifact
-        # https://github.com/actions/download-artifact
-        uses: actions/download-artifact@v4.1.2
-        with:
-          # the same name as used in the build workflow
-          name: build-artifact-backend
-          # where to save the artifact
-          # using the same path as in the build workflow "restores" the state from the end of the build workflow
-          path: backend/dist      
+#      - name: Download backend artifact
+#        # https://github.com/actions/download-artifact
+#        uses: actions/download-artifact@v4.1.2
+#        with:
+#          # the same name as used in the build workflow
+#          name: build-artifact-backend
+#          # where to save the artifact
+#         # using the same path as in the build workflow "restores" the state from the end of the build workflow
+#          path: backend/dist      
         
     # deploy! adapt to your needs.
       - name: Upload backend via RSYNC
@@ -51,15 +51,15 @@ jobs:
           remote_user: ${{ secrets.SSH_USERNAME }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
           
-      - name: Download frontend artifact
-        # https://github.com/actions/download-artifact
-        uses: actions/download-artifact@v4.1.2
-        with:
-          # the same name as used in the build workflow
-          name: build-artifact-frontend
-          # where to save the artifact
-          # using the same path as in the build workflow "restores" the state from the end of the build workflow
-          path: frontend/dist
+#      - name: Download frontend artifact
+#        # https://github.com/actions/download-artifact
+#        uses: actions/download-artifact@v4.1.2
+#        with:
+#          # the same name as used in the build workflow
+#          name: build-artifact-frontend
+#          # where to save the artifact
+#          # using the same path as in the build workflow "restores" the state from the end of the build workflow
+#          path: frontend/dist
       - name: Upload frontend via RSYNC
         # https://github.com/marketplace/actions/ftp-action
         # 'with' config is specific to the 'sebastianpopp/ftp-action' action

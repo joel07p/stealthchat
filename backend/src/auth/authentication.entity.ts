@@ -1,7 +1,7 @@
 import { IsString, IsUUID, Max, Min } from "class-validator";
 import { Column, Entity, OneToOne, PrimaryColumn } from "typeorm";
 import { randomUUID } from "crypto";
-import { User } from "src/user/user.entity";
+import { User } from "src/modules/user/user.entity";
 
 @Entity({ name: "authentications" })
 export class Authentication {
@@ -9,7 +9,7 @@ export class Authentication {
         this.id = randomUUID()
     }
 
-    @PrimaryColumn({ type: 'uuid', name: "id", unique: true, nullable: false })
+    @PrimaryColumn({ type: "uuid", name: "id", unique: true, nullable: false })
     @IsUUID()
     readonly id: string
 
@@ -17,12 +17,12 @@ export class Authentication {
     @IsString()
     private hash: string
 
-    @Column({ type: "varchar", name: "refreshToken" })
+    @Column({ type: "varchar", name: "refreshToken", nullable: true })
     @IsString()
     @Min(50)
     private refreshToken: string
 
-    @Column({ type: "varchar", name: "identityCode" })
+    @Column({ type: "varchar", name: "identityCode", nullable: true })
     @IsString()
     @Max(20)
     private identityCode: string
