@@ -11,7 +11,6 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
-const auth_module_1 = require("./auth/auth.module");
 const group_module_1 = require("./modules/group/group.module");
 const invitation_module_1 = require("./modules/invitation/invitation.module");
 const message_module_1 = require("./modules/message/message.module");
@@ -22,6 +21,9 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./modules/user/user.entity");
 const user_service_1 = require("./modules/user/user.service");
 const authentication_entity_1 = require("./auth/authentication.entity");
+const user_context_1 = require("./modules/user/user-context");
+const jwt_1 = require("@nestjs/jwt");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -47,10 +49,10 @@ exports.AppModule = AppModule = __decorate([
                 entities: [user_entity_1.User, authentication_entity_1.Authentication],
                 synchronize: true
             }),
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication])
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication]),
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, user_service_1.UserService],
+        providers: [app_service_1.AppService, user_service_1.UserService, user_context_1.UserContext, jwt_1.JwtService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

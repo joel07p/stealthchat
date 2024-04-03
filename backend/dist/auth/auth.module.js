@@ -14,6 +14,8 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../modules/user/user.entity");
 const authentication_entity_1 = require("./authentication.entity");
 const jwt_1 = require("@nestjs/jwt");
+const user_context_1 = require("../modules/user/user-context");
+const config_1 = require("@nestjs/config");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -23,8 +25,8 @@ exports.AuthModule = AuthModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication]),
             jwt_1.JwtModule.register({})
         ],
-        providers: [auth_service_1.AuthService],
-        controllers: [auth_controller_1.AuthController]
+        providers: [auth_service_1.AuthService, user_context_1.UserContext, config_1.ConfigService],
+        controllers: [auth_controller_1.AuthController],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

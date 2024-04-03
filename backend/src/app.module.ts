@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
 import { GroupModule } from './modules/group/group.module';
 import { InvitationModule } from './modules/invitation/invitation.module';
 import { MessageModule } from './modules/message/message.module';
@@ -13,6 +12,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './modules/user/user.entity';
 import { UserService } from './modules/user/user.service';
 import { Authentication } from './auth/authentication.entity';
+import { UserContext } from './modules/user/user-context';
+import { JwtService } from '@nestjs/jwt';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -35,9 +37,9 @@ import { Authentication } from './auth/authentication.entity';
       entities: [User, Authentication],
       synchronize: true
     }),
-    TypeOrmModule.forFeature([User, Authentication])
+    TypeOrmModule.forFeature([User, Authentication]),
   ],
   controllers: [AppController],
-  providers: [AppService, UserService],
+  providers: [AppService, UserService, UserContext, JwtService],
 })
 export class AppModule {}
