@@ -87,6 +87,8 @@ jobs:
             service nginx stop
             cd ${{ secrets.BACKEND_DIR }}
             pm2 kill
+            rm -rf node_modules
+            npm i
             pm2 start --name backend/nest dist/main.js
             cd ${{ secrets.FRONTEND_DIR }}
             pm2 start --name frontend/react npm -- run preview
