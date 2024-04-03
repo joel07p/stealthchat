@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { User } from "src/modules/user/user.entity";
+=======
+import { User } from "src/user/user.entity";
+>>>>>>> 822aca9d10b7325e68f388c3c26962881af91ccf
 export declare class Authentication {
     constructor();
     readonly id: string;

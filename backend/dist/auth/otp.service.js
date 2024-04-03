@@ -11,12 +11,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OTPService = void 0;
 const common_1 = require("@nestjs/common");
+<<<<<<< HEAD
 const user_context_1 = require("../modules/user/user-context");
 const mail_service_1 = require("../service/mail.service");
 let OTPService = class OTPService {
     constructor(userContext, mailService) {
         this.userContext = userContext;
         this.mailService = mailService;
+=======
+const user_context_1 = require("../user/user-context");
+let OTPService = class OTPService {
+    constructor(userContext) {
+        this.userContext = userContext;
+>>>>>>> 822aca9d10b7325e68f388c3c26962881af91ccf
         this.lenght = 6;
     }
     generateOTP() {
@@ -39,7 +46,11 @@ let OTPService = class OTPService {
 exports.OTPService = OTPService;
 exports.OTPService = OTPService = __decorate([
     (0, common_1.Injectable)(),
+<<<<<<< HEAD
     __metadata("design:paramtypes", [user_context_1.UserContext,
         mail_service_1.MailService])
+=======
+    __metadata("design:paramtypes", [user_context_1.UserContext])
+>>>>>>> 822aca9d10b7325e68f388c3c26962881af91ccf
 ], OTPService);
 //# sourceMappingURL=otp.service.js.map

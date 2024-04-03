@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+<<<<<<< HEAD
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
@@ -24,6 +25,18 @@ let AppController = class AppController {
     }
     testUser(username) {
         this.userService.createUser(username.username);
+=======
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppController = void 0;
+const common_1 = require("@nestjs/common");
+const app_service_1 = require("./app.service");
+let AppController = class AppController {
+    constructor(appService) {
+        this.appService = appService;
+    }
+    getHello() {
+        return this.appService.getHello();
+>>>>>>> 822aca9d10b7325e68f388c3c26962881af91ccf
     }
 };
 exports.AppController = AppController;
@@ -32,6 +45,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", String)
+<<<<<<< HEAD
 ], AppController.prototype, "test", null);
 __decorate([
     (0, common_1.Post)("test/user"),
@@ -43,5 +57,11 @@ __decorate([
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [user_service_1.UserService])
+=======
+], AppController.prototype, "getHello", null);
+exports.AppController = AppController = __decorate([
+    (0, common_1.Controller)(),
+    __metadata("design:paramtypes", [app_service_1.AppService])
+>>>>>>> 822aca9d10b7325e68f388c3c26962881af91ccf
 ], AppController);
 //# sourceMappingURL=app.controller.js.map

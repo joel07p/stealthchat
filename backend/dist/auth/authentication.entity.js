@@ -13,7 +13,11 @@ exports.Authentication = void 0;
 const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
 const crypto_1 = require("crypto");
+<<<<<<< HEAD
 const user_entity_1 = require("../modules/user/user.entity");
+=======
+const user_entity_1 = require("../user/user.entity");
+>>>>>>> 822aca9d10b7325e68f388c3c26962881af91ccf
 let Authentication = class Authentication {
     constructor() {
         this.id = (0, crypto_1.randomUUID)();
@@ -42,7 +46,11 @@ let Authentication = class Authentication {
 };
 exports.Authentication = Authentication;
 __decorate([
+<<<<<<< HEAD
     (0, typeorm_1.PrimaryColumn)({ type: "uuid", name: "id", unique: true, nullable: false }),
+=======
+    (0, typeorm_1.PrimaryColumn)({ type: 'uuid', name: "id", unique: true, nullable: false }),
+>>>>>>> 822aca9d10b7325e68f388c3c26962881af91ccf
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
 ], Authentication.prototype, "id", void 0);
@@ -52,13 +60,21 @@ __decorate([
     __metadata("design:type", String)
 ], Authentication.prototype, "hash", void 0);
 __decorate([
+<<<<<<< HEAD
     (0, typeorm_1.Column)({ type: "varchar", name: "refreshToken", nullable: true }),
+=======
+    (0, typeorm_1.Column)({ type: "varchar", name: "refreshToken" }),
+>>>>>>> 822aca9d10b7325e68f388c3c26962881af91ccf
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.Min)(50),
     __metadata("design:type", String)
 ], Authentication.prototype, "refreshToken", void 0);
 __decorate([
+<<<<<<< HEAD
     (0, typeorm_1.Column)({ type: "varchar", name: "identityCode", nullable: true }),
+=======
+    (0, typeorm_1.Column)({ type: "varchar", name: "identityCode" }),
+>>>>>>> 822aca9d10b7325e68f388c3c26962881af91ccf
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.Max)(20),
     __metadata("design:type", String)
