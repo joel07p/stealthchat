@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/modules/user/user.entity';
@@ -22,7 +21,4 @@ export declare class AuthService {
     updateRtHash(userId: string, rt: string): Promise<void>;
     getTokens(userId: string, username: string): Promise<Tokens>;
     hashData(password: string): Promise<string>;
-=======
-export declare class AuthService {
->>>>>>> 822aca9d10b7325e68f388c3c26962881af91ccf
 }
