@@ -21,10 +21,12 @@ const bcrypt = require("bcrypt");
 const user_entity_1 = require("../modules/user/user.entity");
 const typeorm_2 = require("typeorm");
 const authentication_entity_1 = require("./authentication.entity");
+const user_context_1 = require("../modules/user/user-context");
 let AuthService = class AuthService {
-    constructor(userRepository, authenticationRepository, jwtService, configService, dataSource) {
+    constructor(userRepository, authenticationRepository, userContext, jwtService, configService, dataSource) {
         this.userRepository = userRepository;
         this.authenticationRepository = authenticationRepository;
+        this.userContext = userContext;
         this.jwtService = jwtService;
         this.configService = configService;
         this.dataSource = dataSource;
@@ -58,6 +60,17 @@ let AuthService = class AuthService {
     }
     logout() { }
     refreshTokens() { }
+    async updateRtHash(userId, rt) {
+        const hashedRt = await this.hashData(rt);
+        const { authentication } = await this.userRepository.findOne({
+            where: {
+                id: userId
+            },
+            relations: ['Authentication']
+        });
+        authentication.setRefreshToken(hashedRt);
+        await this.authenticationRepository.save(authentication);
+    }
     async getTokens(userId, username) {
         const [accessToken, refreshToken] = await Promise.all([
             this.jwtService.signAsync({
@@ -91,6 +104,7 @@ exports.AuthService = AuthService = __decorate([
     __param(1, (0, typeorm_1.InjectRepository)(authentication_entity_1.Authentication)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
+        user_context_1.UserContext,
         jwt_1.JwtService,
         config_1.ConfigService,
         typeorm_2.DataSource])

@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import {
   CaretSortIcon,
   ChevronDownIcon,
@@ -18,17 +17,17 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import * as React from "react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import {
@@ -81,7 +80,7 @@ export type Payment = {
   email: string
 }
 
-const groups: Group[] = [
+/*const groups: Group[] = [
   {
     id: "1",
     name: "Group 1",
@@ -114,7 +113,7 @@ const groups: Group[] = [
     amountUsers: 8,
     amountRooms: 3,
   }
-]
+]*/
 
 export type Group = {
   id: string

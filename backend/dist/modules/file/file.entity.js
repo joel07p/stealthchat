@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.File = void 0;
 const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
-let File = class File {
-};
+class File {
+}
 exports.File = File;
 __decorate([
     (0, typeorm_1.PrimaryColumn)({ type: 'uuid', name: "id", unique: true, nullable: false }),
@@ -36,7 +36,4 @@ __decorate([
     (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
     __metadata("design:type", Date)
 ], File.prototype, "createdAt", void 0);
-exports.File = File = __decorate([
-    (0, typeorm_1.Entity)({ name: "files" })
-], File);
 //# sourceMappingURL=file.entity.js.map

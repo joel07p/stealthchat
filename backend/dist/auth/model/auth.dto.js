@@ -11,20 +11,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SignUpDTO = exports.SignInDTO = void 0;
 const class_validator_1 = require("class-validator");
-class SignInDTO {
+class BaseAuth {
+}
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], BaseAuth.prototype, "username", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], BaseAuth.prototype, "password", void 0);
+class SignInDTO extends BaseAuth {
 }
 exports.SignInDTO = SignInDTO;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], SignInDTO.prototype, "username", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], SignInDTO.prototype, "password", void 0);
-class SignUpDTO extends SignInDTO {
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], SignInDTO.prototype, "otpEnabled", void 0);
+class SignUpDTO extends BaseAuth {
 }
 exports.SignUpDTO = SignUpDTO;
 __decorate([

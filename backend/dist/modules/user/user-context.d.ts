@@ -6,6 +6,7 @@ export declare class UserContext {
     private identityCode;
     private accessCode;
     private isAuthenticated;
+    private otpEnabled;
     generateIdentityCode(): string;
     setUser(user: User): void;
     getId(): string;
