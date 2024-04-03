@@ -39,6 +39,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Link } from "react-router-dom"
 
 const data: Payment[] = [
   {
@@ -149,7 +150,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: "Type",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("status")}</div>
     ),
@@ -162,7 +163,7 @@ export const columns: ColumnDef<Payment>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Name
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -171,7 +172,37 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    header: () => <div className="text-right">Role</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("amount"))
+
+      // Format the amount as a dollar amount
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount)
+
+      return <div className="text-right font-medium">{formatted}</div>
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: () => <div className="text-right">Rooms</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("amount"))
+
+      // Format the amount as a dollar amount
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount)
+
+      return <div className="text-right font-medium">{formatted}</div>
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: () => <div className="text-right">Users</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
 
@@ -245,10 +276,11 @@ export function HomePage() {
 
   return (
     <div className="flex justify-center">
-      <div className="w-[70%]">
+      <div className="w-[70%] mt-6">
+        <h1 className="text-6xl font-semibold mb-6">Your Groups</h1>
         <div className="flex items-center py-4">
           <Input
-            placeholder="Filter emails..."
+            placeholder="Filter groups..."
             value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("email")?.setFilterValue(event.target.value)
@@ -260,32 +292,9 @@ export function HomePage() {
             <Button variant="outline">Join</Button>
             <Button variant="outline" className="mx-2">Create</Button>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button variant="outline" className="ml-auto">
+            Logout <ChevronDownIcon className="ml-2 h-4 w-4" />
+          </Button>
         </div>
         <div className="rounded-md border">
           <Table>
@@ -314,12 +323,15 @@ export function HomePage() {
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                   >
+                    
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
+                        <Link to="/chat/1">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </Link>
                       </TableCell>
                     ))}
                   </TableRow>

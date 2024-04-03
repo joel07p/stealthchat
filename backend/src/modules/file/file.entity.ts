@@ -1,7 +1,6 @@
 import { IsUUID } from "class-validator";
-import { Column, CreateDateColumn, Entity, PrimaryColumn } from "typeorm";
+import { Column, CreateDateColumn, PrimaryColumn } from "typeorm";
 
-@Entity({ name: "files" })
 export class File {
     @PrimaryColumn({ type: 'uuid', name: "id", unique: true, nullable: false })
     @IsUUID()

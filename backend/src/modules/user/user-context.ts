@@ -9,6 +9,7 @@ export class UserContext {
     private identityCode: string
     private accessCode: Array<number>
     private isAuthenticated: boolean
+    private otpEnabled: boolean
 
     generateIdentityCode(): string {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
