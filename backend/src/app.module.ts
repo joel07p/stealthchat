@@ -29,7 +29,7 @@ import { AuthModule } from './auth/auth.module';
     PermissionModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '193.135.10.73',
+      host: 'localhost',
       port: 3306,
       username: 'deployment',
       password: '37F(MmN.(YAI',
