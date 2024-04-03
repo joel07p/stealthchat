@@ -9,7 +9,7 @@ on:
   # support running this workflow on push events
   # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#onpushpull_requestbranchestags
   push:
-    branches-ignore: master
+    branches-ignore: [dev, joelp, tobiasm]
 
 jobs:
   build:
