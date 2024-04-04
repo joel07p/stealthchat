@@ -21,6 +21,7 @@ import * as React from "react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +31,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Table,
   TableBody,
@@ -39,92 +41,136 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Link } from "react-router-dom"
+import { CreateGroupDialog } from "@/components/dialogs/create-group-dialog"
+import { JoinGroupDialog } from "@/components/dialogs/join-group-dialog"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
 
-const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
-]
-
-export type Payment = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
-}
-
-/*const groups: Group[] = [
+const data: Array<Group> = [
   {
     id: "1",
     name: "Group 1",
-    type: "multi",
+    type: "group",
     role: "admin",
-    amountUsers: 10,
-    amountRooms: 5,
+    users: 10,
+    rooms: 5,
   },
   {
     id: "2",
     name: "Group 2",
     type: "direct",
     role: "user",
-    amountUsers: 5,
-    amountRooms: 2,
+    users: 5,
+    rooms: 2,
   },
   {
     id: "3",
     name: "Group 3",
-    type: "multi",
+    type: "group",
     role: "viewer",
-    amountUsers: 20,
-    amountRooms: 8,
+    users: 20,
+    rooms: 8,
   },
   {
     id: "4",
     name: "Group 4",
     type: "direct",
     role: "admin",
-    amountUsers: 8,
-    amountRooms: 3,
+    users: 8,
+    rooms: 3,
+  },
+  {
+    id: "1",
+    name: "Group 1",
+    type: "group",
+    role: "admin",
+    users: 10,
+    rooms: 5,
+  },
+  {
+    id: "2",
+    name: "Group 2",
+    type: "direct",
+    role: "user",
+    users: 5,
+    rooms: 2,
+  },
+  {
+    id: "3",
+    name: "Group 3",
+    type: "group",
+    role: "viewer",
+    users: 20,
+    rooms: 8,
+  },
+  {
+    id: "4",
+    name: "Group 4",
+    type: "direct",
+    role: "admin",
+    users: 8,
+    rooms: 3,
+  },
+  {
+    id: "1",
+    name: "Group 1",
+    type: "group",
+    role: "admin",
+    users: 10,
+    rooms: 5,
+  },
+  {
+    id: "2",
+    name: "Group 2",
+    type: "direct",
+    role: "user",
+    users: 5,
+    rooms: 2,
+  },
+  {
+    id: "3",
+    name: "Group 3",
+    type: "group",
+    role: "viewer",
+    users: 20,
+    rooms: 8,
+  },
+  {
+    id: "4",
+    name: "Group 4",
+    type: "direct",
+    role: "admin",
+    users: 8,
+    rooms: 3,
+  },
+  {
+    id: "3",
+    name: "Group 3",
+    type: "group",
+    role: "viewer",
+    users: 20,
+    rooms: 8,
+  },
+  {
+    id: "4",
+    name: "Group 4",
+    type: "direct",
+    role: "admin",
+    users: 8,
+    rooms: 3,
   }
-]*/
+]
 
 export type Group = {
   id: string
   name: string
-  type: "multi" | "direct"
+  type: "group" | "direct"
   role: "admin" | "user" | "viewer"
-  amountUsers: number
-  amountRooms: number
+  users: number
+  rooms: number
 }
 
-const columns: ColumnDef<Payment>[] = [
+const columns: ColumnDef<Group>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -148,14 +194,7 @@ const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Type",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
-    ),
-  },
-  {
-    accessorKey: "email",
+    accessorKey: "name",
     header: ({ column }) => {
       return (
         <Button
@@ -167,58 +206,45 @@ const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Role</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
-
-      return <div className="text-right font-medium">{formatted}</div>
-    },
+    accessorKey: "type",
+    header: "Type",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("type")}</div>
+    ),
   },
   {
-    accessorKey: "amount",
+    accessorKey: "role",
+    header: "Role",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("role")}</div>
+    ),
+  },
+  {
+    accessorKey: "rooms",
     header: () => <div className="text-right">Rooms</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
+      const amount = parseFloat(row.getValue("rooms"))
 
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
-
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div className="text-right font-medium">{amount}</div>
     },
   },
   {
-    accessorKey: "amount",
+    accessorKey: "users",
     header: () => <div className="text-right">Users</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
+      const amount = parseFloat(row.getValue("users"))
 
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
-
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div className="text-right font-medium">{amount}</div>
     },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
+      const group = row.original
 
       return (
         <DropdownMenu>
@@ -231,13 +257,16 @@ const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(group.id)}
             >
-              Copy payment ID
+              Copy Group ID
             </DropdownMenuItem>
+            <DropdownMenuItem>Manage Group</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>View members</DropdownMenuItem>
+            <DropdownMenuItem>
+              <p className="text-red-400">Leave group</p>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -276,24 +305,70 @@ export function HomePage() {
   return (
     <div className="flex justify-center">
       <div className="w-[70%] mt-6">
-        <h1 className="text-6xl font-semibold mb-6">Your Groups</h1>
-        <div className="flex items-center py-4">
+        <h1 className="text-6xl font-semibold mb-2">Your Groups</h1>
+        <Badge variant="outline" className="mb-2">
+          <p className="text-green-400">New Release</p>
+        </Badge>
+        <div className="flex items-center py-4 flex-wrap">
           <Input
             placeholder="Filter groups..."
-            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("email")?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
-          <div>
-            <Button variant="outline" className="mx-2">Manage</Button>
-            <Button variant="outline">Join</Button>
-            <Button variant="outline" className="mx-2">Create</Button>
-          </div>
-          <Button variant="outline" className="ml-auto">
-            Logout <ChevronDownIcon className="ml-2 h-4 w-4" />
-          </Button>
+
+          <JoinGroupDialog />
+          <Separator orientation="vertical" />
+          <CreateGroupDialog />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Account <ChevronDownIcon className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>
+                Account
+              </DropdownMenuLabel>
+              <DropdownMenuItem>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <p>Edit Profile</p>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Edit profile</DialogTitle>
+                      <DialogDescription>
+                        Make changes to your profile here. Click save when you're done.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          Name
+                        </Label>
+                        <Input id="name" value="Pedro Duarte" className="col-span-3" defaultValue="New Username"/>
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="username" className="text-right">
+                          Username
+                        </Label>
+                        <Input id="username" value="@peduarte" className="col-span-3" />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button type="submit">Save changes</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Invitations</DropdownMenuItem>
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div className="rounded-md border">
           <Table>
@@ -325,7 +400,7 @@ export function HomePage() {
                     
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
-                        <Link to="/chat/1">
+                        <Link to="/group/1/chat/1">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()

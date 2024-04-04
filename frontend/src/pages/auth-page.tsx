@@ -36,7 +36,7 @@ export const AuthenticationPage = () => {
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button>Login</Button>
+                        <Button className="w-full">Login</Button>
                     </CardFooter>
                     </Card>
                 </TabsContent>
@@ -63,7 +63,7 @@ export const AuthenticationPage = () => {
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button>Register</Button>
+                        <Button className="w-full">Register</Button>
                     </CardFooter>
                     </Card>
                 </TabsContent>
