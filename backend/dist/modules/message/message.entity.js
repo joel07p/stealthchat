@@ -20,6 +20,7 @@ let Message = class Message {
         this.message = message;
         this.username = username;
         this.content = content;
+        this.sentAt = new Date();
     }
 };
 exports.Message = Message;
@@ -35,7 +36,7 @@ __decorate([
     __metadata("design:type", String)
 ], Message.prototype, "message", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "bytes", name: "content" }),
+    (0, typeorm_1.Column)({ type: "varchar", name: "content" }),
     __metadata("design:type", Object)
 ], Message.prototype, "content", void 0);
 __decorate([
@@ -45,7 +46,7 @@ __decorate([
     __metadata("design:type", String)
 ], Message.prototype, "username", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
 ], Message.prototype, "sentAt", void 0);
 __decorate([

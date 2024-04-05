@@ -5,6 +5,7 @@ import { User } from '../user/user.entity';
 
 @Entity()
 export class UserOnGroups {
+
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -3,3 +3,9 @@ export declare class CreateGroupDTO {
     description: string;
     users: Array<string>;
 }
+export declare class JoinGroupDTO {
+    joinCode: string;
+}
+export declare class LeaveGroupDTO {
+    groupId: string;
+}

@@ -57,6 +57,7 @@ let AuthService = class AuthService {
             const { username, email } = credentials;
             const hash = await this.hashData(credentials.password);
             const authentication = new authentication_entity_1.Authentication();
+            authentication.setIdentityCode(this.userContext.generateIdentityCode());
             authentication.setHash(hash);
             const user = new user_entity_1.User(username, email, authentication);
             const { refreshToken } = await this.getTokens(user.id, user.id);

@@ -26,11 +26,11 @@ export class Invitation {
     @IsString()
     identityCode: string
 
-    @Column({ type: "array", name: "accessCode", unique: true, nullable: false })
+    @Column({ type: "varchar", name: "accessCode", unique: true, nullable: false })
     @IsString()
     joinCode: string
 
-    @CreateDateColumn({ type: 'timestamp', name: "sentAt", default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn({ type: 'timestamp', name: "sentAt" })
     sentAt: Date;
 
     @Column({ type: "timestamp", name: "expiresAt", nullable: false })

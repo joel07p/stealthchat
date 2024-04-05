@@ -10,6 +10,7 @@ export class Message {
         this.message = message
         this.username = username
         this.content = content
+        this.sentAt = new Date()
     }
 
     @PrimaryColumn({ type: "uuid", name: "id", unique: true, nullable: false })
@@ -21,7 +22,7 @@ export class Message {
     @Length(0, 255)
     message: string
 
-    @Column({ type: "bytes", name: "content" })
+    @Column({ type: "varchar", name: "content" })
     content: any
 
     @Column({ type: "varchar", name: "username", unique: true, nullable: false })
@@ -29,7 +30,7 @@ export class Message {
     @Length(5, 50)
     username: string
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn({ type: 'timestamp'})
     sentAt: Date;
 
     @ManyToOne(() => Room, (room) => room.messages)

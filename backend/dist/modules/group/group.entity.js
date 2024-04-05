@@ -48,7 +48,11 @@ __decorate([
     __metadata("design:type", String)
 ], Group.prototype, "type", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Group.prototype, "joinCode", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
 ], Group.prototype, "createdAt", void 0);
 __decorate([

@@ -7,6 +7,7 @@ export declare class Group {
     name: string;
     description: string;
     type: string;
+    joinCode: string;
     createdAt: Date;
     rooms: Array<Room>;
     invitations: Array<Invitation>;

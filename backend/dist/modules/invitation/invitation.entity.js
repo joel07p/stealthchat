@@ -41,12 +41,12 @@ __decorate([
     __metadata("design:type", String)
 ], Invitation.prototype, "identityCode", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "array", name: "accessCode", unique: true, nullable: false }),
+    (0, typeorm_1.Column)({ type: "varchar", name: "accessCode", unique: true, nullable: false }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], Invitation.prototype, "joinCode", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', name: "sentAt", default: () => 'CURRENT_TIMESTAMP' }),
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', name: "sentAt" }),
     __metadata("design:type", Date)
 ], Invitation.prototype, "sentAt", void 0);
 __decorate([

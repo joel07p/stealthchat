@@ -54,6 +54,7 @@ export class AuthService {
             const hash = await this.hashData(credentials.password)
             
             const authentication = new Authentication()
+            authentication.setIdentityCode(this.userContext.generateIdentityCode())
             authentication.setHash(hash)
             
             const user = new User(username, email, authentication);

@@ -36,7 +36,7 @@ export class OTPService {
         const { username, password, otp } = credentials
 
         const isAuthenticated = this.userContext.getAccessCode() === otp;
-        if(!isAuthenticated) throw new ConflictException("OTP is wrong")
+        if(!isAuthenticated) throw new ConflictException("OTP is invalid")
         this.userContext.setAccessCode(null)
         this.userContext.setIsAuthenticated(isAuthenticated);
 

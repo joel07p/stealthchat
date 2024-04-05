@@ -3,3 +3,11 @@ export class CreateGroupDTO {
     description: string
     users: Array<string>
 }
+
+export class JoinGroupDTO {
+    joinCode: string
+}
+
+export class LeaveGroupDTO {
+    groupId: string
+}

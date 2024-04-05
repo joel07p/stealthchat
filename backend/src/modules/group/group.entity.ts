@@ -32,7 +32,10 @@ export class Group {
     @Column({ type: "varchar", name: "type", default: GroupType.MULTI })
     type: string
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column()
+    joinCode: string
+
+    @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date
 
     @OneToMany(() => Room, (room) => room.group, { cascade: true })

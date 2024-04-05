@@ -29,10 +29,12 @@ let GroupService = class GroupService {
         this.userOnGroupsRepository = userOnGroupsRepository;
         this.authenticationRepository = authenticationRepository;
     }
+    async getGroups() { }
     async createGroup(data) {
         const { name, description, users } = data;
         const type = users.length < 2 ? group_type_enum_1.GroupType.SINGLE : group_type_enum_1.GroupType.MULTI;
         const group = new group_entity_1.Group(name, description, type);
+        await this.groupRepository.save(group);
         for (const identityCode of users) {
             const authentication = await this.authenticationRepository.findOne({
                 where: {
@@ -52,6 +54,37 @@ let GroupService = class GroupService {
                 throw new common_1.BadRequestException();
             }
         }
+    }
+    async joinGroup(user, data) {
+        const { joinCode } = data;
+        const group = await this.groupRepository.findOne({
+            where: {
+                joinCode
+            }
+        });
+        if (!group)
+            throw new common_1.BadRequestException("Invalid join code");
+        const userOnGroup = await this.userOnGroupsRepository.create({
+            user,
+            group,
+            role: user_role_enum_1.UserRole.USER
+        });
+        await this.userOnGroupsRepository.save(userOnGroup);
+    }
+    async leaveGroup(user, data) {
+        const { groupId } = data;
+        const group = await this.groupRepository.findOne({
+            where: {
+                id: groupId
+            }
+        });
+        const userOnGroup = await this.userOnGroupsRepository.findOne({
+            where: {
+                user,
+                group
+            }
+        });
+        await this.userOnGroupsRepository.remove(userOnGroup);
     }
 };
 exports.GroupService = GroupService;

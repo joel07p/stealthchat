@@ -17,6 +17,12 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards';
+import { Group } from './modules/group/group.entity';
+import { UserOnGroups } from './modules/group/user-on-group.entity';
+import { Room } from './modules/room/room.entity';
+import { Message } from './modules/message/message.entity';
+import { Permission } from './modules/permission/permission.entity';
+import { Invitation } from './modules/invitation/invitation.entity';
 
 @Module({
   imports: [
@@ -35,8 +41,8 @@ import { AtGuard } from './common/guards';
       port: 3306,
       username: 'deployment',
       password: '37F(MmN.(YAI',
-      database: 'dev1',
-      entities: [User, Authentication],
+      database: 'dev2',
+      entities: [User, Authentication, Group, UserOnGroups, Room, Message, Permission, Invitation],
       synchronize: true
     }),
     TypeOrmModule.forFeature([User, Authentication]),
