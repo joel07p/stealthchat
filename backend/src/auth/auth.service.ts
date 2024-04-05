@@ -1,14 +1,14 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { UserContext } from 'src/modules/user/user-context';
 import { User } from 'src/modules/user/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Authentication } from './authentication.entity';
-import { SignUpDTO } from './model';
+import { BaseAuth, SignUpDTO } from './model';
 import { Tokens } from './types';
-import { UserContext } from 'src/modules/user/user-context';
 
 @Injectable()
 export class AuthService {
@@ -21,9 +21,29 @@ export class AuthService {
         private dataSource: DataSource
     ) {}
 
-    signIn() {}
+    async signIn(credentials: BaseAuth) {
+        const { username, password } = credentials
+
+        const user = await this.userRepository.findOne({
+            where: {
+                username
+            },
+            relations: ['authentication']
+        })
+
+        if(!user) throw new NotFoundException("User not found")
+
+        const passwordMatches = await bcrypt.compare(password, user.authentication.getHash())
+
+        if(!passwordMatches) throw new ForbiddenException("Password does not match")
+
+        const tokens = await this.getTokens(user.id, user.email)
+        await this.updateRtHash(user.id, tokens.refreshToken)
+        return tokens
+    }
 
     async signUp(credentials: SignUpDTO) {
+        let userCreated = false
         const queryRunner = this.dataSource.createQueryRunner()
 
         await queryRunner.connect();
@@ -47,6 +67,7 @@ export class AuthService {
             await queryRunner.commitTransaction()
 
             Logger.log("User successfully created")
+            userCreated = true
 
             return user;
         } catch (error) {
@@ -55,11 +76,42 @@ export class AuthService {
         } finally {
             await queryRunner.release();
         }
+
+        return userCreated
     }
     
-    logout() {}
+    async logout(userId: string) {
+        const { authentication } = await this.userRepository.findOne({
+            where: {
+                id: userId
+            },
+            relations: ['authentication']
+        })
+
+        authentication.setRefreshToken(null)
+
+        await this.authenticationRepository.save(authentication)
+
+        Logger.log("User logged out")
+    }
     
-    refreshTokens() {}
+    async refreshTokens(userId: string, rt: string) {
+        const user = await this.userRepository.findOne({
+            where: {
+                id: userId
+            },
+            relations: ['authentication']
+        })
+
+        if(!user || !user.authentication.getRefreshToken()) throw new NotFoundException("User not found")
+
+        const rtMatches = await bcrypt.compare(rt, user.authentication.getRefreshToken())
+        if(!rtMatches) throw new ForbiddenException("Access denied")
+
+        const tokens = await this.getTokens(user.id, user.email)
+        await this.updateRtHash(user.id, tokens.refreshToken)
+        return tokens
+    }
 
     async updateRtHash(userId: string, rt: string) {
         const hashedRt = await this.hashData(rt)
@@ -67,7 +119,7 @@ export class AuthService {
             where: {
                 id: userId
             },
-            relations: ['Authentication']
+            relations: ['authentication']
         })
 
         authentication.setRefreshToken(hashedRt)

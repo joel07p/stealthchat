@@ -14,27 +14,46 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
+const decorators_1 = require("../common/decorators");
+const guards_1 = require("../common/guards");
 const auth_service_1 = require("./auth.service");
 const model_1 = require("./model");
+const otp_service_1 = require("./otp.service");
 let AuthController = class AuthController {
-    constructor(authService) {
+    constructor(authService, otpService) {
         this.authService = authService;
+        this.otpService = otpService;
     }
-    signIn() { }
+    signIn(credentials) {
+        return this.authService.signIn(credentials);
+    }
     signUp(credentials) {
-        this.authService.signUp(credentials);
+        return this.authService.signUp(credentials);
     }
-    logout() { }
-    refreshTokens() { }
+    logout(userId) {
+        return this.authService.logout(userId);
+    }
+    refreshTokens(userId, data) {
+        return this.authService.refreshTokens(userId, data.refreshToken);
+    }
+    getAccessCode() {
+        this.otpService.sendOTP();
+    }
+    verifyAccessCode(credentials) {
+        return this.otpService.verifyOTP(credentials);
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
+    (0, decorators_1.Public)(),
     (0, common_1.Post)('signin'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [model_1.BaseAuth]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "signIn", null);
 __decorate([
+    (0, decorators_1.Public)(),
     (0, common_1.Post)('signup'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -43,18 +62,39 @@ __decorate([
 ], AuthController.prototype, "signUp", null);
 __decorate([
     (0, common_1.Post)('logout'),
+    __param(0, (0, decorators_1.User)('sub')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "logout", null);
 __decorate([
+    (0, decorators_1.Public)(),
+    (0, common_1.UseGuards)(guards_1.RtGuard),
     (0, common_1.Post)('refresh'),
+    __param(0, (0, decorators_1.User)('sub')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "refreshTokens", null);
+__decorate([
+    (0, decorators_1.Public)(),
+    (0, common_1.Get)('otp'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], AuthController.prototype, "refreshTokens", null);
+], AuthController.prototype, "getAccessCode", null);
+__decorate([
+    (0, decorators_1.Public)(),
+    (0, common_1.Post)('otp/verify'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [model_1.OTPAuth]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "verifyAccessCode", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        otp_service_1.OTPService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

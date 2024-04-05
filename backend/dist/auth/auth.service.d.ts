@@ -1,11 +1,11 @@
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { UserContext } from 'src/modules/user/user-context';
 import { User } from 'src/modules/user/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Authentication } from './authentication.entity';
-import { SignUpDTO } from './model';
+import { BaseAuth, SignUpDTO } from './model';
 import { Tokens } from './types';
-import { UserContext } from 'src/modules/user/user-context';
 export declare class AuthService {
     private userRepository;
     private authenticationRepository;
@@ -14,10 +14,10 @@ export declare class AuthService {
     private configService;
     private dataSource;
     constructor(userRepository: Repository<User>, authenticationRepository: Repository<Authentication>, userContext: UserContext, jwtService: JwtService, configService: ConfigService, dataSource: DataSource);
-    signIn(): void;
-    signUp(credentials: SignUpDTO): Promise<User>;
-    logout(): void;
-    refreshTokens(): void;
+    signIn(credentials: BaseAuth): Promise<Tokens>;
+    signUp(credentials: SignUpDTO): Promise<boolean | User>;
+    logout(userId: string): Promise<void>;
+    refreshTokens(userId: string, rt: string): Promise<Tokens>;
     updateRtHash(userId: string, rt: string): Promise<void>;
     getTokens(userId: string, username: string): Promise<Tokens>;
     hashData(password: string): Promise<string>;

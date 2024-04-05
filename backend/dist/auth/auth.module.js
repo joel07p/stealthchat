@@ -16,6 +16,9 @@ const authentication_entity_1 = require("./authentication.entity");
 const jwt_1 = require("@nestjs/jwt");
 const user_context_1 = require("../modules/user/user-context");
 const config_1 = require("@nestjs/config");
+const strategies_1 = require("./strategies");
+const otp_service_1 = require("./otp.service");
+const mail_service_1 = require("../service/mail.service");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -25,7 +28,7 @@ exports.AuthModule = AuthModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication]),
             jwt_1.JwtModule.register({})
         ],
-        providers: [auth_service_1.AuthService, user_context_1.UserContext, config_1.ConfigService],
+        providers: [auth_service_1.AuthService, user_context_1.UserContext, config_1.ConfigService, strategies_1.AtStrategy, strategies_1.RtStrategy, otp_service_1.OTPService, mail_service_1.MailService],
         controllers: [auth_controller_1.AuthController],
     })
 ], AuthModule);

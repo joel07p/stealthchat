@@ -1,6 +1,6 @@
-import { IsBoolean, IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
-class BaseAuth {
+export class BaseAuth {
     @IsNotEmpty()
     @IsString()
     username: string;
@@ -10,10 +10,10 @@ class BaseAuth {
     password: string;
 }
 
-export class SignInDTO extends BaseAuth {
+export class OTPAuth extends BaseAuth {
+    @IsString()
     @IsNotEmpty()
-    @IsBoolean()
-    otpEnabled: boolean
+    otp: string
 }
 
 export class SignUpDTO extends BaseAuth {

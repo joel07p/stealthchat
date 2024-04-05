@@ -15,6 +15,8 @@ import { Authentication } from './auth/authentication.entity';
 import { UserContext } from './modules/user/user-context';
 import { JwtService } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AtGuard } from './common/guards';
 
 @Module({
   imports: [
@@ -29,7 +31,7 @@ import { AuthModule } from './auth/auth.module';
     PermissionModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: '193.135.10.73',
       port: 3306,
       username: 'deployment',
       password: '37F(MmN.(YAI',
@@ -40,6 +42,15 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forFeature([User, Authentication]),
   ],
   controllers: [AppController],
-  providers: [AppService, UserService, UserContext, JwtService],
+  providers: [
+    AppService,
+    UserService,
+    UserContext,
+    JwtService,
+    {
+      provide: APP_GUARD,
+      useClass: AtGuard
+    }
+  ],
 })
 export class AppModule {}

@@ -14,6 +14,7 @@ const class_validator_1 = require("class-validator");
 const crypto_1 = require("crypto");
 const authentication_entity_1 = require("../../auth/authentication.entity");
 const typeorm_1 = require("typeorm");
+const user_on_group_entity_1 = require("../group/user-on-group.entity");
 let User = class User {
     constructor(username, email, authentication) {
         this.id = (0, crypto_1.randomUUID)();
@@ -44,6 +45,10 @@ __decorate([
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", authentication_entity_1.Authentication)
 ], User.prototype, "authentication", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => user_on_group_entity_1.UserOnGroups, userOnGroups => userOnGroups.user),
+    __metadata("design:type", Array)
+], User.prototype, "userOnGroups", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)({ name: 'users' }),
     __metadata("design:paramtypes", [String, String, authentication_entity_1.Authentication])

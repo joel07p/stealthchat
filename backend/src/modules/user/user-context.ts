@@ -7,7 +7,7 @@ export class UserContext {
     private username: string
     private email: string
     private identityCode: string
-    private accessCode: Array<number>
+    private accessCode: string
     private isAuthenticated: boolean
     private otpEnabled: boolean
 
@@ -52,11 +52,11 @@ export class UserContext {
         this.identityCode = value;
     }
 
-    getAccessCode(): Array<number> {
+    getAccessCode(): string {
         return this.accessCode
     }
 
-    setAccessCode(accessCode: Array<number>): void {
+    setAccessCode(accessCode: string): void {
         this.accessCode = accessCode
     }
 
