@@ -53,7 +53,7 @@ exports.AppModule = AppModule = __decorate([
                 port: 3306,
                 username: 'deployment',
                 password: '37F(MmN.(YAI',
-                database: 'dev2',
+                database: 'dev1',
                 entities: [user_entity_1.User, authentication_entity_1.Authentication, group_entity_1.Group, user_on_group_entity_1.UserOnGroups, room_entity_1.Room, message_entity_1.Message, permission_entity_1.Permission, invitation_entity_1.Invitation],
                 synchronize: true
             }),

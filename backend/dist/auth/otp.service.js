@@ -37,7 +37,7 @@ let OTPService = class OTPService {
         const { username, password, otp } = credentials;
         const isAuthenticated = this.userContext.getAccessCode() === otp;
         if (!isAuthenticated)
-            throw new common_1.ConflictException("OTP is wrong");
+            throw new common_1.BadRequestException("OTP is invalid");
         this.userContext.setAccessCode(null);
         this.userContext.setIsAuthenticated(isAuthenticated);
         return this.authService.signIn({ username, password });

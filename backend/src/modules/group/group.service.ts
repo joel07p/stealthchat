@@ -18,12 +18,46 @@ export class GroupService {
         @InjectRepository(Authentication) private authenticationRepository: Repository<Authentication>
     ) {}
 
-    async getGroups() {}
+    async getGroups(user: any) {
+        const thisUser = await this.userRepository.findOne({ where: {id: user.sub}, relations: ['authentication'] })
+
+        const groups = await this.groupRepository
+            .createQueryBuilder('group')
+            .innerJoinAndSelect(UserOnGroups, 'userOnGroups', 'userOnGroups.groupId = group.id')
+            .where('userOnGroups.userId = :userId', { userId: thisUser.id })
+            .getMany()
+        
+        const transformedGroups = await Promise.all(groups.map(async group => {
+            const thisUserOnGroup = await this.userOnGroupsRepository.findOne({
+                where: {
+                    user: {
+                        id: thisUser.id
+                    },
+                    group: {
+                        id: group.id
+                    }
+                }
+            })
+    
+            return {
+                id: group.id,
+                name: group.name,
+                type: group.type,
+                role: thisUserOnGroup ? thisUserOnGroup.role : null,
+                users: 0,//group.userOnGroups.length,
+                rooms: 0//group.userOnGroups.length,
+            };
+        }))
+
+        return transformedGroups
+    }
     //make save to bad data
-    async createGroup(data: CreateGroupDTO) {
+    async createGroup(user: any, data: CreateGroupDTO) {
+        const thisUser = await this.userRepository.findOne({ where: {id: user.sub}, relations: ['authentication'] })
+
         const { name, description, users } = data
 
-        const type = users.length < 2 ? GroupType.SINGLE : GroupType.MULTI
+        const type = users.length < 3 ? GroupType.SINGLE : GroupType.MULTI
 
         const group = new Group(name, description, type)
 
@@ -44,8 +78,35 @@ export class GroupService {
               });
               await this.userOnGroupsRepository.save(newUserOnGroups);
             } else {
-                throw new BadRequestException()
+                throw new BadRequestException("No auth found")
             }
+        }
+
+        const group1 = await this.groupRepository.findOne({where: {id: group.id}})
+        console.log(group1)
+
+        console.log(thisUser.id)
+
+        const thisUserOnGroup = await this.userOnGroupsRepository.findOne({
+            where: {
+                user: {
+                    id: thisUser.id
+                },
+                group: {
+                    id: group1.id
+                }
+            }
+        })
+
+        console.log(thisUserOnGroup)
+
+        return {
+            id: group.id,
+            name: group.name,
+            type: group.type,
+            role: thisUserOnGroup.role,
+            users: 0,
+            rooms: 0
         }
     }
 

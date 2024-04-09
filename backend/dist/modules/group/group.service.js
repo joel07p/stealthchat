@@ -29,10 +29,39 @@ let GroupService = class GroupService {
         this.userOnGroupsRepository = userOnGroupsRepository;
         this.authenticationRepository = authenticationRepository;
     }
-    async getGroups() { }
-    async createGroup(data) {
+    async getGroups(user) {
+        const thisUser = await this.userRepository.findOne({ where: { id: user.sub }, relations: ['authentication'] });
+        const groups = await this.groupRepository
+            .createQueryBuilder('group')
+            .innerJoinAndSelect(user_on_group_entity_1.UserOnGroups, 'userOnGroups', 'userOnGroups.groupId = group.id')
+            .where('userOnGroups.userId = :userId', { userId: thisUser.id })
+            .getMany();
+        const transformedGroups = await Promise.all(groups.map(async (group) => {
+            const thisUserOnGroup = await this.userOnGroupsRepository.findOne({
+                where: {
+                    user: {
+                        id: thisUser.id
+                    },
+                    group: {
+                        id: group.id
+                    }
+                }
+            });
+            return {
+                id: group.id,
+                name: group.name,
+                type: group.type,
+                role: thisUserOnGroup ? thisUserOnGroup.role : null,
+                users: 0,
+                rooms: 0
+            };
+        }));
+        return transformedGroups;
+    }
+    async createGroup(user, data) {
+        const thisUser = await this.userRepository.findOne({ where: { id: user.sub }, relations: ['authentication'] });
         const { name, description, users } = data;
-        const type = users.length < 2 ? group_type_enum_1.GroupType.SINGLE : group_type_enum_1.GroupType.MULTI;
+        const type = users.length < 3 ? group_type_enum_1.GroupType.SINGLE : group_type_enum_1.GroupType.MULTI;
         const group = new group_entity_1.Group(name, description, type);
         await this.groupRepository.save(group);
         for (const identityCode of users) {
@@ -51,9 +80,31 @@ let GroupService = class GroupService {
                 await this.userOnGroupsRepository.save(newUserOnGroups);
             }
             else {
-                throw new common_1.BadRequestException();
+                throw new common_1.BadRequestException("No auth found");
             }
         }
+        const group1 = await this.groupRepository.findOne({ where: { id: group.id } });
+        console.log(group1);
+        console.log(thisUser.id);
+        const thisUserOnGroup = await this.userOnGroupsRepository.findOne({
+            where: {
+                user: {
+                    id: thisUser.id
+                },
+                group: {
+                    id: group1.id
+                }
+            }
+        });
+        console.log(thisUserOnGroup);
+        return {
+            id: group.id,
+            name: group.name,
+            type: group.type,
+            role: thisUserOnGroup.role,
+            users: 0,
+            rooms: 0
+        };
     }
     async joinGroup(user, data) {
         const { joinCode } = data;
@@ -78,12 +129,16 @@ let GroupService = class GroupService {
                 id: groupId
             }
         });
+        if (!group)
+            throw new common_1.NotFoundException("Group not found");
         const userOnGroup = await this.userOnGroupsRepository.findOne({
             where: {
                 user,
                 group
             }
         });
+        if (!userOnGroup)
+            throw new common_1.NotFoundException("Relation not found");
         await this.userOnGroupsRepository.remove(userOnGroup);
     }
 };

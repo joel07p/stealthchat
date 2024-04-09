@@ -40,8 +40,8 @@ import { Invitation } from './modules/invitation/invitation.entity';
       host: '193.135.10.73',
       port: 3306,
       username: 'deployment',
-      password: '37F(MmN.(YAI',
-      database: 'dev2',
+      password: '37F(MmN.(YAI',//
+      database: 'dev1',
       entities: [User, Authentication, Group, UserOnGroups, Room, Message, Permission, Invitation],
       synchronize: true
     }),

@@ -21,11 +21,21 @@ let GroupController = class GroupController {
     constructor(groupService) {
         this.groupService = groupService;
     }
+    getGroups(user) {
+        return this.groupService.getGroups(user);
+    }
     createGroup(user, data) {
-        return this.groupService.createGroup(data);
+        return this.groupService.createGroup(user, data);
     }
 };
 exports.GroupController = GroupController;
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, decorators_1.User)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], GroupController.prototype, "getGroups", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, decorators_1.User)()),

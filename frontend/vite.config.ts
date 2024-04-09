@@ -10,6 +10,13 @@ export default defineConfig({
     },
   },
   server: {
-    cors: true
-  }
+    port: 5173,
+    cors: true,
+    proxy: {
+      '^/api': {
+        target: 'http://localhost:3300',
+        changeOrigin: true
+      }
+    }
+  },
 })

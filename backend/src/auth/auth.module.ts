@@ -10,10 +10,11 @@ import { ConfigService } from '@nestjs/config';
 import { AtStrategy, RtStrategy } from './strategies';
 import { OTPService } from './otp.service';
 import { MailService } from 'src/service/mail.service';
+import { UserOnGroups } from 'src/modules/group/user-on-group.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Authentication]),
+    TypeOrmModule.forFeature([User, Authentication, UserOnGroups]),
     JwtModule.register({})
   ],
   providers: [AuthService, UserContext, ConfigService, AtStrategy, RtStrategy, OTPService, MailService],

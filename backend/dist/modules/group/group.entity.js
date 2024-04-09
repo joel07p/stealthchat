@@ -48,7 +48,7 @@ __decorate([
     __metadata("design:type", String)
 ], Group.prototype, "type", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: "varchar", name: "joinCode", unique: true, nullable: true }),
     __metadata("design:type", String)
 ], Group.prototype, "joinCode", void 0);
 __decorate([

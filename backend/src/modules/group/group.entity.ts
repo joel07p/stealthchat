@@ -32,7 +32,7 @@ export class Group {
     @Column({ type: "varchar", name: "type", default: GroupType.MULTI })
     type: string
 
-    @Column()
+    @Column({ type: "varchar", name: "joinCode", unique: true, nullable: true })
     joinCode: string
 
     @CreateDateColumn({ type: 'timestamp' })

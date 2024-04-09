@@ -37,7 +37,7 @@ export class AuthController {
     }
 
     @Public()
-    @Get('otp')
+    @Get('otp/send')
     getAccessCode() {
         this.otpService.sendOTP()
     }

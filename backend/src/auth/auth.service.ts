@@ -9,11 +9,13 @@ import { DataSource, Repository } from 'typeorm';
 import { Authentication } from './authentication.entity';
 import { BaseAuth, SignUpDTO } from './model';
 import { Tokens } from './types';
+import { UserOnGroups } from 'src/modules/group/user-on-group.entity';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(UserOnGroups) private useroRepository: Repository<UserOnGroups>,
         @InjectRepository(Authentication) private authenticationRepository: Repository<Authentication>,
         private userContext: UserContext,
         private jwtService: JwtService,
@@ -23,6 +25,9 @@ export class AuthService {
 
     async signIn(credentials: BaseAuth) {
         const { username, password } = credentials
+
+        const s = await this.useroRepository.find()
+        console.log(s)
 
         const user = await this.userRepository.findOne({
             where: {
@@ -73,7 +78,8 @@ export class AuthService {
             return user;
         } catch (error) {
             await queryRunner.rollbackTransaction()
-            Logger.error("Failed to create user")
+            Logger.error(error)
+            Logger.log(error)
         } finally {
             await queryRunner.release();
         }

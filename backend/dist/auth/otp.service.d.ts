@@ -1,7 +1,7 @@
 import { UserContext } from "src/modules/user/user-context";
 import { MailService } from "src/service/mail.service";
-import { OTPAuth } from "./model";
 import { AuthService } from "./auth.service";
+import { OTPAuth } from "./model";
 export declare class OTPService {
     private userContext;
     private mailService;

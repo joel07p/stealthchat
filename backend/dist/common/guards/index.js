@@ -16,4 +16,5 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./at.guard"), exports);
 __exportStar(require("./rt.guard"), exports);
+__exportStar(require("./group-admin.guard"), exports);
 //# sourceMappingURL=index.js.map

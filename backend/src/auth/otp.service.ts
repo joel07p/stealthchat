@@ -1,8 +1,8 @@
-import { ConflictException, Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, Injectable, Logger } from "@nestjs/common";
 import { UserContext } from "src/modules/user/user-context";
 import { MailService } from "src/service/mail.service";
-import { OTPAuth } from "./model";
 import { AuthService } from "./auth.service";
+import { OTPAuth } from "./model";
 
 @Injectable()
 export class OTPService {
@@ -36,7 +36,7 @@ export class OTPService {
         const { username, password, otp } = credentials
 
         const isAuthenticated = this.userContext.getAccessCode() === otp;
-        if(!isAuthenticated) throw new ConflictException("OTP is invalid")
+        if(!isAuthenticated) throw new BadRequestException("OTP is invalid")
         this.userContext.setAccessCode(null)
         this.userContext.setIsAuthenticated(isAuthenticated);
 

@@ -40,13 +40,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { CreateGroupDialog } from "@/components/dialogs/create-group-dialog"
 import { JoinGroupDialog } from "@/components/dialogs/join-group-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { logout } from "@/api/auth.requests"
+import { createGroup, getGroups } from "@/api/home.requests"
+import { CreateGroupData } from "@/utils/types/group.types"
 
-const data: Array<Group> = [
+/*const groups: Array<Group> = [
   {
     id: "1",
     name: "Group 1",
@@ -159,7 +162,7 @@ const data: Array<Group> = [
     users: 8,
     rooms: 3,
   }
-]
+]*/
 
 export type Group = {
   id: string
@@ -274,17 +277,17 @@ const columns: ColumnDef<Group>[] = [
   },
 ]
 
-export function HomePage() {
+export const HomePage = () =>  {
+  const navigate = useNavigate()
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
+  const [groups, setGroups] = React.useState<Array<Group>>([])
+
   const table = useReactTable({
-    data,
+    data: groups,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -301,6 +304,30 @@ export function HomePage() {
       rowSelection,
     },
   })
+
+  React.useEffect(() => {
+    fetchGroups();
+  }, [])
+
+  const handleLogout = () => {
+    logout(navigate)
+  }
+
+  const fetchGroups = async () => {
+    try {
+      const groups = await getGroups()
+      if(groups) setGroups(groups)
+        console.log(groups)
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+    }
+  };
+
+  const handleCreateGroup = async (createGroupData: CreateGroupData) => {
+    const group = await createGroup(createGroupData)
+
+    setGroups([...groups, group])
+  }
 
   return (
     <div className="flex justify-center">
@@ -321,7 +348,7 @@ export function HomePage() {
 
           <JoinGroupDialog />
           <Separator orientation="vertical" />
-          <CreateGroupDialog />
+          <CreateGroupDialog onCreateGroup={(name, description, users) => handleCreateGroup({name, description, users})}/>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
@@ -366,7 +393,7 @@ export function HomePage() {
               </DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Invitations</DropdownMenuItem>
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

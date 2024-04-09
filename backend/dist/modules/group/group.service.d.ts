@@ -10,8 +10,22 @@ export declare class GroupService {
     private userOnGroupsRepository;
     private authenticationRepository;
     constructor(groupRepository: Repository<Group>, userRepository: Repository<User>, userOnGroupsRepository: Repository<UserOnGroups>, authenticationRepository: Repository<Authentication>);
-    getGroups(): Promise<void>;
-    createGroup(data: CreateGroupDTO): Promise<void>;
+    getGroups(user: any): Promise<{
+        id: string;
+        name: string;
+        type: string;
+        role: string;
+        users: number;
+        rooms: number;
+    }[]>;
+    createGroup(user: any, data: CreateGroupDTO): Promise<{
+        id: string;
+        name: string;
+        type: string;
+        role: string;
+        users: number;
+        rooms: number;
+    }>;
     joinGroup(user: any, data: JoinGroupDTO): Promise<void>;
     leaveGroup(user: any, data: LeaveGroupDTO): Promise<void>;
 }

@@ -1,3 +1,4 @@
+import { sendOTP } from "@/api/auth.requests"
 import {
     Dialog,
     DialogContent,
@@ -7,18 +8,23 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog"
-import { Button } from "../ui/button"
-import { Label } from "../ui/label"
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../ui/input-otp"
+import { OTPLoginProps } from "@/utils/types"
 import { useState } from "react"
+import { Button } from "../ui/button"
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../ui/input-otp"
+import { Label } from "../ui/label"
 
-export const OTPDialog = () => {
+export const OTPDialog = ({ onSubmit }: OTPLoginProps) => {
     const [value, setValue] = useState("")
+
+    const handleLogin = () => {
+        onSubmit(value)
+    }
 
     return <>
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline">Enter Code</Button>
+                <Button variant="outline" onClick={() => sendOTP()}>Enter Code</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -52,7 +58,7 @@ export const OTPDialog = () => {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Login</Button>
+                    <Button type="submit" onClick={handleLogin}>Login</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
