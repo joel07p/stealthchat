@@ -37,11 +37,11 @@ import { Invitation } from './modules/invitation/invitation.entity';
     PermissionModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost', //193.135.10.73
+      host: '193.135.10.73', //
       port: 3306,
-      username: 'root', //deployment
-      password: '',//37F(MmN.(YAI
-      database: 'stealthchat_test_1', //dev1
+      username: 'deployment', //deployment
+      password: '37F(MmN.(YAI',//37F(MmN.(YAI
+      database: 'dev1', //dev1
       entities: [User, Authentication, Group, UserOnGroups, Room, Message, Permission, Invitation],
       synchronize: true
     }),
