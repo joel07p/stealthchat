@@ -1,10 +1,14 @@
 import { AuthService } from './auth.service';
-import { SignUpDTO } from './model';
+import { BaseAuth, OTPAuth, SignUpDTO } from './model';
+import { OTPService } from './otp.service';
 export declare class AuthController {
     private authService;
-    constructor(authService: AuthService);
-    signIn(): void;
-    signUp(credentials: SignUpDTO): void;
-    logout(): void;
-    refreshTokens(): void;
+    private otpService;
+    constructor(authService: AuthService, otpService: OTPService);
+    signIn(credentials: BaseAuth): Promise<import("src/auth/types").Tokens>;
+    signUp(credentials: SignUpDTO): Promise<boolean | import("src/modules/user/user.entity").User>;
+    logout(userId: string): Promise<void>;
+    refreshTokens(userId: string, data: any): Promise<import("src/auth/types").Tokens>;
+    getAccessCode(): void;
+    verifyAccessCode(credentials: OTPAuth): Promise<import("src/auth/types").Tokens>;
 }

@@ -25,7 +25,7 @@ export class Authentication {
     @Column({ type: "varchar", name: "identityCode", nullable: true })
     @IsString()
     @Max(20)
-    private identityCode: string
+    identityCode: string
     //like discord, to identity the user
 
     @OneToOne(() => User, (user) => user.authentication)

@@ -10,13 +10,19 @@ exports.GroupModule = void 0;
 const common_1 = require("@nestjs/common");
 const group_service_1 = require("./group.service");
 const group_controller_1 = require("./group.controller");
+const typeorm_1 = require("@nestjs/typeorm");
+const group_entity_1 = require("./group.entity");
+const user_on_group_entity_1 = require("./user-on-group.entity");
+const authentication_entity_1 = require("../../auth/authentication.entity");
+const user_entity_1 = require("../user/user.entity");
 let GroupModule = class GroupModule {
 };
 exports.GroupModule = GroupModule;
 exports.GroupModule = GroupModule = __decorate([
     (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication, group_entity_1.Group, user_on_group_entity_1.UserOnGroups])],
         providers: [group_service_1.GroupService],
-        controllers: [group_controller_1.GroupController]
+        controllers: [group_controller_1.GroupController],
     })
 ], GroupModule);
 //# sourceMappingURL=group.module.js.map

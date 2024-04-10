@@ -1,22 +1,50 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Public, User } from 'src/common/decorators';
+import { RtGuard } from 'src/common/guards';
 import { AuthService } from './auth.service';
-import { SignUpDTO } from './model';
+import { BaseAuth, OTPAuth, SignUpDTO } from './model';
+import { OTPService } from './otp.service';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    constructor(
+        private authService: AuthService,
+        private otpService: OTPService
+    ) {}
 
+    @Public()
     @Post('signin')
-    signIn() {}
+    signIn(@Body() credentials: BaseAuth) {
+        return this.authService.signIn(credentials)
+    }
 
+    @Public()
     @Post('signup')
     signUp(@Body() credentials: SignUpDTO) {
-        this.authService.signUp(credentials)
+        return this.authService.signUp(credentials)
     }
 
     @Post('logout')
-    logout() {}
+    logout(@User('sub') userId: string) {
+        return this.authService.logout(userId)
+    }
 
+    @Public()
+    @UseGuards(RtGuard)
     @Post('refresh')
-    refreshTokens() {}
+    refreshTokens(@User('sub') userId: string, @Body() data: any) {
+        return this.authService.refreshTokens(userId, data.refreshToken)
+    }
+
+    @Public()
+    @Get('otp/send')
+    getAccessCode() {
+        this.otpService.sendOTP()
+    }
+
+    @Public()
+    @Post('otp/verify')
+    verifyAccessCode(@Body() credentials: OTPAuth) {
+        return this.otpService.verifyOTP(credentials)
+    }
 }

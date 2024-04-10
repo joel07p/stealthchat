@@ -23,7 +23,8 @@ let AppController = class AppController {
         return "Connection";
     }
     testUser(username) {
-        this.userService.createUser(username.username);
+        console.log(username);
+        throw new common_1.ConflictException();
     }
 };
 exports.AppController = AppController;

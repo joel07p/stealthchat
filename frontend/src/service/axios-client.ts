@@ -3,7 +3,7 @@ import { deleteData, getData } from "./storage"
 import { useNavigate } from "react-router-dom"
 
 export const setupAxiosClient = () => {
-    //axios.defaults.url = `http://${process.env.SERVER_IP}`
+    axios.defaults.baseURL = `/api`
 
     axios.interceptors.request.use(config => {
         if((config.url !== 'auth/signin') && (config.url !== 'auth/signup')) {
