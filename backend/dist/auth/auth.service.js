@@ -18,21 +18,42 @@ const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
 const bcrypt = require("bcrypt");
+const user_context_1 = require("../modules/user/user-context");
 const user_entity_1 = require("../modules/user/user.entity");
 const typeorm_2 = require("typeorm");
 const authentication_entity_1 = require("./authentication.entity");
-const user_context_1 = require("../modules/user/user-context");
+const user_on_group_entity_1 = require("../modules/group/user-on-group.entity");
 let AuthService = class AuthService {
-    constructor(userRepository, authenticationRepository, userContext, jwtService, configService, dataSource) {
+    constructor(userRepository, useroRepository, authenticationRepository, userContext, jwtService, configService, dataSource) {
         this.userRepository = userRepository;
+        this.useroRepository = useroRepository;
         this.authenticationRepository = authenticationRepository;
         this.userContext = userContext;
         this.jwtService = jwtService;
         this.configService = configService;
         this.dataSource = dataSource;
     }
-    signIn() { }
+    async signIn(credentials) {
+        const { username, password } = credentials;
+        const s = await this.useroRepository.find();
+        console.log(s);
+        const user = await this.userRepository.findOne({
+            where: {
+                username
+            },
+            relations: ['authentication']
+        });
+        if (!user)
+            throw new common_1.NotFoundException("User not found");
+        const passwordMatches = await bcrypt.compare(password, user.authentication.getHash());
+        if (!passwordMatches)
+            throw new common_1.ForbiddenException("Password does not match");
+        const tokens = await this.getTokens(user.id, user.email);
+        await this.updateRtHash(user.id, tokens.refreshToken);
+        return tokens;
+    }
     async signUp(credentials) {
+        let userCreated = false;
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
@@ -40,6 +61,7 @@ let AuthService = class AuthService {
             const { username, email } = credentials;
             const hash = await this.hashData(credentials.password);
             const authentication = new authentication_entity_1.Authentication();
+            authentication.setIdentityCode(this.userContext.generateIdentityCode());
             authentication.setHash(hash);
             const user = new user_entity_1.User(username, email, authentication);
             const { refreshToken } = await this.getTokens(user.id, user.id);
@@ -48,25 +70,53 @@ let AuthService = class AuthService {
             await this.userRepository.save(user);
             await queryRunner.commitTransaction();
             common_1.Logger.log("User successfully created");
+            userCreated = true;
             return user;
         }
         catch (error) {
             await queryRunner.rollbackTransaction();
-            common_1.Logger.error("Failed to create user");
+            common_1.Logger.error(error);
+            common_1.Logger.log(error);
         }
         finally {
             await queryRunner.release();
         }
+        return userCreated;
     }
-    logout() { }
-    refreshTokens() { }
+    async logout(userId) {
+        const { authentication } = await this.userRepository.findOne({
+            where: {
+                id: userId
+            },
+            relations: ['authentication']
+        });
+        authentication.setRefreshToken(null);
+        await this.authenticationRepository.save(authentication);
+        common_1.Logger.log("User logged out");
+    }
+    async refreshTokens(userId, rt) {
+        const user = await this.userRepository.findOne({
+            where: {
+                id: userId
+            },
+            relations: ['authentication']
+        });
+        if (!user || !user.authentication.getRefreshToken())
+            throw new common_1.NotFoundException("User not found");
+        const rtMatches = await bcrypt.compare(rt, user.authentication.getRefreshToken());
+        if (!rtMatches)
+            throw new common_1.ForbiddenException("Access denied");
+        const tokens = await this.getTokens(user.id, user.email);
+        await this.updateRtHash(user.id, tokens.refreshToken);
+        return tokens;
+    }
     async updateRtHash(userId, rt) {
         const hashedRt = await this.hashData(rt);
         const { authentication } = await this.userRepository.findOne({
             where: {
                 id: userId
             },
-            relations: ['Authentication']
+            relations: ['authentication']
         });
         authentication.setRefreshToken(hashedRt);
         await this.authenticationRepository.save(authentication);
@@ -101,8 +151,10 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __param(1, (0, typeorm_1.InjectRepository)(authentication_entity_1.Authentication)),
+    __param(1, (0, typeorm_1.InjectRepository)(user_on_group_entity_1.UserOnGroups)),
+    __param(2, (0, typeorm_1.InjectRepository)(authentication_entity_1.Authentication)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         user_context_1.UserContext,
         jwt_1.JwtService,

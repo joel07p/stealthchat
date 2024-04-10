@@ -1,7 +1,8 @@
 import { IsEmail, IsString, IsUUID, Length } from 'class-validator';
 import { randomUUID } from 'crypto';
 import { Authentication } from 'src/auth/authentication.entity';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+import { UserOnGroups } from '../group/user-on-group.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -31,4 +32,7 @@ export class User {
     @OneToOne(() => Authentication)
     @JoinColumn()
     authentication: Authentication
+
+    @OneToMany(() => UserOnGroups, userOnGroups => userOnGroups.user)
+    userOnGroups: Array<UserOnGroups>;
 }

@@ -4,7 +4,7 @@ export declare class Authentication {
     readonly id: string;
     private hash;
     private refreshToken;
-    private identityCode;
+    identityCode: string;
     user: User;
     setHash(hash: string): this;
     setRefreshToken(refreshToken: string): this;

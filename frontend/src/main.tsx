@@ -1,23 +1,27 @@
-import { ThemeProvider } from "@/components/theme-provider"
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
+import { AuthProvider } from './components/provider/auth-provider'
+import { ThemeProvider } from './components/provider/theme-provider'
 import './index.css'
 import { router } from "./router/router"
 import { setupAxiosClient } from "./service/axios-client"
-import { getData, setData } from "./service/storage"
+import { Toaster } from "@/components/ui/sonner"
 
 export const App = () => {
   useEffect(() => {
     setupAxiosClient()
-    setData("sui", "sui")
-    console.log(getData("sui"))
   }, [])
 
   return (
     <React.StrictMode>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <RouterProvider router={router} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+          <Toaster
+            richColors
+          />
+        </AuthProvider>
       </ThemeProvider>
     </React.StrictMode>
   )

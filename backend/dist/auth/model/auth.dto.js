@@ -9,10 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SignUpDTO = exports.SignInDTO = void 0;
+exports.SignUpDTO = exports.OTPAuth = exports.BaseAuth = void 0;
 const class_validator_1 = require("class-validator");
 class BaseAuth {
 }
+exports.BaseAuth = BaseAuth;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
@@ -23,14 +24,14 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], BaseAuth.prototype, "password", void 0);
-class SignInDTO extends BaseAuth {
+class OTPAuth extends BaseAuth {
 }
-exports.SignInDTO = SignInDTO;
+exports.OTPAuth = OTPAuth;
 __decorate([
+    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], SignInDTO.prototype, "otpEnabled", void 0);
+    __metadata("design:type", String)
+], OTPAuth.prototype, "otp", void 0);
 class SignUpDTO extends BaseAuth {
 }
 exports.SignUpDTO = SignUpDTO;

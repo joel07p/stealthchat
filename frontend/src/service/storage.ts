@@ -1,13 +1,13 @@
-import { decryptString, encryptString } from "./encryption"
 
 export const setData = (key: string, data: string) => {
-    sessionStorage.setItem(key, encryptString(data))
+    sessionStorage.setItem(key, data) //encryptString(data)
+    console.log("Tokens saved")
 }
 
 export const getData = (key: string) => {
     const data = sessionStorage.getItem(key)
 
-    return data ? decryptString(data) : ''
+    return data //
 }
 
 export const deleteData = (key: string) => {
