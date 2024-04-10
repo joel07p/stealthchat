@@ -24,6 +24,7 @@ export const CreateGroupDialog = ({ onCreateGroup }: CreateGroupProps) => {
     
     const handleAddUser = () => {
         setUsers([...users, user])
+        setUser("")
     }
 
     const handleChangeUser = (event: ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +37,13 @@ export const CreateGroupDialog = ({ onCreateGroup }: CreateGroupProps) => {
 
     const handleChangeDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDescription(event.target.value);
-    };
+    }
+
+    const handleCreateGroup = () => {
+        onCreateGroup(name, description, users)
+        setName("")
+        setDescription("")
+    }
 
     return <>
         <Dialog>
@@ -72,7 +79,7 @@ export const CreateGroupDialog = ({ onCreateGroup }: CreateGroupProps) => {
                 </div>
                 <DialogFooter>
                     <Button onClick={handleAddUser}>Add User</Button>
-                    <Button type="submit" onClick={() => onCreateGroup(name, description, users)}>Create</Button>
+                    <Button type="submit" onClick={handleCreateGroup}>Create</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

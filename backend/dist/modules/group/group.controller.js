@@ -27,6 +27,12 @@ let GroupController = class GroupController {
     createGroup(user, data) {
         return this.groupService.createGroup(user, data);
     }
+    joinGroup(userId, data) {
+        return this.groupService.joinGroup(userId, data);
+    }
+    leaveGroup(userId, data) {
+        return this.groupService.leaveGroup(userId, data);
+    }
 };
 exports.GroupController = GroupController;
 __decorate([
@@ -44,6 +50,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, group_dto_1.CreateGroupDTO]),
     __metadata("design:returntype", void 0)
 ], GroupController.prototype, "createGroup", null);
+__decorate([
+    (0, common_1.Post)("join"),
+    __param(0, (0, decorators_1.User)('sub')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, group_dto_1.JoinGroupDTO]),
+    __metadata("design:returntype", void 0)
+], GroupController.prototype, "joinGroup", null);
+__decorate([
+    (0, common_1.Patch)(),
+    __param(0, (0, decorators_1.User)('sub')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, group_dto_1.LeaveGroupDTO]),
+    __metadata("design:returntype", void 0)
+], GroupController.prototype, "leaveGroup", null);
 exports.GroupController = GroupController = __decorate([
     (0, common_1.Controller)('group'),
     __metadata("design:paramtypes", [group_service_1.GroupService])

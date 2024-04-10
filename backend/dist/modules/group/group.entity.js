@@ -15,14 +15,15 @@ const crypto_1 = require("crypto");
 const typeorm_1 = require("typeorm");
 const invitation_entity_1 = require("../invitation/invitation.entity");
 const room_entity_1 = require("../room/room.entity");
-const user_on_group_entity_1 = require("./user-on-group.entity");
 const group_type_enum_1 = require("./group-type.enum");
+const user_on_group_entity_1 = require("./user-on-group.entity");
 let Group = class Group {
-    constructor(name, description, type) {
+    constructor(name, description, type, joinCode) {
         this.id = (0, crypto_1.randomUUID)();
         this.name = name;
         this.description = description;
         this.type = type;
+        this.joinCode = joinCode;
     }
 };
 exports.Group = Group;
@@ -69,6 +70,6 @@ __decorate([
 ], Group.prototype, "userOnGroups", void 0);
 exports.Group = Group = __decorate([
     (0, typeorm_1.Entity)({ name: "groups" }),
-    __metadata("design:paramtypes", [String, String, String])
+    __metadata("design:paramtypes", [String, String, String, String])
 ], Group);
 //# sourceMappingURL=group.entity.js.map

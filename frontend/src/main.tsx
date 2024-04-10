@@ -6,6 +6,7 @@ import { ThemeProvider } from './components/provider/theme-provider'
 import './index.css'
 import { router } from "./router/router"
 import { setupAxiosClient } from "./service/axios-client"
+import { Toaster } from "@/components/ui/sonner"
 
 export const App = () => {
   useEffect(() => {
@@ -17,6 +18,9 @@ export const App = () => {
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <AuthProvider>
           <RouterProvider router={router} />
+          <Toaster
+            richColors
+          />
         </AuthProvider>
       </ThemeProvider>
     </React.StrictMode>

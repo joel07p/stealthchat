@@ -3,6 +3,7 @@ import { handleRequestError } from "@/utils/helpers/handle-request-error"
 import { Credentials, OTPCredentials, RegisterCredentials } from "@/utils/types"
 import axios, { AxiosResponse } from "axios"
 import { NavigateFunction } from "react-router-dom"
+import { toast } from "sonner"
 
 type SetSignedInStateCallback = (state: boolean) => void;
 
@@ -16,6 +17,7 @@ export const login = async (credentials: Credentials, setSignedInState: SetSigne
             setData("accessToken", data.accessToken)
             setData("refreshToken", data.refreshToken)
             setSignedInState(true)
+            toast.success("User logged in")
             navigate("/")
 
             console.log("User logged in")
@@ -61,9 +63,11 @@ export const register = async (credentials: RegisterCredentials) => {
         const { data } = response
 
         if(!data) {
-            console.log("User not created")
-            return
+            toast.error("User not created")
+            return false
         }
+
+        return true
 
     } catch(error) {
         handleRequestError(error)
@@ -75,7 +79,7 @@ export const logout = async (navigate: NavigateFunction) => {
         const refreshToken = getData('refreshToken')
         await axios.post('auth/logout', { refreshToken })
         navigate('/auth')
-        console.log("logout")
+        toast.info("User logged out")
     } catch(error) {
         console.log(error)
     }

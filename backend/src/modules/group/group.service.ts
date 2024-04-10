@@ -19,7 +19,7 @@ export class GroupService {
     ) {}
 
     async getGroups(user: any) {
-        const thisUser = await this.userRepository.findOne({ where: {id: user.sub}, relations: ['authentication'] })
+        const thisUser = await this.getUser(user.sub)
 
         const groups = await this.groupRepository
             .createQueryBuilder('group')
@@ -57,9 +57,12 @@ export class GroupService {
 
         const { name, description, users } = data
 
-        const type = users.length < 3 ? GroupType.SINGLE : GroupType.MULTI
+        if(thisUser) users.push(thisUser.authentication.getIdentityCode())
 
-        const group = new Group(name, description, type)
+        const type = users.length < 3 ? GroupType.SINGLE : GroupType.MULTI
+        const joinCode = await this.generateJoinCode()
+
+        const group = new Group(name, description, type, joinCode)
 
         await this.groupRepository.save(group)
 
@@ -74,7 +77,7 @@ export class GroupService {
               const newUserOnGroups = this.userOnGroupsRepository.create({
                 user: authentication.user,
                 group,
-                role: UserRole.ADMIN
+                role: identityCode === thisUser.authentication.getIdentityCode() ? UserRole.ADMIN : UserRole.USER
               });
               await this.userOnGroupsRepository.save(newUserOnGroups);
             } else {
@@ -83,9 +86,6 @@ export class GroupService {
         }
 
         const group1 = await this.groupRepository.findOne({where: {id: group.id}})
-        console.log(group1)
-
-        console.log(thisUser.id)
 
         const thisUserOnGroup = await this.userOnGroupsRepository.findOne({
             where: {
@@ -110,8 +110,10 @@ export class GroupService {
         }
     }
 
-    async joinGroup(user: any, data: JoinGroupDTO) {
+    async joinGroup(userId: string, data: JoinGroupDTO) {   
+        const thisUser = await this.getUser(userId)
         const { joinCode } = data
+        console.log(joinCode)
 
         const group = await this.groupRepository.findOne({
             where: {
@@ -122,16 +124,27 @@ export class GroupService {
         if(!group) throw new BadRequestException("Invalid join code")
 
         const userOnGroup = await this.userOnGroupsRepository.create({
-            user,
+            user: thisUser,
             group,
             role: UserRole.USER
         })
 
         await this.userOnGroupsRepository.save(userOnGroup)
+
+        return {
+            id: group.id,
+            name: group.name,
+            type: group.type,
+            role: userOnGroup.role,
+            users: 0,
+            rooms: 0
+        }
     }
 
-    async leaveGroup(user: any, data: LeaveGroupDTO) {
+    async leaveGroup(userId: string, data: LeaveGroupDTO) {
         const { groupId } = data
+        console.log(groupId)
+        console.log(userId)
 
         const group = await this.groupRepository.findOne({
             where: {
@@ -143,13 +156,35 @@ export class GroupService {
 
         const userOnGroup = await this.userOnGroupsRepository.findOne({
             where: {
-                user,
-                group
+                user: {
+                    id: userId
+                },
+                group: {
+                    id: groupId
+                }
             }
         })
 
         if(!userOnGroup) throw new NotFoundException("Relation not found")
 
-        await this.userOnGroupsRepository.remove(userOnGroup)
+        return await this.userOnGroupsRepository.remove(userOnGroup)
+    }
+
+    private async getUser(userId: string) {
+        return await this.userRepository.findOne({
+            where: {
+                id: userId
+            }
+        })
+    }
+
+    private async generateJoinCode() {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+        const charactersLength = characters.length
+        let result = '#'
+        for (let i = 0; i < 6; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength))
+        }
+        return result
     }
 }

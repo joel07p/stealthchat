@@ -3,3 +3,11 @@ export type CreateGroupData = {
     description: string
     users: Array<string>
 }
+
+export type LeaveGroupData = {
+    groupId: string
+}
+
+export type JoinGroupData = {
+    joinCode: string
+}

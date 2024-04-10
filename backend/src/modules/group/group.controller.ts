@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { User } from 'src/common/decorators';
-import { CreateGroupDTO } from './group.dto';
+import { CreateGroupDTO, JoinGroupDTO, LeaveGroupDTO } from './group.dto';
 import { GroupService } from './group.service';
 
 @Controller('group')
@@ -17,5 +17,15 @@ export class GroupController {
     @Post()
     createGroup(@User() user: any, @Body() data: CreateGroupDTO) {
         return this.groupService.createGroup(user, data)
+    }
+
+    @Post("join")
+    joinGroup(@User('sub') userId: string, @Body() data: JoinGroupDTO) {
+        return this.groupService.joinGroup(userId, data)
+    }
+
+    @Patch()
+    leaveGroup(@User('sub') userId: string, @Body() data: LeaveGroupDTO) {
+        return this.groupService.leaveGroup(userId, data)
     }
 }

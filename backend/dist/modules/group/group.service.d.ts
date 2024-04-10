@@ -26,6 +26,15 @@ export declare class GroupService {
         users: number;
         rooms: number;
     }>;
-    joinGroup(user: any, data: JoinGroupDTO): Promise<void>;
-    leaveGroup(user: any, data: LeaveGroupDTO): Promise<void>;
+    joinGroup(userId: string, data: JoinGroupDTO): Promise<{
+        id: string;
+        name: string;
+        type: string;
+        role: string;
+        users: number;
+        rooms: number;
+    }>;
+    leaveGroup(userId: string, data: LeaveGroupDTO): Promise<UserOnGroups>;
+    private getUser;
+    private generateJoinCode;
 }

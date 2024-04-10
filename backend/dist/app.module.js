@@ -49,11 +49,11 @@ exports.AppModule = AppModule = __decorate([
             permission_module_1.PermissionModule,
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'mysql',
-                host: '193.135.10.73',
+                host: 'localhost',
                 port: 3306,
-                username: 'deployment',
-                password: '37F(MmN.(YAI',
-                database: 'dev1',
+                username: 'root',
+                password: '',
+                database: 'stealthchat_test_1',
                 entities: [user_entity_1.User, authentication_entity_1.Authentication, group_entity_1.Group, user_on_group_entity_1.UserOnGroups, room_entity_1.Room, message_entity_1.Message, permission_entity_1.Permission, invitation_entity_1.Invitation],
                 synchronize: true
             }),

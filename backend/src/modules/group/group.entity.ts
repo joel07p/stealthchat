@@ -3,16 +3,17 @@ import { randomUUID } from "crypto";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { Invitation } from "../invitation/invitation.entity";
 import { Room } from "../room/room.entity";
-import { UserOnGroups } from "./user-on-group.entity";
 import { GroupType } from "./group-type.enum";
+import { UserOnGroups } from "./user-on-group.entity";
 
 @Entity({ name: "groups" })
 export class Group {
-    constructor(name: string, description: string, type: string) {
+    constructor(name: string, description: string, type: string, joinCode: string) {
         this.id = randomUUID()
         this.name = name
         this.description = description
         this.type = type
+        this.joinCode = joinCode
     }
 
     @PrimaryColumn({ type: "uuid", name: "id", unique: true, nullable: false })
