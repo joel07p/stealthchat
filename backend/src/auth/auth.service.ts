@@ -3,13 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { UserOnGroups } from 'src/modules/group/user-on-group.entity';
 import { UserContext } from 'src/modules/user/user-context';
 import { User } from 'src/modules/user/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Authentication } from './authentication.entity';
 import { BaseAuth, SignUpDTO } from './model';
 import { Tokens } from './types';
-import { UserOnGroups } from 'src/modules/group/user-on-group.entity';
 
 @Injectable()
 export class AuthService {
@@ -44,6 +44,7 @@ export class AuthService {
 
         const tokens = await this.getTokens(user.id, user.email)
         await this.updateRtHash(user.id, tokens.refreshToken)
+        this.userContext.setUser(user)
         return tokens
     }
 

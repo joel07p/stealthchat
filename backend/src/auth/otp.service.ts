@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, Logger } from "@nestjs/common";
 import { UserContext } from "src/modules/user/user-context";
-import { MailService } from "src/service/mail.service";
 import { AuthService } from "./auth.service";
 import { OTPAuth } from "./model";
+import { MailService } from "src/service/mail.service";
 
 @Injectable()
 export class OTPService {
@@ -10,8 +10,10 @@ export class OTPService {
 
     constructor(
         private userContext: UserContext,
-        private mailService: MailService,
-        private authService: AuthService
+        private authService: AuthService,
+        private mailService: MailService
+
+        
     ) {}
 
     generateOTP(): string {
@@ -29,8 +31,11 @@ export class OTPService {
 
     sendOTP(): void {
         const accessCode = this.generateOTP()
+        // Logger.log(this.userContext.getUsername());
+        // this.mailService.sendOTP(this.userContext, accessCode) // does not work yet! UserContext has to be loaded
         Logger.log(accessCode)
     }
+
 
     verifyOTP(credentials: OTPAuth) {
         const { username, password, otp } = credentials

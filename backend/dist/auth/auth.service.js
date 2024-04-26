@@ -18,11 +18,11 @@ const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
 const bcrypt = require("bcrypt");
+const user_on_group_entity_1 = require("../modules/group/user-on-group.entity");
 const user_context_1 = require("../modules/user/user-context");
 const user_entity_1 = require("../modules/user/user.entity");
 const typeorm_2 = require("typeorm");
 const authentication_entity_1 = require("./authentication.entity");
-const user_on_group_entity_1 = require("../modules/group/user-on-group.entity");
 let AuthService = class AuthService {
     constructor(userRepository, useroRepository, authenticationRepository, userContext, jwtService, configService, dataSource) {
         this.userRepository = userRepository;
@@ -50,6 +50,7 @@ let AuthService = class AuthService {
             throw new common_1.ForbiddenException("Password does not match");
         const tokens = await this.getTokens(user.id, user.email);
         await this.updateRtHash(user.id, tokens.refreshToken);
+        this.userContext.setUser(user);
         return tokens;
     }
     async signUp(credentials) {

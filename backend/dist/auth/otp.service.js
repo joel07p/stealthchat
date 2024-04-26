@@ -12,13 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OTPService = void 0;
 const common_1 = require("@nestjs/common");
 const user_context_1 = require("../modules/user/user-context");
-const mail_service_1 = require("../service/mail.service");
 const auth_service_1 = require("./auth.service");
+const mail_service_1 = require("../service/mail.service");
 let OTPService = class OTPService {
-    constructor(userContext, mailService, authService) {
+    constructor(userContext, authService, mailService) {
         this.userContext = userContext;
-        this.mailService = mailService;
         this.authService = authService;
+        this.mailService = mailService;
         this.length = 6;
     }
     generateOTP() {
@@ -47,7 +47,7 @@ exports.OTPService = OTPService;
 exports.OTPService = OTPService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [user_context_1.UserContext,
-        mail_service_1.MailService,
-        auth_service_1.AuthService])
+        auth_service_1.AuthService,
+        mail_service_1.MailService])
 ], OTPService);
 //# sourceMappingURL=otp.service.js.map

@@ -18,8 +18,10 @@ const user_context_1 = require("../modules/user/user-context");
 const config_1 = require("@nestjs/config");
 const strategies_1 = require("./strategies");
 const otp_service_1 = require("./otp.service");
-const mail_service_1 = require("../service/mail.service");
 const user_on_group_entity_1 = require("../modules/group/user-on-group.entity");
+const mailer_1 = require("@nestjs-modules/mailer");
+const mail_service_1 = require("../service/mail.service");
+const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -27,7 +29,34 @@ exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication, user_on_group_entity_1.UserOnGroups]),
-            jwt_1.JwtModule.register({})
+            jwt_1.JwtModule.register({}),
+            mailer_1.MailerModule.forRootAsync({
+                useFactory: () => ({
+                    transport: {
+                        host: process.env.SMTP_HOST,
+                        port: process.env.SMTP_PORT,
+                        secure: true,
+                        auth: {
+                            user: process.env.SMTP_USER,
+                            pass: process.env.SMTP_PASS,
+                        },
+                        tls: {
+                            rejectUnauthorized: false,
+                            ciphers: "SSLv3"
+                        }
+                    },
+                    defaults: {
+                        from: '"nest-modules" <modules@nestjs.com>',
+                    },
+                    template: {
+                        dir: process.cwd() + '/templates/',
+                        adapter: new handlebars_adapter_1.HandlebarsAdapter(),
+                        options: {
+                            strict: true,
+                        },
+                    },
+                }),
+            }),
         ],
         providers: [auth_service_1.AuthService, user_context_1.UserContext, config_1.ConfigService, strategies_1.AtStrategy, strategies_1.RtStrategy, otp_service_1.OTPService, mail_service_1.MailService],
         controllers: [auth_controller_1.AuthController],

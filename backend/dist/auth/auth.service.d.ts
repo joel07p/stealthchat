@@ -1,12 +1,12 @@
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { UserOnGroups } from 'src/modules/group/user-on-group.entity';
 import { UserContext } from 'src/modules/user/user-context';
 import { User } from 'src/modules/user/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Authentication } from './authentication.entity';
 import { BaseAuth, SignUpDTO } from './model';
 import { Tokens } from './types';
-import { UserOnGroups } from 'src/modules/group/user-on-group.entity';
 export declare class AuthService {
     private userRepository;
     private useroRepository;
