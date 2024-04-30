@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable, Logger } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { UserContext } from "src/modules/user/user-context";
+import { MailService } from "src/service/mail.service";
 import { AuthService } from "./auth.service";
 import { OTPAuth } from "./model";
-import { MailService } from "src/service/mail.service";
-import { UserService } from "src/modules/user/user.service";
+import { Tokens } from "./types";
 
 @Injectable()
 export class OTPService {
@@ -13,10 +13,9 @@ export class OTPService {
         private readonly userContext: UserContext,
         private readonly authService: AuthService,
         private readonly mailService: MailService,
-        private readonly userService: UserService
     ) {}
 
-    generateOTP(): string {
+    private generateOTP(): string {
         let accessCode = '';
     
         for (let index = 0; index < this.length; index++) {
@@ -29,26 +28,19 @@ export class OTPService {
     }
     
 
-    async sendOTP(userId: string) {
+    async sendOTP(email: string) {
         const accessCode = this.generateOTP()
-        const user = await this.userService.getUserProperty(userId, undefined)
-        this.userContext.setUser(user)
-        Logger.log(this.userContext.getEmail());
-        this.mailService.sendOTP(accessCode) // does not work yet! UserContext has to be loaded
-        Logger.log(accessCode)
+
+        this.userContext.setAccessCode(accessCode)
+        this.mailService.sendOTP(email, accessCode)
     }
 
 
-    verifyOTP(credentials: OTPAuth) {
-        const { username, password, otp } = credentials
-
-        const isAuthenticated = this.userContext.getAccessCode() === otp;
-        if(!isAuthenticated) throw new BadRequestException("OTP is invalid")
-        this.userContext.setAccessCode(null)
-        this.userContext.setIsAuthenticated(isAuthenticated);
-
-        return this.authService.signIn({ username, password })
+    async verifyOTP({username, password, otp}: OTPAuth): Promise<Tokens> {
+        if(otp === this.userContext.getAccessCode()) {
+            return await this.authService.signIn({ username, password })
+        } else {
+            throw new ForbiddenException("Invalid OTP or credentials")
+        }
     }
-
-
 }

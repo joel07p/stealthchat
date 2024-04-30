@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { Public, User } from 'src/common/decorators';
 import { RtGuard } from 'src/common/guards';
 import { AuthService } from './auth.service';
-import { BaseAuth, OTPAuth, SignUpDTO } from './model';
+import { BaseAuth, Email, OTPAuth, SignUpDTO } from './model';
 import { OTPService } from './otp.service';
 
 @Controller('auth')
@@ -35,16 +35,16 @@ export class AuthController {
     refreshTokens(@User('sub') userId: string, @Body() data: any) {
         return this.authService.refreshTokens(userId, data.refreshToken)
     }
-/*
+
     @Public()
     @Post('otp/send')
-    async getAccessCode() {
-        await this.otpService.sendOTP()
+    async getAccessCode(@Body() { email }: Email) {
+        await this.otpService.sendOTP(email)
     }
-*/
+
     @Public()
     @Post('otp/verify')
-    verifyAccessCode(@Body() credentials: OTPAuth) {
-        return this.otpService.verifyOTP(credentials)
+    async verifyAccessCode(@Body() credentials: OTPAuth) {
+        return await this.otpService.verifyOTP(credentials)
     }
 }

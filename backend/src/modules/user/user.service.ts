@@ -22,6 +22,10 @@ export class UserService {
         console.log(await this.userRepository.findOne({where: {id: savedUser.id}, relations: ["authentication"]}))
     }
 
+    async getUser(username: string) {
+        return await this.userRepository.findOne({where: {username}})
+    }
+
     async getUserProperty(userId: string, property: string | undefined | null) {
         const user = await this.userRepository.findOne({where: {id: userId}})
 

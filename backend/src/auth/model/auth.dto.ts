@@ -21,3 +21,9 @@ export class SignUpDTO extends BaseAuth {
     @IsEmail()
     email: string
 }
+
+export class Email {
+    @IsNotEmpty()
+    @IsEmail()
+    email: string
+}

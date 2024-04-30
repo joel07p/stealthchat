@@ -10,11 +10,11 @@ export class MailService {
     private readonly userContext: UserContext
   ) {}
 
-  async sendOTP(otp: string) {
+  async sendOTP(email: string, otp: string) {
     this
       .mailerService
       .sendMail({
-        to: this.userContext.getEmail(), // userContext is undefined
+        to: email, // userContext is undefined
         from: 'StealthChat<stealthchat@joelp.xyz>',
         subject: 'Your One-Time Verification-Code',
         template: 'otpMail', 

@@ -26,9 +26,6 @@ export class AuthService {
     async signIn(credentials: BaseAuth) {
         const { username, password } = credentials
 
-        const s = await this.useroRepository.find()
-        console.log(s)
-
         const user = await this.userRepository.findOne({
             where: {
                 username
