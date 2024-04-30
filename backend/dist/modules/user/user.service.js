@@ -31,6 +31,12 @@ let UserService = class UserService {
         const savedUser = await this.userRepository.save(user);
         console.log(await this.userRepository.findOne({ where: { id: savedUser.id }, relations: ["authentication"] }));
     }
+    async getUserProperty(userId, property) {
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (property)
+            return user[property];
+        return user;
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([

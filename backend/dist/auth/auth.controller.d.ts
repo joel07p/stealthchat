@@ -9,6 +9,5 @@ export declare class AuthController {
     signUp(credentials: SignUpDTO): Promise<boolean | import("src/modules/user/user.entity").User>;
     logout(userId: string): Promise<void>;
     refreshTokens(userId: string, data: any): Promise<import("src/auth/types").Tokens>;
-    getAccessCode(): void;
     verifyAccessCode(credentials: OTPAuth): Promise<import("src/auth/types").Tokens>;
 }

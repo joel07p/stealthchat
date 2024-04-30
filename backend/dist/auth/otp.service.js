@@ -14,11 +14,13 @@ const common_1 = require("@nestjs/common");
 const user_context_1 = require("../modules/user/user-context");
 const auth_service_1 = require("./auth.service");
 const mail_service_1 = require("../service/mail.service");
+const user_service_1 = require("../modules/user/user.service");
 let OTPService = class OTPService {
-    constructor(userContext, authService, mailService) {
+    constructor(userContext, authService, mailService, userService) {
         this.userContext = userContext;
         this.authService = authService;
         this.mailService = mailService;
+        this.userService = userService;
         this.length = 6;
     }
     generateOTP() {
@@ -29,8 +31,12 @@ let OTPService = class OTPService {
         this.userContext.setAccessCode(accessCode);
         return accessCode;
     }
-    sendOTP() {
+    async sendOTP(userId) {
         const accessCode = this.generateOTP();
+        const user = await this.userService.getUserProperty(userId, undefined);
+        this.userContext.setUser(user);
+        common_1.Logger.log(this.userContext.getEmail());
+        this.mailService.sendOTP(accessCode);
         common_1.Logger.log(accessCode);
     }
     verifyOTP(credentials) {
@@ -48,6 +54,7 @@ exports.OTPService = OTPService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [user_context_1.UserContext,
         auth_service_1.AuthService,
-        mail_service_1.MailService])
+        mail_service_1.MailService,
+        user_service_1.UserService])
 ], OTPService);
 //# sourceMappingURL=otp.service.js.map

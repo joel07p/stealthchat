@@ -6,4 +6,5 @@ export declare class UserService {
     private authRepository;
     constructor(userRepository: Repository<User>, authRepository: Repository<Authentication>);
     createUser(username: string): Promise<void>;
+    getUserProperty(userId: string, property: string | undefined | null): Promise<any>;
 }

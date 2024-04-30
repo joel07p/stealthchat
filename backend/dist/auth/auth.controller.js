@@ -36,9 +36,6 @@ let AuthController = class AuthController {
     refreshTokens(userId, data) {
         return this.authService.refreshTokens(userId, data.refreshToken);
     }
-    getAccessCode() {
-        this.otpService.sendOTP();
-    }
     verifyAccessCode(credentials) {
         return this.otpService.verifyOTP(credentials);
     }
@@ -77,13 +74,6 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "refreshTokens", null);
-__decorate([
-    (0, decorators_1.Public)(),
-    (0, common_1.Get)('otp/send'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "getAccessCode", null);
 __decorate([
     (0, decorators_1.Public)(),
     (0, common_1.Post)('otp/verify'),

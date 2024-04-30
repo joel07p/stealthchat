@@ -12,21 +12,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailService = void 0;
 const mailer_1 = require("@nestjs-modules/mailer");
 const common_1 = require("@nestjs/common");
+const user_context_1 = require("../modules/user/user-context");
 let MailService = class MailService {
-    constructor(mailerService) {
+    constructor(mailerService, userContext) {
         this.mailerService = mailerService;
+        this.userContext = userContext;
     }
-    async sendOTP(userContext, otp) {
+    async sendOTP(otp) {
         this
             .mailerService
             .sendMail({
-            to: userContext.getEmail(),
+            to: this.userContext.getEmail(),
             from: 'StealthChat<stealthchat@joelp.xyz>',
             subject: 'Your One-Time Verification-Code',
             template: 'otpMail',
             context: {
                 code: otp,
-                username: userContext.getUsername(),
+                username: this.userContext.getUsername(),
             },
         })
             .then((success) => {
@@ -40,6 +42,7 @@ let MailService = class MailService {
 exports.MailService = MailService;
 exports.MailService = MailService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [mailer_1.MailerService])
+    __metadata("design:paramtypes", [mailer_1.MailerService,
+        user_context_1.UserContext])
 ], MailService);
 //# sourceMappingURL=mail.service.js.map

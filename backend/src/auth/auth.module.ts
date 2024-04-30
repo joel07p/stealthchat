@@ -13,6 +13,7 @@ import { UserOnGroups } from 'src/modules/group/user-on-group.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailService } from 'src/service/mail.service';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { UserService } from 'src/modules/user/user.service';
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       }),
     }),
   ],
-  providers: [AuthService, UserContext, ConfigService, AtStrategy, RtStrategy, OTPService, MailService],
+  providers: [AuthService, UserContext, ConfigService, AtStrategy, RtStrategy, OTPService, MailService, UserService],
   controllers: [AuthController],
 })
 export class AuthModule {}

@@ -23,6 +23,7 @@ import { UserContext } from './modules/user/user-context';
 import { User } from './modules/user/user.entity';
 import { UserModule } from './modules/user/user.module';
 import { UserService } from './modules/user/user.service';
+import { WebSocketModule } from './websocket/websocket.module';
 
 
 
@@ -51,6 +52,7 @@ import { UserService } from './modules/user/user.service';
       synchronize: true
     }),
     TypeOrmModule.forFeature([User, Authentication]),
+    WebSocketModule
   ],
   controllers: [AppController],
   providers: [

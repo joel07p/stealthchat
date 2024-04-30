@@ -35,13 +35,13 @@ export class AuthController {
     refreshTokens(@User('sub') userId: string, @Body() data: any) {
         return this.authService.refreshTokens(userId, data.refreshToken)
     }
-
+/*
     @Public()
-    @Get('otp/send')
-    getAccessCode() {
-        this.otpService.sendOTP()
+    @Post('otp/send')
+    async getAccessCode() {
+        await this.otpService.sendOTP()
     }
-
+*/
     @Public()
     @Post('otp/verify')
     verifyAccessCode(@Body() credentials: OTPAuth) {
