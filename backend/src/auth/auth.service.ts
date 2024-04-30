@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { UserOnGroups } from 'src/modules/group/user-on-group.entity';
 import { UserContext } from 'src/modules/user/user-context';
 import { User } from 'src/modules/user/user.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -15,7 +14,6 @@ import { Tokens } from './types';
 export class AuthService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
-        @InjectRepository(UserOnGroups) private useroRepository: Repository<UserOnGroups>,
         @InjectRepository(Authentication) private authenticationRepository: Repository<Authentication>,
         private userContext: UserContext,
         private jwtService: JwtService,

@@ -39,7 +39,7 @@ export class AuthController {
     @Public()
     @Post('otp/send')
     async getAccessCode(@Body() { email }: Email) {
-        await this.otpService.sendOTP(email)
+        return await this.otpService.sendOTP(email)
     }
 
     @Public()

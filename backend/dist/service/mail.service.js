@@ -8,41 +8,60 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailService = void 0;
 const mailer_1 = require("@nestjs-modules/mailer");
 const common_1 = require("@nestjs/common");
-const user_context_1 = require("../modules/user/user-context");
+const typeorm_1 = require("@nestjs/typeorm");
+const user_entity_1 = require("../modules/user/user.entity");
+const typeorm_2 = require("typeorm");
 let MailService = class MailService {
-    constructor(mailerService, userContext) {
+    constructor(userRepository, mailerService) {
+        this.userRepository = userRepository;
         this.mailerService = mailerService;
-        this.userContext = userContext;
     }
-    async sendOTP(otp) {
-        this
-            .mailerService
-            .sendMail({
-            to: this.userContext.getEmail(),
-            from: 'StealthChat<stealthchat@joelp.xyz>',
-            subject: 'Your One-Time Verification-Code',
-            template: 'otpMail',
-            context: {
-                code: otp,
-                username: this.userContext.getUsername(),
-            },
-        })
-            .then((success) => {
-            console.log(success);
-        })
-            .catch((err) => {
-            console.log(err);
-        });
+    async sendOTP(email, otp) {
+        try {
+            const user = await this.userRepository.findOne({ where: { email } });
+            if (!user) {
+                throw new common_1.NotFoundException("No user found for corresponding email");
+            }
+            this
+                .mailerService
+                .sendMail({
+                to: email,
+                from: 'StealthChat<stealthchat@joelp.xyz>',
+                subject: 'Your One-Time Verification-Code',
+                template: 'otpMail',
+                context: {
+                    code: otp,
+                    username: user.username
+                },
+            })
+                .then((success) => {
+                console.log(success);
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        }
+        catch (e) {
+            if (e instanceof common_1.NotFoundException) {
+                common_1.Logger.error("Send Email | User not found");
+                return false;
+            }
+        }
+        return true;
     }
 };
 exports.MailService = MailService;
 exports.MailService = MailService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [mailer_1.MailerService,
-        user_context_1.UserContext])
+    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        mailer_1.MailerService])
 ], MailService);
 //# sourceMappingURL=mail.service.js.map

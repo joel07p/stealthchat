@@ -18,15 +18,13 @@ const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
 const bcrypt = require("bcrypt");
-const user_on_group_entity_1 = require("../modules/group/user-on-group.entity");
 const user_context_1 = require("../modules/user/user-context");
 const user_entity_1 = require("../modules/user/user.entity");
 const typeorm_2 = require("typeorm");
 const authentication_entity_1 = require("./authentication.entity");
 let AuthService = class AuthService {
-    constructor(userRepository, useroRepository, authenticationRepository, userContext, jwtService, configService, dataSource) {
+    constructor(userRepository, authenticationRepository, userContext, jwtService, configService, dataSource) {
         this.userRepository = userRepository;
-        this.useroRepository = useroRepository;
         this.authenticationRepository = authenticationRepository;
         this.userContext = userContext;
         this.jwtService = jwtService;
@@ -35,8 +33,6 @@ let AuthService = class AuthService {
     }
     async signIn(credentials) {
         const { username, password } = credentials;
-        const s = await this.useroRepository.find();
-        console.log(s);
         const user = await this.userRepository.findOne({
             where: {
                 username
@@ -152,10 +148,8 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __param(1, (0, typeorm_1.InjectRepository)(user_on_group_entity_1.UserOnGroups)),
-    __param(2, (0, typeorm_1.InjectRepository)(authentication_entity_1.Authentication)),
+    __param(1, (0, typeorm_1.InjectRepository)(authentication_entity_1.Authentication)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.Repository,
         typeorm_2.Repository,
         user_context_1.UserContext,
         jwt_1.JwtService,

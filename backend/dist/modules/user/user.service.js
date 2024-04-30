@@ -31,6 +31,9 @@ let UserService = class UserService {
         const savedUser = await this.userRepository.save(user);
         console.log(await this.userRepository.findOne({ where: { id: savedUser.id }, relations: ["authentication"] }));
     }
+    async getUser(username) {
+        return await this.userRepository.findOne({ where: { username } });
+    }
     async getUserProperty(userId, property) {
         const user = await this.userRepository.findOne({ where: { id: userId } });
         if (property)

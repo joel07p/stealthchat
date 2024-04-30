@@ -32,7 +32,7 @@ export class OTPService {
         const accessCode = this.generateOTP()
 
         this.userContext.setAccessCode(accessCode)
-        this.mailService.sendOTP(email, accessCode)
+        return await this.mailService.sendOTP(email, accessCode)
     }
 
 

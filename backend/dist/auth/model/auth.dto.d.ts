@@ -8,3 +8,6 @@ export declare class OTPAuth extends BaseAuth {
 export declare class SignUpDTO extends BaseAuth {
     email: string;
 }
+export declare class Email {
+    email: string;
+}

@@ -12,15 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OTPService = void 0;
 const common_1 = require("@nestjs/common");
 const user_context_1 = require("../modules/user/user-context");
-const auth_service_1 = require("./auth.service");
 const mail_service_1 = require("../service/mail.service");
-const user_service_1 = require("../modules/user/user.service");
+const auth_service_1 = require("./auth.service");
 let OTPService = class OTPService {
-    constructor(userContext, authService, mailService, userService) {
+    constructor(userContext, authService, mailService) {
         this.userContext = userContext;
         this.authService = authService;
         this.mailService = mailService;
-        this.userService = userService;
         this.length = 6;
     }
     generateOTP() {
@@ -31,22 +29,18 @@ let OTPService = class OTPService {
         this.userContext.setAccessCode(accessCode);
         return accessCode;
     }
-    async sendOTP(userId) {
+    async sendOTP(email) {
         const accessCode = this.generateOTP();
-        const user = await this.userService.getUserProperty(userId, undefined);
-        this.userContext.setUser(user);
-        common_1.Logger.log(this.userContext.getEmail());
-        this.mailService.sendOTP(accessCode);
-        common_1.Logger.log(accessCode);
+        this.userContext.setAccessCode(accessCode);
+        return await this.mailService.sendOTP(email, accessCode);
     }
-    verifyOTP(credentials) {
-        const { username, password, otp } = credentials;
-        const isAuthenticated = this.userContext.getAccessCode() === otp;
-        if (!isAuthenticated)
-            throw new common_1.BadRequestException("OTP is invalid");
-        this.userContext.setAccessCode(null);
-        this.userContext.setIsAuthenticated(isAuthenticated);
-        return this.authService.signIn({ username, password });
+    async verifyOTP({ username, password, otp }) {
+        if (otp === this.userContext.getAccessCode()) {
+            return await this.authService.signIn({ username, password });
+        }
+        else {
+            throw new common_1.ForbiddenException("Invalid OTP or credentials");
+        }
     }
 };
 exports.OTPService = OTPService;
@@ -54,7 +48,6 @@ exports.OTPService = OTPService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [user_context_1.UserContext,
         auth_service_1.AuthService,
-        mail_service_1.MailService,
-        user_service_1.UserService])
+        mail_service_1.MailService])
 ], OTPService);
 //# sourceMappingURL=otp.service.js.map

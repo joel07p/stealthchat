@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { BaseAuth, OTPAuth, SignUpDTO } from './model';
+import { BaseAuth, Email, OTPAuth, SignUpDTO } from './model';
 import { OTPService } from './otp.service';
 export declare class AuthController {
     private authService;
@@ -9,5 +9,6 @@ export declare class AuthController {
     signUp(credentials: SignUpDTO): Promise<boolean | import("src/modules/user/user.entity").User>;
     logout(userId: string): Promise<void>;
     refreshTokens(userId: string, data: any): Promise<import("src/auth/types").Tokens>;
+    getAccessCode({ email }: Email): Promise<boolean>;
     verifyAccessCode(credentials: OTPAuth): Promise<import("src/auth/types").Tokens>;
 }
