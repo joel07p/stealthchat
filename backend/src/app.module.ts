@@ -1,32 +1,37 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { GroupModule } from './modules/group/group.module';
-import { InvitationModule } from './modules/invitation/invitation.module';
-import { MessageModule } from './modules/message/message.module';
-import { PermissionModule } from './modules/permission/permission.module';
-import { RoomModule } from './modules/room/room.module';
-import { UserModule } from './modules/user/user.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './modules/user/user.entity';
-import { UserService } from './modules/user/user.service';
-import { Authentication } from './auth/authentication.entity';
-import { UserContext } from './modules/user/user-context';
-import { JwtService } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
+import { Authentication } from './auth/authentication.entity';
 import { AtGuard } from './common/guards';
 import { Group } from './modules/group/group.entity';
+import { GroupModule } from './modules/group/group.module';
 import { UserOnGroups } from './modules/group/user-on-group.entity';
-import { Room } from './modules/room/room.entity';
-import { Message } from './modules/message/message.entity';
-import { Permission } from './modules/permission/permission.entity';
 import { Invitation } from './modules/invitation/invitation.entity';
+import { InvitationModule } from './modules/invitation/invitation.module';
+import { Message } from './modules/message/message.entity';
+import { MessageModule } from './modules/message/message.module';
+import { Permission } from './modules/permission/permission.entity';
+import { PermissionModule } from './modules/permission/permission.module';
+import { Room } from './modules/room/room.entity';
+import { RoomModule } from './modules/room/room.module';
+import { UserContext } from './modules/user/user-context';
+import { User } from './modules/user/user.entity';
+import { UserModule } from './modules/user/user.module';
+import { UserService } from './modules/user/user.service';
+
+
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true
+    }),
     AuthModule,
     UserModule,
     AuthModule,
@@ -37,11 +42,11 @@ import { Invitation } from './modules/invitation/invitation.entity';
     PermissionModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '193.135.10.73', //
-      port: 3306,
-      username: 'deployment', //deployment
-      password: '37F(MmN.(YAI',//37F(MmN.(YAI
-      database: 'dev1', //dev1
+      host: process.env.HOST_DB,
+      port: parseInt(process.env.PORT_DB),
+      username: process.env.USERNAME_DB,
+      password: process.env.PASSWORD_DB, 
+      database: 'dev1',
       entities: [User, Authentication, Group, UserOnGroups, Room, Message, Permission, Invitation],
       synchronize: true
     }),
@@ -56,7 +61,7 @@ import { Invitation } from './modules/invitation/invitation.entity';
     {
       provide: APP_GUARD,
       useClass: AtGuard
-    }
+    },
   ],
 })
 export class AppModule {}
