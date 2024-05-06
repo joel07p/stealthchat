@@ -24,7 +24,7 @@ export class Room {
     @OneToMany(() => Message, (message) => message.room, { cascade: true })
     messages: Array<Message>    
 
-    @OneToMany(() => Permission, (permission) => permission.room, { cascade: true })
+    @OneToMany(() => Permission, (permission) => permission.room)
     permissions: Array<Permission>
 
     @ManyToOne(() => Group, (group) => group.rooms)

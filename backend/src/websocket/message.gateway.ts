@@ -2,11 +2,11 @@ import { Logger, UseGuards } from "@nestjs/common";
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { log } from "console";
 import { Namespace, Socket } from "socket.io";
-import { WebsocketJWTGuard } from "src/common/guards/ws-jwt.guard";
 import { AddMessage } from "src/modules/message";
 import { MessageService } from "src/modules/message/message.service";
 import { addSocket } from "src/utils/helpers/message-gateway";
 import { SocketWithAuth } from "./types";
+import { AgainstViewerGuard } from "src/common/guards";
 
 @WebSocketGateway({
     namespace: "messages"
@@ -48,11 +48,11 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this.logger.debug(`Number of connected sockets: ${sockets.size}`);
     }
 
-    @UseGuards(AgainstViewerGuard)    
+    @UseGuards(AgainstViewerGuard) 
     @SubscribeMessage("test")
     test(@ConnectedSocket() client: SocketWithAuth) {
         log(client.userId)
-        this.io.emit("test", "test")
+        this.io.emit("test", {hello: "sui"})
     }
 
     /*

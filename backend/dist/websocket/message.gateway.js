@@ -21,6 +21,7 @@ const socket_io_1 = require("socket.io");
 const message_1 = require("../modules/message");
 const message_service_1 = require("../modules/message/message.service");
 const message_gateway_1 = require("../utils/helpers/message-gateway");
+const guards_1 = require("../common/guards");
 let MessageGateway = MessageGateway_1 = class MessageGateway {
     constructor(messageService) {
         this.messageService = messageService;
@@ -45,7 +46,7 @@ let MessageGateway = MessageGateway_1 = class MessageGateway {
     }
     test(client) {
         (0, console_1.log)(client.userId);
-        this.io.emit("test", "test");
+        this.io.emit("test", { hello: "sui" });
     }
     async addMessage(data) {
     }
@@ -56,6 +57,7 @@ __decorate([
     __metadata("design:type", socket_io_1.Namespace)
 ], MessageGateway.prototype, "io", void 0);
 __decorate([
+    (0, common_1.UseGuards)(guards_1.AgainstViewerGuard),
     (0, websockets_1.SubscribeMessage)("test"),
     __param(0, (0, websockets_1.ConnectedSocket)()),
     __metadata("design:type", Function),
