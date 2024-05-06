@@ -9,6 +9,8 @@ import { DataSource, Repository } from 'typeorm';
 import { Authentication } from './authentication.entity';
 import { BaseAuth, SignUpDTO } from './model';
 import { Tokens } from './types';
+import { log } from 'console';
+import { UserService } from 'src/modules/user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +20,8 @@ export class AuthService {
         private userContext: UserContext,
         private jwtService: JwtService,
         private configService: ConfigService,
-        private dataSource: DataSource
+        private dataSource: DataSource,
+        private userService: UserService
     ) {}
 
     async signIn(credentials: BaseAuth) {
@@ -162,5 +165,19 @@ export class AuthService {
 
     hashData(password: string) {
         return bcrypt.hash(password, 10)
+    }
+
+    async verifyToken(token: string) {
+        try {
+            log("validate ws token")
+            const payload = this.jwtService.decode(token)
+            log(payload)
+            const user = await this.userService.getUserProperty(payload.sub, null)
+            return user.id 
+            
+        } catch(error) {
+            log("Invalid token")
+            return null
+        }
     }
 }

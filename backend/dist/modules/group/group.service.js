@@ -158,6 +158,19 @@ let GroupService = class GroupService {
             throw new common_1.NotFoundException("Relation not found");
         return await this.userOnGroupsRepository.remove(userOnGroup);
     }
+    async getUserRole(userId, groupId) {
+        const { role } = await this.userOnGroupsRepository.findOne({
+            where: {
+                group: {
+                    id: groupId
+                },
+                user: {
+                    id: userId
+                }
+            }
+        });
+        return role;
+    }
     async getUser(userId) {
         return await this.userRepository.findOne({
             where: {

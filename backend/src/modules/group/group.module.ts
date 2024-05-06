@@ -11,5 +11,6 @@ import { User } from '../user/user.entity';
   imports: [TypeOrmModule.forFeature([User, Authentication, Group, UserOnGroups])],
   providers: [GroupService],
   controllers: [GroupController],
+  exports: [GroupService]
 })
 export class GroupModule {}

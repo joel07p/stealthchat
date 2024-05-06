@@ -35,6 +35,7 @@ export declare class GroupService {
         rooms: number;
     }>;
     leaveGroup(userId: string, data: LeaveGroupDTO): Promise<UserOnGroups>;
+    getUserRole(userId: string, groupId: string): Promise<string>;
     private getUser;
     private generateJoinCode;
 }

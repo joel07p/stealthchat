@@ -22,14 +22,17 @@ const user_context_1 = require("../modules/user/user-context");
 const user_entity_1 = require("../modules/user/user.entity");
 const typeorm_2 = require("typeorm");
 const authentication_entity_1 = require("./authentication.entity");
+const console_1 = require("console");
+const user_service_1 = require("../modules/user/user.service");
 let AuthService = class AuthService {
-    constructor(userRepository, authenticationRepository, userContext, jwtService, configService, dataSource) {
+    constructor(userRepository, authenticationRepository, userContext, jwtService, configService, dataSource, userService) {
         this.userRepository = userRepository;
         this.authenticationRepository = authenticationRepository;
         this.userContext = userContext;
         this.jwtService = jwtService;
         this.configService = configService;
         this.dataSource = dataSource;
+        this.userService = userService;
     }
     async signIn(credentials) {
         const { username, password } = credentials;
@@ -143,6 +146,19 @@ let AuthService = class AuthService {
     hashData(password) {
         return bcrypt.hash(password, 10);
     }
+    async verifyToken(token) {
+        try {
+            (0, console_1.log)("validate ws token");
+            const payload = this.jwtService.decode(token);
+            (0, console_1.log)(payload);
+            const user = await this.userService.getUserProperty(payload.sub, null);
+            return user.id;
+        }
+        catch (error) {
+            (0, console_1.log)("Invalid token");
+            return null;
+        }
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
@@ -154,6 +170,7 @@ exports.AuthService = AuthService = __decorate([
         user_context_1.UserContext,
         jwt_1.JwtService,
         config_1.ConfigService,
-        typeorm_2.DataSource])
+        typeorm_2.DataSource,
+        user_service_1.UserService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

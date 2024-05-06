@@ -8,7 +8,7 @@ import { Authentication } from 'src/auth/authentication.entity';
 export class UserService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
-        @InjectRepository(Authentication) private authRepository: Repository<Authentication>    
+        @InjectRepository(Authentication) private authRepository: Repository<Authentication>
     ) {}
 
     async createUser(username: string) {

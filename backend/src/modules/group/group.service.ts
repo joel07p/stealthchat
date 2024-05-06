@@ -170,6 +170,21 @@ export class GroupService {
         return await this.userOnGroupsRepository.remove(userOnGroup)
     }
 
+    async getUserRole(userId: string, groupId: string) {
+        const { role } = await this.userOnGroupsRepository.findOne({
+            where: {
+                group: {
+                    id: groupId
+                },
+                user: {
+                    id: userId
+                }
+            }
+        })
+
+        return role
+    }
+
     private async getUser(userId: string) {
         return await this.userRepository.findOne({
             where: {

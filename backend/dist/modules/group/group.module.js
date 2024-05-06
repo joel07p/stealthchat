@@ -23,6 +23,7 @@ exports.GroupModule = GroupModule = __decorate([
         imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication, group_entity_1.Group, user_on_group_entity_1.UserOnGroups])],
         providers: [group_service_1.GroupService],
         controllers: [group_controller_1.GroupController],
+        exports: [group_service_1.GroupService]
     })
 ], GroupModule);
 //# sourceMappingURL=group.module.js.map
