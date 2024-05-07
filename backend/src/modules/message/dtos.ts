@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, IsUUID } from "class-validator"
 
-export class AddMessage {
+export class AddMessageDTO {
     @IsString()
     message: string
 

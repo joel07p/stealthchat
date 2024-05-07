@@ -11,6 +11,7 @@ const addSocket = (client, roomToSocketsMap) => {
         roomToSocketsMap.set(roomId, new Set());
     }
     roomToSocketsMap.get(roomId).add(client.id);
+    (0, console_1.log)(`Room ${roomId} added to the map`);
     return roomToSocketsMap;
 };
 exports.addSocket = addSocket;
@@ -18,6 +19,7 @@ const sendDataToSockets = (io, roomToSocketsMap, roomId, data, eventName) => {
     const targetSockets = roomToSocketsMap.get(roomId);
     (0, console_1.log)(targetSockets);
     targetSockets.forEach((socket) => {
+        (0, console_1.log)(data);
         io.to(socket).emit(eventName, data);
     });
 };

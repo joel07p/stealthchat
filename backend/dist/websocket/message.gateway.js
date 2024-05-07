@@ -18,10 +18,10 @@ const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
 const console_1 = require("console");
 const socket_io_1 = require("socket.io");
+const guards_1 = require("../common/guards");
 const message_1 = require("../modules/message");
 const message_service_1 = require("../modules/message/message.service");
 const message_gateway_1 = require("../utils/helpers/message-gateway");
-const guards_1 = require("../common/guards");
 let MessageGateway = MessageGateway_1 = class MessageGateway {
     constructor(messageService) {
         this.messageService = messageService;
@@ -49,6 +49,10 @@ let MessageGateway = MessageGateway_1 = class MessageGateway {
         this.io.emit("test", { hello: "sui" });
     }
     async addMessage(data) {
+        const message = await this.messageService.addMessage(data);
+        if (message) {
+            (0, message_gateway_1.sendDataToSockets)(this.io, this.roomToSocketsMap, data.roomId, message, "add_message_update");
+        }
     }
 };
 exports.MessageGateway = MessageGateway;
@@ -65,10 +69,11 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MessageGateway.prototype, "test", null);
 __decorate([
+    (0, common_1.UseGuards)(guards_1.AgainstViewerGuard),
     (0, websockets_1.SubscribeMessage)("add_message"),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [message_1.AddMessage]),
+    __metadata("design:paramtypes", [message_1.AddMessageDTO]),
     __metadata("design:returntype", Promise)
 ], MessageGateway.prototype, "addMessage", null);
 exports.MessageGateway = MessageGateway = MessageGateway_1 = __decorate([

@@ -39,7 +39,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Room.prototype, "messages", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => permission_entity_1.Permission, (permission) => permission.room, { cascade: true }),
+    (0, typeorm_1.OneToMany)(() => permission_entity_1.Permission, (permission) => permission.room),
     __metadata("design:type", Array)
 ], Room.prototype, "permissions", void 0);
 __decorate([

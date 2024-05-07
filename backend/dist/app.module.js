@@ -16,6 +16,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const auth_module_1 = require("./auth/auth.module");
 const authentication_entity_1 = require("./auth/authentication.entity");
+const error_1 = require("./common/error");
 const guards_1 = require("./common/guards");
 const group_entity_1 = require("./modules/group/group.entity");
 const group_module_1 = require("./modules/group/group.module");
@@ -73,6 +74,10 @@ exports.AppModule = AppModule = __decorate([
             {
                 provide: core_1.APP_GUARD,
                 useClass: guards_1.AtGuard
+            },
+            {
+                provide: core_1.APP_FILTER,
+                useClass: error_1.NotFoundExceptionFilter,
             },
         ],
     })

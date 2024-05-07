@@ -1,6 +1,6 @@
 import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from "@nestjs/websockets";
 import { Namespace, Socket } from "socket.io";
-import { AddMessage } from "src/modules/message";
+import { AddMessageDTO } from "src/modules/message";
 import { MessageService } from "src/modules/message/message.service";
 import { SocketWithAuth } from "./types";
 export declare class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -13,5 +13,5 @@ export declare class MessageGateway implements OnGatewayInit, OnGatewayConnectio
     handleConnection(client: Socket, ...args: any[]): void;
     handleDisconnect(client: Socket): void;
     test(client: SocketWithAuth): void;
-    addMessage(data: AddMessage): Promise<void>;
+    addMessage(data: AddMessageDTO): Promise<void>;
 }

@@ -7,8 +7,8 @@ export class RoomController {
     constructor(
         private readonly roomService: RoomService
     ) {}
-    
-    @Post()
+
+    @Post('/create')
     createRoom(@Body() data: CreateRoomDTO) {
         return this.roomService.createRoom(data)
     }

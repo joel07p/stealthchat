@@ -1,4 +1,4 @@
-export declare class AddMessage {
+export declare class AddMessageDTO {
     message: string;
     username: string;
     roomId: string;

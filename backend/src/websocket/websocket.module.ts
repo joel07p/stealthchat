@@ -8,10 +8,11 @@ import { Message } from "src/modules/message/message.entity";
 import { MessageService } from "src/modules/message/message.service";
 import { User } from "src/modules/user/user.entity";
 import { MessageGateway } from "./message.gateway";
+import { Room } from "src/modules/room/room.entity";
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Message, User, Group, UserOnGroups]),
+        TypeOrmModule.forFeature([Message, User, Group, UserOnGroups, Room]),
         GroupModule
     ],
     providers: [MessageGateway, MessageService, JwtService],

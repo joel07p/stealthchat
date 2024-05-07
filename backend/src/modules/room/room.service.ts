@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Room } from './room.entity';
 import { Repository } from 'typeorm';
@@ -19,12 +19,13 @@ export class RoomService {
     async createRoom({name, permissions, groupId}: CreateRoom) {
         this.logger.log(`Trying to create room with name: ${name}`)
 
-        const room = new Room(name)
+        const roomInstance = new Room(name)
+        const room = await this.roomRepository.save(roomInstance)
 
-        this.setPermissionsToRoom(permissions, room)
-        this.saveRoomToGroup(groupId, room)
+        this.setPermissionsToRoom(permissions, roomInstance)
+        this.saveRoomToGroup(groupId, roomInstance)
 
-        return await this.roomRepository.save(room)
+        return room
     }
 
     async renameRoom({roomId, newName}: RenameRoom) {
@@ -32,7 +33,7 @@ export class RoomService {
 
         const room = await this.roomRepository.findOne({where: {id: roomId}})
 
-        if(!room) return
+        if(!room) throw new NotFoundException(`Room with id ${roomId} not found`)
         room.name = newName
 
         return await this.roomRepository.save(room)
@@ -52,7 +53,8 @@ export class RoomService {
         permissionNames.forEach(async (permissionName: string) => {
             if(!await this.checkIfPermissionsExist(permissionName)) {
                 const permission = new Permission(permissionName)
-                room.permissions.push(permission)
+                permission.room = room
+                await this.permissionRepository.save(permission)    
             }
         })
     }
@@ -70,9 +72,9 @@ export class RoomService {
         const group = await this.groupRepository.findOne({where: {id: groupId}})
 
         if(!group) return
-        group.rooms.push(room)
+        room.group = group
 
-        await this.groupRepository.save(group)
+        await this.roomRepository.save(room)
     }
 
     /*

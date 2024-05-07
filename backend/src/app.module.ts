@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { Authentication } from './auth/authentication.entity';
+import { NotFoundExceptionFilter } from './common/error';
 import { AtGuard } from './common/guards';
 import { Group } from './modules/group/group.entity';
 import { GroupModule } from './modules/group/group.module';
@@ -61,6 +62,10 @@ import { WebSocketModule } from './websocket/websocket.module';
     {
       provide: APP_GUARD,
       useClass: AtGuard
+    },
+    {
+      provide: APP_FILTER,
+      useClass: NotFoundExceptionFilter,
     },
   ],
 })

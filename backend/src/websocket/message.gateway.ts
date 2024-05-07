@@ -2,11 +2,11 @@ import { Logger, UseGuards } from "@nestjs/common";
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { log } from "console";
 import { Namespace, Socket } from "socket.io";
-import { AddMessage } from "src/modules/message";
-import { MessageService } from "src/modules/message/message.service";
-import { addSocket } from "src/utils/helpers/message-gateway";
-import { SocketWithAuth } from "./types";
 import { AgainstViewerGuard } from "src/common/guards";
+import { AddMessageDTO } from "src/modules/message";
+import { MessageService } from "src/modules/message/message.service";
+import { addSocket, sendDataToSockets } from "src/utils/helpers/message-gateway";
+import { SocketWithAuth } from "./types";
 
 @WebSocketGateway({
     namespace: "messages"
@@ -61,12 +61,13 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         sendDataToSockets(this.io, this.roomToSocketsMap, roomId, {test: "test"}, "add_message_update")
     }*/
 
+    @UseGuards(AgainstViewerGuard)
     @SubscribeMessage("add_message")
-    async addMessage(@MessageBody() data: AddMessage) {
-        /*const message = this.messageService.addMessage(data)
+    async addMessage(@MessageBody() data: AddMessageDTO) {
+        const message = await this.messageService.addMessage(data)
 
         if(message) {
             sendDataToSockets(this.io, this.roomToSocketsMap, data.roomId, message, "add_message_update")
-        }*/
+        }
     }
 }

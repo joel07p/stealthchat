@@ -4,6 +4,7 @@ exports.SocketIOAdapter = void 0;
 const common_1 = require("@nestjs/common");
 const platform_socket_io_1 = require("@nestjs/platform-socket.io");
 const auth_service_1 = require("../auth/auth.service");
+const console_1 = require("console");
 class SocketIOAdapter extends platform_socket_io_1.IoAdapter {
     constructor(app, configService) {
         super(app);
@@ -33,6 +34,7 @@ class SocketIOAdapter extends platform_socket_io_1.IoAdapter {
 }
 exports.SocketIOAdapter = SocketIOAdapter;
 const createTokenMiddleware = (authService, logger) => async (socket, next) => {
+    (0, console_1.log)(socket.handshake);
     const token = socket.handshake.auth.authorization || socket.handshake.headers['authorization'];
     logger.debug(`Validating auth token before connection: ${token}`);
     try {

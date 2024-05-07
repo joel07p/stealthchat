@@ -9,23 +9,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AddMessage = void 0;
+exports.AddMessageDTO = void 0;
 const class_validator_1 = require("class-validator");
-class AddMessage {
+class AddMessageDTO {
 }
-exports.AddMessage = AddMessage;
+exports.AddMessageDTO = AddMessageDTO;
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], AddMessage.prototype, "message", void 0);
+], AddMessageDTO.prototype, "message", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], AddMessage.prototype, "username", void 0);
+], AddMessageDTO.prototype, "username", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], AddMessage.prototype, "roomId", void 0);
+], AddMessageDTO.prototype, "roomId", void 0);
 //# sourceMappingURL=dtos.js.map

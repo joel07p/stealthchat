@@ -13,6 +13,7 @@ export const addSocket = (client: Socket, roomToSocketsMap: Map<string, Set<stri
     
     roomToSocketsMap.get(roomId).add(client.id);
 
+    log(`Room ${roomId} added to the map`)
     return roomToSocketsMap
 }
 
@@ -20,6 +21,7 @@ export const sendDataToSockets = (io: Namespace, roomToSocketsMap: Map<string, S
     const targetSockets = roomToSocketsMap.get(roomId)
     log(targetSockets)
     targetSockets.forEach((socket: string) => {
+        log(data)
         io.to(socket).emit(eventName, data)
     })
 }
