@@ -20,12 +20,24 @@ const room_entity_1 = require("./room.entity");
 const typeorm_2 = require("typeorm");
 const group_entity_1 = require("../group/group.entity");
 const permission_entity_1 = require("../permission/permission.entity");
+const user_service_1 = require("../user/user.service");
 let RoomService = RoomService_1 = class RoomService {
-    constructor(roomRepository, groupRepository, permissionRepository) {
+    constructor(roomRepository, groupRepository, permissionRepository, userService) {
         this.roomRepository = roomRepository;
         this.groupRepository = groupRepository;
         this.permissionRepository = permissionRepository;
+        this.userService = userService;
         this.logger = new common_1.Logger(RoomService_1.name);
+    }
+    async getRooms({ groupId, userId }) {
+        const user = await this.userService.getUserProperty(userId, null);
+        const rooms = await this.roomRepository.find({
+            where: {
+                group: {
+                    id: groupId
+                },
+            }
+        });
     }
     async createRoom({ name, permissions, groupId }) {
         this.logger.log(`Trying to create room with name: ${name}`);
@@ -82,6 +94,7 @@ exports.RoomService = RoomService = RoomService_1 = __decorate([
     __param(2, (0, typeorm_1.InjectRepository)(permission_entity_1.Permission)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        user_service_1.UserService])
 ], RoomService);
 //# sourceMappingURL=room.service.js.map

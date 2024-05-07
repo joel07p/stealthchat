@@ -20,6 +20,7 @@ let User = class User {
         this.id = (0, crypto_1.randomUUID)();
         this.username = username;
         this.email = email;
+        this.permission = "default";
         this.authentication = authentication;
     }
 };
@@ -35,6 +36,11 @@ __decorate([
     (0, class_validator_1.Length)(5, 50),
     __metadata("design:type", String)
 ], User.prototype, "username", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', name: "permission", unique: false, nullable: false }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], User.prototype, "permission", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', name: "email", unique: true, nullable: false }),
     (0, class_validator_1.IsEmail)(),

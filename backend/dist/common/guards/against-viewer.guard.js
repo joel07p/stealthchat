@@ -12,7 +12,6 @@ var AgainstViewerGuard_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AgainstViewerGuard = void 0;
 const common_1 = require("@nestjs/common");
-const console_1 = require("console");
 const group_service_1 = require("../../modules/group/group.service");
 let AgainstViewerGuard = AgainstViewerGuard_1 = class AgainstViewerGuard {
     constructor(groupService) {
@@ -22,10 +21,7 @@ let AgainstViewerGuard = AgainstViewerGuard_1 = class AgainstViewerGuard {
     async canActivate(context) {
         this.logger.log("Try to active against viewer guard");
         const socket = context.switchToWs().getClient();
-        const socketData = context.switchToWs().getData();
         const userId = socket.userId;
-        (0, console_1.log)("data");
-        (0, console_1.log)(socketData);
         const groupId = (socket.handshake.headers.groupid || socket.handshake.headers['groupid'] || socket.handshake.headers['groupId']).toString();
         if (!userId || !groupId)
             return false;

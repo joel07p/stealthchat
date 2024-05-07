@@ -4,7 +4,8 @@ import { Room } from './room.entity';
 import { Repository } from 'typeorm';
 import { Group } from '../group/group.entity';
 import { Permission } from '../permission/permission.entity';
-import { CreateRoom, RenameRoom } from './types';
+import { CreateRoom, GetRooms, RenameRoom } from './types';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class RoomService {
@@ -13,8 +14,27 @@ export class RoomService {
     constructor(
         @InjectRepository(Room) private readonly roomRepository: Repository<Room>,
         @InjectRepository(Group) private readonly groupRepository: Repository<Group>,
-        @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>
+        @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>,
+        private readonly userService: UserService
     ) {}
+
+    async getRoom(roomId: string) {
+        return this.roomRepository.findOne({where: {id: roomId}, relations: ['permissions']})
+    }
+
+    async getRooms({groupId, userId}: GetRooms) {
+        this.logger.log(`Trying to fetch groups for group ${groupId}`)
+
+        const userPermission = await this.userService.getUserProperty(userId, "permission")
+
+        const rooms = await this.roomRepository.createQueryBuilder("room")
+            .leftJoin("room.permissions", "permission")
+            .where("room.group.id = :groupId", { groupId })
+            .andWhere("permission.name = :permission", { permission: userPermission })
+            .getMany();
+
+        return rooms
+    }
 
     async createRoom({name, permissions, groupId}: CreateRoom) {
         this.logger.log(`Trying to create room with name: ${name}`)
@@ -43,6 +63,7 @@ export class RoomService {
         this.logger.log(`Trying to delet room with id: ${roomId}`)
 
         const roomToDelete = await this.roomRepository.findOne({where: {id: roomId}})
+        if(!roomToDelete) throw new NotFoundException(`Room with id ${roomId} not found`)
 
         return await this.roomRepository.delete(roomToDelete)
     }
@@ -71,7 +92,7 @@ export class RoomService {
     private async saveRoomToGroup(groupId: string, room: Room) {
         const group = await this.groupRepository.findOne({where: {id: groupId}})
 
-        if(!group) return
+        if(!group) throw new NotFoundException(`Group ${groupId} not found`)
         room.group = group
 
         await this.roomRepository.save(room)

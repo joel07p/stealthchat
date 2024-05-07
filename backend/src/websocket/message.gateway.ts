@@ -7,16 +7,16 @@ import { AddMessageDTO } from "src/modules/message";
 import { MessageService } from "src/modules/message/message.service";
 import { addSocket, sendDataToSockets } from "src/utils/helpers/message-gateway";
 import { SocketWithAuth } from "./types";
+import { UserPermissionGuard } from "src/common/guards/user-permission.guard";
 
 @WebSocketGateway({
     namespace: "messages"
 })
 export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     private readonly logger = new Logger(MessageGateway.name)
-    
-    @WebSocketServer() io: Namespace
-    
     private roomToSocketsMap: Map<string, Set<string>> = new Map<string, Set<string>>
+
+    @WebSocketServer() io: Namespace
 
     constructor(
         private readonly messageService: MessageService,
@@ -55,13 +55,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this.io.emit("test", {hello: "sui"})
     }
 
-    /*
-    @SubscribeMessage("test")
-    test(@ConnectedSocket() client: Socket, @MessageBody("roomId") roomId: string) {
-        sendDataToSockets(this.io, this.roomToSocketsMap, roomId, {test: "test"}, "add_message_update")
-    }*/
-
-    @UseGuards(AgainstViewerGuard)
+    @UseGuards(AgainstViewerGuard, UserPermissionGuard)
     @SubscribeMessage("add_message")
     async addMessage(@MessageBody() data: AddMessageDTO) {
         const message = await this.messageService.addMessage(data)
