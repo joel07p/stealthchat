@@ -6,8 +6,8 @@ import { SocketWithAuth } from "./types";
 export declare class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     private readonly messageService;
     private readonly logger;
-    io: Namespace;
     private roomToSocketsMap;
+    io: Namespace;
     constructor(messageService: MessageService);
     afterInit(): void;
     handleConnection(client: Socket, ...args: any[]): void;

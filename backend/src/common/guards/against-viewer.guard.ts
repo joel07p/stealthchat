@@ -1,4 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable, Logger } from "@nestjs/common";
+import { log } from "console";
 import { GroupService } from "src/modules/group/group.service";
 import { SocketWithAuth } from "src/websocket";
 
@@ -17,6 +18,8 @@ export class AgainstViewerGuard implements CanActivate {
         const userId = socket.userId
         const groupId = (socket.handshake.headers.groupid || socket.handshake.headers['groupid'] || socket.handshake.headers['groupId']).toString()
         
+        console.log(userId)
+        log(groupId)
         if(!userId || !groupId) return false
 
         const role = await this.groupService.getUserRole(userId, groupId)

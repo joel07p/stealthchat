@@ -33,16 +33,11 @@ let MessageGateway = MessageGateway_1 = class MessageGateway {
     }
     handleConnection(client, ...args) {
         this.roomToSocketsMap = (0, message_gateway_1.addSocket)(client, this.roomToSocketsMap);
-        const sockets = this.io.sockets;
-        this.logger.debug(`Socket connected ${client}"`);
-        this.logger.log(`WS Client with id: ${client.id} connected!`);
-        this.logger.debug(`Number of connected sockets: ${sockets.size}`);
-        this.io.emit('Hello from', client.id);
+        (0, message_gateway_1.logConnectionChange)(this.io, client, this.logger);
     }
     handleDisconnect(client) {
-        const sockets = this.io.sockets;
-        this.logger.log(`Disconnected socket id: ${client.id}`);
-        this.logger.debug(`Number of connected sockets: ${sockets.size}`);
+        this.roomToSocketsMap = (0, message_gateway_1.removeSocket)(client, this.roomToSocketsMap);
+        (0, message_gateway_1.logConnectionChange)(this.io, client, this.logger);
     }
     test(client) {
         (0, console_1.log)(client.userId);
@@ -69,7 +64,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MessageGateway.prototype, "test", null);
 __decorate([
-    (0, common_1.UseGuards)(guards_1.AgainstViewerGuard),
+    (0, common_1.UseGuards)(guards_1.AgainstViewerGuard, guards_1.UserPermissionGuard),
     (0, websockets_1.SubscribeMessage)("add_message"),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),

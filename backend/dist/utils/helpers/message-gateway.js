@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendDataToSockets = exports.addSocket = void 0;
+exports.sendDataToSockets = exports.logConnectionChange = exports.removeSocket = exports.addSocket = void 0;
 const console_1 = require("console");
 const addSocket = (client, roomToSocketsMap) => {
     const roomId = client.handshake.query.roomId?.toString();
@@ -15,6 +15,21 @@ const addSocket = (client, roomToSocketsMap) => {
     return roomToSocketsMap;
 };
 exports.addSocket = addSocket;
+const removeSocket = (client, roomToSocketsMap) => {
+    const roomId = client.handshake.query.roomId?.toString();
+    if (!roomId)
+        return roomToSocketsMap;
+    roomToSocketsMap.get(roomId).delete(client.id);
+    (0, console_1.log)(roomToSocketsMap);
+    return roomToSocketsMap;
+};
+exports.removeSocket = removeSocket;
+const logConnectionChange = (io, client, logger) => {
+    logger.debug(`Socket connected ${client}"`);
+    logger.log(`WS Client with id: ${client.id} connected!`);
+    logger.debug(`Number of connected sockets: ${io.sockets.size}`);
+};
+exports.logConnectionChange = logConnectionChange;
 const sendDataToSockets = (io, roomToSocketsMap, roomId, data, eventName) => {
     const targetSockets = roomToSocketsMap.get(roomId);
     (0, console_1.log)(targetSockets);

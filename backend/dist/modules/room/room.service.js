@@ -21,6 +21,7 @@ const typeorm_2 = require("typeorm");
 const group_entity_1 = require("../group/group.entity");
 const permission_entity_1 = require("../permission/permission.entity");
 const user_service_1 = require("../user/user.service");
+const console_1 = require("console");
 let RoomService = RoomService_1 = class RoomService {
     constructor(roomRepository, groupRepository, permissionRepository, userService) {
         this.roomRepository = roomRepository;
@@ -29,22 +30,25 @@ let RoomService = RoomService_1 = class RoomService {
         this.userService = userService;
         this.logger = new common_1.Logger(RoomService_1.name);
     }
+    async getRoom(roomId) {
+        return this.roomRepository.findOne({ where: { id: roomId }, relations: ['permissions'] });
+    }
     async getRooms({ groupId, userId }) {
-        const user = await this.userService.getUserProperty(userId, null);
-        const rooms = await this.roomRepository.find({
-            where: {
-                group: {
-                    id: groupId
-                },
-            }
-        });
+        this.logger.log(`Trying to fetch groups for group ${groupId}`);
+        const userPermission = await this.userService.getUserProperty(userId, "permission");
+        const rooms = await this.roomRepository.createQueryBuilder("room")
+            .leftJoin("room.permissions", "permission")
+            .where("room.group.id = :groupId", { groupId })
+            .andWhere("permission.name = :permission", { permission: userPermission })
+            .getMany();
+        return rooms;
     }
     async createRoom({ name, permissions, groupId }) {
         this.logger.log(`Trying to create room with name: ${name}`);
         const roomInstance = new room_entity_1.Room(name);
         const room = await this.roomRepository.save(roomInstance);
-        this.setPermissionsToRoom(permissions, roomInstance);
-        this.saveRoomToGroup(groupId, roomInstance);
+        await this.setPermissionsToRoom(permissions, roomInstance);
+        await this.saveRoomToGroup(groupId, roomInstance);
         return room;
     }
     async renameRoom({ roomId, newName }) {
@@ -58,17 +62,33 @@ let RoomService = RoomService_1 = class RoomService {
     async deleteRoom(roomId) {
         this.logger.log(`Trying to delet room with id: ${roomId}`);
         const roomToDelete = await this.roomRepository.findOne({ where: { id: roomId } });
+        if (!roomToDelete)
+            throw new common_1.NotFoundException(`Room with id ${roomId} not found`);
         return await this.roomRepository.delete(roomToDelete);
     }
-    setPermissionsToRoom(permissionNames, room) {
+    async setPermissionsToRoom(permissionNames, room) {
         this.logger.log("Trying to create permissions");
-        permissionNames.forEach(async (permissionName) => {
+        for (const permissionName of permissionNames) {
             if (!await this.checkIfPermissionsExist(permissionName)) {
+                this.logger.log(`Creating permission ${permissionName}`);
                 const permission = new permission_entity_1.Permission(permissionName);
-                permission.room = room;
-                await this.permissionRepository.save(permission);
+                const permissionFetched = await this.permissionRepository.save(permission);
+                const fetchedRoom = await this.roomRepository.findOne({ where: { id: room.id }, relations: ['permissions'] });
+                fetchedRoom.permissions.push(permissionFetched);
+                await this.permissionRepository.save(permissionFetched);
+                await this.roomRepository.save(fetchedRoom);
             }
-        });
+            else {
+                const roomFetched = await this.roomRepository.findOne({ where: { id: room.id }, relations: ['permissions'] });
+                const permission = await this.permissionRepository.findOne({ where: { name: permissionName } });
+                (0, console_1.log)(roomFetched);
+                if (permission) {
+                    roomFetched.permissions.push(permission);
+                    await this.permissionRepository.save(permission);
+                    await this.roomRepository.save(roomFetched);
+                }
+            }
+        }
     }
     async checkIfPermissionsExist(permissionName) {
         this.logger.log("Check if permission exists");
@@ -81,7 +101,7 @@ let RoomService = RoomService_1 = class RoomService {
     async saveRoomToGroup(groupId, room) {
         const group = await this.groupRepository.findOne({ where: { id: groupId } });
         if (!group)
-            return;
+            throw new common_1.NotFoundException(`Group ${groupId} not found`);
         room.group = group;
         await this.roomRepository.save(room);
     }

@@ -11,7 +11,7 @@ export declare class GroupController {
         users: number;
         rooms: number;
     }[]>;
-    createGroup(user: any, data: CreateGroupDTO): Promise<{
+    createGroup(userId: string, data: CreateGroupDTO): Promise<{
         id: string;
         name: string;
         type: string;

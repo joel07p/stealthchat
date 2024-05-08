@@ -1,9 +1,9 @@
 import { IsString, IsUUID, Length } from "class-validator";
 import { randomUUID } from "crypto";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Group } from "../group/group.entity";
 import { Message } from "../message/message.entity";
 import { Permission } from "../permission/permission.entity";
-import { Group } from "../group/group.entity";
 
 @Entity({ name: "rooms" })
 export class Room {
@@ -24,7 +24,8 @@ export class Room {
     @OneToMany(() => Message, (message) => message.room, { cascade: true })
     messages: Array<Message>    
 
-    @OneToMany(() => Permission, (permission) => permission.room)
+    @ManyToMany(() => Permission, { cascade: true })
+    @JoinTable()
     permissions: Array<Permission>
 
     @ManyToOne(() => Group, (group) => group.rooms)

@@ -11,6 +11,7 @@ import { ChangeEvent, useState } from "react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
+import { log } from "console"
 
 type CreateGroupProps = {
     onCreateGroup: (name: string, description: string, users: Array<string>) => void
@@ -23,11 +24,18 @@ export const CreateGroupDialog = ({ onCreateGroup }: CreateGroupProps) => {
     const [users, setUsers] = useState<Array<string>>([])
     
     const handleAddUser = () => {
-        setUsers([...users, user])
-        setUser("")
+        console.log([...users, user])
+        const thisUsers = [...users, user]
+        
+        console.log(thisUsers)
+        setUsers(thisUsers)
+        console.log(thisUsers)
+        
+        console.log(users)
     }
 
     const handleChangeUser = (event: ChangeEvent<HTMLInputElement>) => {
+        console.log(event.target.value)
         setUser(event.target.value)
     }
 
@@ -40,6 +48,7 @@ export const CreateGroupDialog = ({ onCreateGroup }: CreateGroupProps) => {
     }
 
     const handleCreateGroup = () => {
+        console.log(users)
         onCreateGroup(name, description, users)
         setName("")
         setDescription("")

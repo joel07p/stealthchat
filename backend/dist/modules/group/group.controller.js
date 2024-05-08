@@ -24,8 +24,8 @@ let GroupController = class GroupController {
     getGroups(user) {
         return this.groupService.getGroups(user);
     }
-    createGroup(user, data) {
-        return this.groupService.createGroup(user, data);
+    createGroup(userId, data) {
+        return this.groupService.createGroup(userId, data);
     }
     joinGroup(userId, data) {
         return this.groupService.joinGroup(userId, data);
@@ -44,10 +44,10 @@ __decorate([
 ], GroupController.prototype, "getGroups", null);
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, decorators_1.User)()),
+    __param(0, (0, decorators_1.User)('sub')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, group_dto_1.CreateGroupDTO]),
+    __metadata("design:paramtypes", [String, group_dto_1.CreateGroupDTO]),
     __metadata("design:returntype", void 0)
 ], GroupController.prototype, "createGroup", null);
 __decorate([

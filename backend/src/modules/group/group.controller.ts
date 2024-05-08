@@ -15,8 +15,8 @@ export class GroupController {
     }
 
     @Post()
-    createGroup(@User() user: any, @Body() data: CreateGroupDTO) {
-        return this.groupService.createGroup(user, data)
+    createGroup(@User('sub') userId: string, @Body() data: CreateGroupDTO) {
+        return this.groupService.createGroup(userId, data)
     }
 
     @Post("join")

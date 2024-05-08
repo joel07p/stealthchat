@@ -9,13 +9,17 @@ import { MessageService } from "src/modules/message/message.service";
 import { User } from "src/modules/user/user.entity";
 import { MessageGateway } from "./message.gateway";
 import { Room } from "src/modules/room/room.entity";
+import { UserService } from "src/modules/user/user.service";
+import { Authentication } from "src/auth/authentication.entity";
+import { RoomService } from "src/modules/room/room.service";
+import { Permission } from "src/modules/permission/permission.entity";
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Message, User, Group, UserOnGroups, Room]),
+        TypeOrmModule.forFeature([Message, User, Group, UserOnGroups, Room, Authentication, Permission]),
         GroupModule
     ],
-    providers: [MessageGateway, MessageService, JwtService],
+    providers: [MessageGateway, MessageService, JwtService, UserService, RoomService],
     exports: []
 })
 export class WebSocketModule {}

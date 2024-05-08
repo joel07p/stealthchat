@@ -23,6 +23,7 @@ export class MessageService {
         await this.addMessageToRoom(roomId, savedMessage)
 
         this.logger.log("Message created")
+        
         return savedMessage
     }
 

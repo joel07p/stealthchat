@@ -22,15 +22,18 @@ const user_entity_1 = require("../user/user.entity");
 const group_type_enum_1 = require("./group-type.enum");
 const group_entity_1 = require("./group.entity");
 const user_on_group_entity_1 = require("./user-on-group.entity");
+const user_service_1 = require("../user/user.service");
+const console_1 = require("console");
 let GroupService = class GroupService {
-    constructor(groupRepository, userRepository, userOnGroupsRepository, authenticationRepository) {
+    constructor(groupRepository, userRepository, userOnGroupsRepository, authenticationRepository, userService) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
         this.userOnGroupsRepository = userOnGroupsRepository;
         this.authenticationRepository = authenticationRepository;
+        this.userService = userService;
     }
     async getGroups(user) {
-        const thisUser = await this.getUser(user.sub);
+        const thisUser = await this.userService.getUserProperty(user.sub, null);
         const groups = await this.groupRepository
             .createQueryBuilder('group')
             .innerJoinAndSelect(user_on_group_entity_1.UserOnGroups, 'userOnGroups', 'userOnGroups.groupId = group.id')
@@ -58,9 +61,10 @@ let GroupService = class GroupService {
         }));
         return transformedGroups;
     }
-    async createGroup(user, data) {
-        const thisUser = await this.userRepository.findOne({ where: { id: user.sub }, relations: ['authentication'] });
+    async createGroup(userId, data) {
+        const thisUser = await this.userRepository.findOne({ where: { id: userId }, relations: ['authentication'] });
         const { name, description, users } = data;
+        (0, console_1.log)(users);
         if (thisUser)
             users.push(thisUser.authentication.getIdentityCode());
         const type = users.length < 3 ? group_type_enum_1.GroupType.SINGLE : group_type_enum_1.GroupType.MULTI;
@@ -159,7 +163,7 @@ let GroupService = class GroupService {
         return await this.userOnGroupsRepository.remove(userOnGroup);
     }
     async getUserRole(userId, groupId) {
-        const { role } = await this.userOnGroupsRepository.findOne({
+        const userOnGroup = await this.userOnGroupsRepository.findOne({
             where: {
                 group: {
                     id: groupId
@@ -169,7 +173,8 @@ let GroupService = class GroupService {
                 }
             }
         });
-        return role;
+        (0, console_1.log)(userOnGroup);
+        return userOnGroup.role;
     }
     async getUser(userId) {
         return await this.userRepository.findOne({
@@ -198,6 +203,7 @@ exports.GroupService = GroupService = __decorate([
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        user_service_1.UserService])
 ], GroupService);
 //# sourceMappingURL=group.service.js.map

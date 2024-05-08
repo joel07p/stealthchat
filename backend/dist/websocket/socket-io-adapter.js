@@ -5,6 +5,7 @@ const common_1 = require("@nestjs/common");
 const platform_socket_io_1 = require("@nestjs/platform-socket.io");
 const auth_service_1 = require("../auth/auth.service");
 const console_1 = require("console");
+const room_service_1 = require("../modules/room/room.service");
 class SocketIOAdapter extends platform_socket_io_1.IoAdapter {
     constructor(app, configService) {
         super(app);
@@ -27,8 +28,9 @@ class SocketIOAdapter extends platform_socket_io_1.IoAdapter {
             cors,
         };
         const authService = this.app.get(auth_service_1.AuthService);
+        const roomService = this.app.get(room_service_1.RoomService);
         const server = super.createIOServer(port, optionsWithCORS);
-        server.of('messages').use(createTokenMiddleware(authService, this.logger));
+        server.of('messages').use(createTokenMiddleware(authService, this.logger)).use(createSocketValidationMiddleware(roomService, this.logger));
         return server;
     }
 }
@@ -51,5 +53,15 @@ const createTokenMiddleware = (authService, logger) => async (socket, next) => {
     catch {
         next(new Error('FORBIDDEN'));
     }
+};
+const createEncryptionMiddleware = () => { };
+const createSocketValidationMiddleware = (roomService, logger) => async (client, next) => {
+    logger.log(`Trying to validate client ${client.id}`);
+    const roomId = client.handshake.query.roomId.toString();
+    const room = await roomService.getRoom(roomId);
+    (0, console_1.log)(room);
+    if (room === null)
+        next(new Error('FORBIDDEN'));
+    next();
 };
 //# sourceMappingURL=socket-io-adapter.js.map

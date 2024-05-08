@@ -8,6 +8,8 @@ import { GroupType } from './group-type.enum';
 import { CreateGroupDTO, JoinGroupDTO, LeaveGroupDTO } from './group.dto';
 import { Group } from './group.entity';
 import { UserOnGroups } from './user-on-group.entity';
+import { UserService } from '../user/user.service';
+import { log } from 'console';
 
 @Injectable()
 export class GroupService {
@@ -15,11 +17,12 @@ export class GroupService {
         @InjectRepository(Group) private groupRepository: Repository<Group>,
         @InjectRepository(User) private userRepository: Repository<User>,
         @InjectRepository(UserOnGroups) private userOnGroupsRepository: Repository<UserOnGroups>,
-        @InjectRepository(Authentication) private authenticationRepository: Repository<Authentication>
+        @InjectRepository(Authentication) private authenticationRepository: Repository<Authentication>,
+        private readonly userService: UserService
     ) {}
 
     async getGroups(user: any) {
-        const thisUser = await this.getUser(user.sub)
+        const thisUser = await this.userService.getUserProperty(user.sub, null)
 
         const groups = await this.groupRepository
             .createQueryBuilder('group')
@@ -52,10 +55,11 @@ export class GroupService {
         return transformedGroups
     }
     //make save to bad data
-    async createGroup(user: any, data: CreateGroupDTO) {
-        const thisUser = await this.userRepository.findOne({ where: {id: user.sub}, relations: ['authentication'] })
+    async createGroup(userId: string, data: CreateGroupDTO) {
+        const thisUser = await this.userRepository.findOne({ where: {id: userId}, relations: ['authentication'] })
 
         const { name, description, users } = data
+        log(users)
 
         if(thisUser) users.push(thisUser.authentication.getIdentityCode())
 
@@ -171,7 +175,7 @@ export class GroupService {
     }
 
     async getUserRole(userId: string, groupId: string) {
-        const { role } = await this.userOnGroupsRepository.findOne({
+        const userOnGroup = await this.userOnGroupsRepository.findOne({
             where: {
                 group: {
                     id: groupId
@@ -181,8 +185,9 @@ export class GroupService {
                 }
             }
         })
+        log(userOnGroup)
 
-        return role
+        return userOnGroup.role
     }
 
     private async getUser(userId: string) {

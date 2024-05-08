@@ -13,9 +13,9 @@ exports.Room = void 0;
 const class_validator_1 = require("class-validator");
 const crypto_1 = require("crypto");
 const typeorm_1 = require("typeorm");
+const group_entity_1 = require("../group/group.entity");
 const message_entity_1 = require("../message/message.entity");
 const permission_entity_1 = require("../permission/permission.entity");
-const group_entity_1 = require("../group/group.entity");
 let Room = class Room {
     constructor(name) {
         this.id = (0, crypto_1.randomUUID)();
@@ -39,7 +39,8 @@ __decorate([
     __metadata("design:type", Array)
 ], Room.prototype, "messages", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => permission_entity_1.Permission, (permission) => permission.room),
+    (0, typeorm_1.ManyToMany)(() => permission_entity_1.Permission, { cascade: true }),
+    (0, typeorm_1.JoinTable)(),
     __metadata("design:type", Array)
 ], Room.prototype, "permissions", void 0);
 __decorate([

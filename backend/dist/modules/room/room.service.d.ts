@@ -11,7 +11,8 @@ export declare class RoomService {
     private readonly userService;
     private logger;
     constructor(roomRepository: Repository<Room>, groupRepository: Repository<Group>, permissionRepository: Repository<Permission>, userService: UserService);
-    getRooms({ groupId, userId }: GetRooms): Promise<void>;
+    getRoom(roomId: string): Promise<Room>;
+    getRooms({ groupId, userId }: GetRooms): Promise<Room[]>;
     createRoom({ name, permissions, groupId }: CreateRoom): Promise<Room>;
     renameRoom({ roomId, newName }: RenameRoom): Promise<Room>;
     deleteRoom(roomId: string): Promise<import("typeorm").DeleteResult>;

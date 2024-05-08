@@ -6,6 +6,7 @@ import { Group } from '../group/group.entity';
 import { Permission } from '../permission/permission.entity';
 import { CreateRoom, GetRooms, RenameRoom } from './types';
 import { UserService } from '../user/user.service';
+import { log } from 'console';
 
 @Injectable()
 export class RoomService {
@@ -42,8 +43,8 @@ export class RoomService {
         const roomInstance = new Room(name)
         const room = await this.roomRepository.save(roomInstance)
 
-        this.setPermissionsToRoom(permissions, roomInstance)
-        this.saveRoomToGroup(groupId, roomInstance)
+        await this.setPermissionsToRoom(permissions, roomInstance)
+        await this.saveRoomToGroup(groupId, roomInstance)
 
         return room
     }
@@ -68,16 +69,32 @@ export class RoomService {
         return await this.roomRepository.delete(roomToDelete)
     }
 
-    private setPermissionsToRoom(permissionNames: Array<string>, room: Room) {
+    private async setPermissionsToRoom(permissionNames: Array<string>, room: Room) {
         this.logger.log("Trying to create permissions")
 
-        permissionNames.forEach(async (permissionName: string) => {
+        for(const permissionName of permissionNames) {
             if(!await this.checkIfPermissionsExist(permissionName)) {
+                this.logger.log(`Creating permission ${permissionName}`)
                 const permission = new Permission(permissionName)
-                permission.room = room
-                await this.permissionRepository.save(permission)    
+                const permissionFetched = await this.permissionRepository.save(permission)
+                const fetchedRoom = await this.roomRepository.findOne({where: {id: room.id}, relations: ['permissions']})
+                fetchedRoom.permissions.push(permissionFetched)
+                
+                await this.permissionRepository.save(permissionFetched)
+                await this.roomRepository.save(fetchedRoom)
+            } else {
+                const roomFetched = await this.roomRepository.findOne({where: {id: room.id}, relations: ['permissions']})
+                const permission = await this.permissionRepository.findOne({where: {name: permissionName}})
+                
+                log(roomFetched)
+
+                if (permission) {
+                    roomFetched.permissions.push(permission)
+                    await this.permissionRepository.save(permission)
+                    await this.roomRepository.save(roomFetched)
+                }
             }
-        })
+        }
     }
 
     private async checkIfPermissionsExist(permissionName: string) {

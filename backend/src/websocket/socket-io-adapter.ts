@@ -5,6 +5,7 @@ import { Server, ServerOptions } from "socket.io";
 import { AuthService } from "src/auth/auth.service";
 import { SocketWithAuth } from "./types";
 import { log } from "console";
+import { RoomService } from "src/modules/room/room.service";
 
 export class SocketIOAdapter extends IoAdapter {
     private readonly logger = new Logger(SocketIOAdapter.name)
@@ -36,9 +37,10 @@ export class SocketIOAdapter extends IoAdapter {
         };
     
         const authService = this.app.get(AuthService)
+        const roomService = this.app.get(RoomService)
         const server: Server = super.createIOServer(port, optionsWithCORS)
 
-        server.of('messages').use(createTokenMiddleware(authService, this.logger))
+        server.of('messages').use(createTokenMiddleware(authService, this.logger)).use(createSocketValidationMiddleware(roomService, this.logger))
 
         return server
       }
@@ -66,3 +68,18 @@ const createTokenMiddleware =
       next(new Error('FORBIDDEN'));
     }
   };
+
+const createEncryptionMiddleware = () => {}
+
+const createSocketValidationMiddleware =
+  (roomService: RoomService, logger: Logger) =>
+  async (client: SocketWithAuth, next) => {
+    logger.log(`Trying to validate client ${client.id}`)
+
+    const roomId = client.handshake.query.roomId.toString()
+
+    const room = await roomService.getRoom(roomId)
+    log(room)
+    if(room === null) next(new Error('FORBIDDEN'))
+    next()
+  }  
