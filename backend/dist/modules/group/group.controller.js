@@ -21,6 +21,9 @@ let GroupController = class GroupController {
     constructor(groupService) {
         this.groupService = groupService;
     }
+    getGroup(groupId) {
+        return this.groupService.getGroup(groupId, []);
+    }
     getGroups(user) {
         return this.groupService.getGroups(user);
     }
@@ -35,6 +38,13 @@ let GroupController = class GroupController {
     }
 };
 exports.GroupController = GroupController;
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], GroupController.prototype, "getGroup", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, decorators_1.User)()),

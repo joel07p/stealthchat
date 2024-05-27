@@ -20,7 +20,6 @@ const removeSocket = (client, roomToSocketsMap) => {
     if (!roomId)
         return roomToSocketsMap;
     roomToSocketsMap.get(roomId).delete(client.id);
-    (0, console_1.log)(roomToSocketsMap);
     return roomToSocketsMap;
 };
 exports.removeSocket = removeSocket;
@@ -32,7 +31,7 @@ const logConnectionChange = (io, client, logger) => {
 exports.logConnectionChange = logConnectionChange;
 const sendDataToSockets = (io, roomToSocketsMap, roomId, data, eventName) => {
     const targetSockets = roomToSocketsMap.get(roomId);
-    (0, console_1.log)(targetSockets);
+    (0, console_1.log)("target socket" + targetSockets);
     targetSockets.forEach((socket) => {
         (0, console_1.log)(data);
         io.to(socket).emit(eventName, data);

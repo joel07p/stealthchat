@@ -1,12 +1,13 @@
-import { Logger, UseGuards } from "@nestjs/common";
+import { ConflictException, Logger, UseGuards } from "@nestjs/common";
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { log } from "console";
 import { Namespace, Socket } from "socket.io";
 import { AgainstViewerGuard, UserPermissionGuard } from "src/common/guards";
-import { AddMessageDTO } from "src/modules/message";
+import { AddMessageDTO, DeleteMessageDTO } from "src/modules/message";
 import { MessageService } from "src/modules/message/message.service";
 import { addSocket, logConnectionChange, removeSocket, sendDataToSockets } from "src/utils/helpers/message-gateway";
 import { SocketWithAuth } from "./types";
+import { MessageEvent } from "./message-event.enum";
 
 @WebSocketGateway({
     namespace: "messages"
@@ -25,7 +26,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         this.logger.log("Websocket Gateway initialized")
     }
 
-    handleConnection(client: Socket, ...args: any[]) {
+    handleConnection(client: Socket) {
         this.roomToSocketsMap = addSocket(client, this.roomToSocketsMap)
         
         logConnectionChange(this.io, client, this.logger)
@@ -46,11 +47,19 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
     @UseGuards(AgainstViewerGuard, UserPermissionGuard)
     @SubscribeMessage("add_message")
-    async addMessage(@MessageBody() data: AddMessageDTO) {
-        const message = await this.messageService.addMessage(data)
+    async addMessage(@MessageBody() data: AddMessageDTO,) {
+        const createdMessage = await this.messageService.addMessage(data)
+        if(!createdMessage) throw new ConflictException("Message might not be created")
 
-        if(message) {
-            sendDataToSockets(this.io, this.roomToSocketsMap, data.roomId, message, "add_message_update")
-        }
+        sendDataToSockets(this.io, this.roomToSocketsMap, data.roomId, createdMessage, MessageEvent.ADD_MESSAGE_UPDATE)
+    }
+
+    @UseGuards(AgainstViewerGuard, UserPermissionGuard)
+    @SubscribeMessage("delete_message")
+    async deleteMessage(@MessageBody() data: DeleteMessageDTO) {
+        const deletedMessage = await this.messageService.deleteMessage(data)
+        if(!deletedMessage) throw new ConflictException("Message might not be deleted")
+
+        sendDataToSockets(this.io, this.roomToSocketsMap, data.roomId, deletedMessage, MessageEvent.DELETE_MESSAGE_UPDATE)
     }
 }

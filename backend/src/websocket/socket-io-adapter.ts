@@ -51,7 +51,7 @@ const createTokenMiddleware =
   async (socket: SocketWithAuth, next) => {
     log(socket.handshake)
     const token =
-      socket.handshake.auth.authorization || socket.handshake.headers['authorization'];
+      socket.handshake.auth.authorization || socket.handshake.auth.Authorization || socket.handshake.headers['authorization'];
 
     logger.debug(`Validating auth token before connection: ${token}`);
 

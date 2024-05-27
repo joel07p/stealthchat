@@ -40,4 +40,6 @@ export declare class GroupService {
     getUserRole(userId: string, groupId: string): Promise<string>;
     private getUser;
     private generateJoinCode;
+    getGroup(groupId: string, relations: Array<string>): Promise<Group>;
+    private countRoomsInGroup;
 }

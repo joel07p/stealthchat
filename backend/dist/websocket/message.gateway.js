@@ -22,6 +22,7 @@ const guards_1 = require("../common/guards");
 const message_1 = require("../modules/message");
 const message_service_1 = require("../modules/message/message.service");
 const message_gateway_1 = require("../utils/helpers/message-gateway");
+const message_event_enum_1 = require("./message-event.enum");
 let MessageGateway = MessageGateway_1 = class MessageGateway {
     constructor(messageService) {
         this.messageService = messageService;
@@ -31,7 +32,7 @@ let MessageGateway = MessageGateway_1 = class MessageGateway {
     afterInit() {
         this.logger.log("Websocket Gateway initialized");
     }
-    handleConnection(client, ...args) {
+    handleConnection(client) {
         this.roomToSocketsMap = (0, message_gateway_1.addSocket)(client, this.roomToSocketsMap);
         (0, message_gateway_1.logConnectionChange)(this.io, client, this.logger);
     }
@@ -44,10 +45,16 @@ let MessageGateway = MessageGateway_1 = class MessageGateway {
         this.io.emit("test", { hello: "sui" });
     }
     async addMessage(data) {
-        const message = await this.messageService.addMessage(data);
-        if (message) {
-            (0, message_gateway_1.sendDataToSockets)(this.io, this.roomToSocketsMap, data.roomId, message, "add_message_update");
-        }
+        const createdMessage = await this.messageService.addMessage(data);
+        if (!createdMessage)
+            throw new common_1.ConflictException("Message might not be created");
+        (0, message_gateway_1.sendDataToSockets)(this.io, this.roomToSocketsMap, data.roomId, createdMessage, message_event_enum_1.MessageEvent.ADD_MESSAGE_UPDATE);
+    }
+    async deleteMessage(data) {
+        const deletedMessage = await this.messageService.deleteMessage(data);
+        if (!deletedMessage)
+            throw new common_1.ConflictException("Message might not be deleted");
+        (0, message_gateway_1.sendDataToSockets)(this.io, this.roomToSocketsMap, data.roomId, deletedMessage, message_event_enum_1.MessageEvent.DELETE_MESSAGE_UPDATE);
     }
 };
 exports.MessageGateway = MessageGateway;
@@ -71,6 +78,14 @@ __decorate([
     __metadata("design:paramtypes", [message_1.AddMessageDTO]),
     __metadata("design:returntype", Promise)
 ], MessageGateway.prototype, "addMessage", null);
+__decorate([
+    (0, common_1.UseGuards)(guards_1.AgainstViewerGuard, guards_1.UserPermissionGuard),
+    (0, websockets_1.SubscribeMessage)("delete_message"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [message_1.DeleteMessageDTO]),
+    __metadata("design:returntype", Promise)
+], MessageGateway.prototype, "deleteMessage", null);
 exports.MessageGateway = MessageGateway = MessageGateway_1 = __decorate([
     (0, websockets_1.WebSocketGateway)({
         namespace: "messages"

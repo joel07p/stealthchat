@@ -11,7 +11,6 @@ import { ChangeEvent, useState } from "react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import { log } from "console"
 
 type CreateGroupProps = {
     onCreateGroup: (name: string, description: string, users: Array<string>) => void

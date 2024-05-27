@@ -4,3 +4,7 @@ export declare class AddMessageDTO {
     roomId: string;
     attachment: any;
 }
+export declare class DeleteMessageDTO {
+    messageId: string;
+    roomId: string;
+}

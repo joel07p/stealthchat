@@ -15,15 +15,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageController = void 0;
 const common_1 = require("@nestjs/common");
 const message_service_1 = require("./message.service");
+const decorators_1 = require("../../common/decorators");
 let MessageController = class MessageController {
     constructor(messageService) {
         this.messageService = messageService;
+    }
+    getMessages(userId, roomId) {
+        return this.messageService.getMessages(userId, roomId);
     }
     addMessage(message) {
         return this.messageService.addMessage(message);
     }
 };
 exports.MessageController = MessageController;
+__decorate([
+    (0, common_1.Get)(':roomId'),
+    __param(0, (0, decorators_1.User)('sub')),
+    __param(1, (0, common_1.Param)('roomId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], MessageController.prototype, "getMessages", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),

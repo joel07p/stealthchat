@@ -14,9 +14,10 @@ export class AgainstViewerGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         this.logger.log("Try to active against viewer guard")
         const socket: SocketWithAuth = context.switchToWs().getClient()
-        
+        log(socket.handshake)
         const userId = socket.userId
-        const groupId = (socket.handshake.headers.groupid || socket.handshake.headers['groupid'] || socket.handshake.headers['groupId']).toString()
+        const groupId = socket.handshake.query.groupId?.toString()
+        //const groupId = (socket.handshake.headers.groupid || socket.handshake.headers['groupid'] || socket.handshake.headers['groupId']).toString()
         
         console.log(userId)
         log(groupId)

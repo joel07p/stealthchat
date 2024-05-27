@@ -38,7 +38,7 @@ export const logConnectionChange = (io: Namespace, client: SocketWithAuth, logge
 
 export const sendDataToSockets = (io: Namespace, roomToSocketsMap: Map<string, Set<string>>, roomId: string, data: any, eventName: string) => {
     const targetSockets = roomToSocketsMap.get(roomId)
-    log(targetSockets)
+    log("target socket" + targetSockets)
     targetSockets.forEach((socket: string) => {
         log(data)
         io.to(socket).emit(eventName, data)

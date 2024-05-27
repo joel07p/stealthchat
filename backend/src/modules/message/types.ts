@@ -4,3 +4,8 @@ export type AddMessage = {
     roomId: string
     attachment: any
 }
+
+export type DeleteMessage = {
+    messageId: string
+    roomId: string
+}

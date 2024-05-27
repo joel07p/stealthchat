@@ -14,3 +14,8 @@ export class AddMessageDTO {
 
     attachment: any
 }
+
+export class DeleteMessageDTO {
+    messageId: string
+    roomId: string
+}

@@ -41,14 +41,20 @@ export class GroupService {
                     }
                 }
             })
-    
+            console.log({
+                id: group.id,
+                name: group.name,
+                type: group.type,
+                users: 0,
+                rooms: await this.countRoomsInGroup(group.id)
+            })
             return {
                 id: group.id,
                 name: group.name,
                 type: group.type,
                 role: thisUserOnGroup ? thisUserOnGroup.role : null,
                 users: 0,//group.userOnGroups.length,
-                rooms: 0//group.userOnGroups.length,
+                rooms: await this.countRoomsInGroup(group.id)//group.userOnGroups.length,
             };
         }))
 
@@ -59,7 +65,6 @@ export class GroupService {
         const thisUser = await this.userRepository.findOne({ where: {id: userId}, relations: ['authentication'] })
 
         const { name, description, users } = data
-        log(users)
 
         if(thisUser) users.push(thisUser.authentication.getIdentityCode())
 
@@ -110,7 +115,7 @@ export class GroupService {
             type: group.type,
             role: thisUserOnGroup.role,
             users: 0,
-            rooms: 0
+            rooms: await this.countRoomsInGroup(group.id)
         }
     }
 
@@ -135,13 +140,21 @@ export class GroupService {
 
         await this.userOnGroupsRepository.save(userOnGroup)
 
+        console.log({
+            id: group.id,
+            name: group.name,
+            type: group.type,
+            role: userOnGroup.role,
+            users: 0,
+            rooms: await this.countRoomsInGroup(group.id)
+        })
         return {
             id: group.id,
             name: group.name,
             type: group.type,
             role: userOnGroup.role,
             users: 0,
-            rooms: 0
+            rooms: await this.countRoomsInGroup(group.id)
         }
     }
 
@@ -206,5 +219,17 @@ export class GroupService {
             result += characters.charAt(Math.floor(Math.random() * charactersLength))
         }
         return result
+    }
+
+    async getGroup(groupId: string, relations: Array<string>) {
+        return await this.groupRepository.findOne({where: {id: groupId}, relations})
+    }
+
+    private async countRoomsInGroup(groupId: string) {
+        const group = await this.getGroup(groupId, ["rooms"])
+
+        if(!group) throw new NotFoundException(`No such group ${groupId}`)
+        log(group.rooms.length)
+        return group.rooms.length.valueOf()
     }
 }

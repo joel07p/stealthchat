@@ -26,6 +26,10 @@ import { CreateGroupData, JoinGroupData } from "@/utils/types/group.types"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { AccountSheet } from "@/components/dialogs/account-sheet"
+import { createSocketWithHandlers } from "@/service/socket-io"
+import { group } from "console"
+import { useGroupStore } from "@/stores/group.store"
+import { useSocket } from "@/hooks/use-socket"
 
 export type Group = {
   id: string
@@ -67,7 +71,7 @@ export const HomePage = () =>  {
   })
 
   React.useEffect(() => {
-    fetchGroups();
+    fetchGroups()
   }, [])
 
   const handleLogout = () => {
@@ -80,9 +84,13 @@ export const HomePage = () =>  {
       if(groups) setGroups(groups)
         console.log(groups)
     } catch (error) {
-      console.error("Error fetching groups:", error);
+      console.error("Error fetching groups:", error)
     }
-  };
+  }
+
+  const handleNavigate = () => {
+    const groupId = useGroupStore()
+  }
 
   const handleCreateGroup = async (createGroupData: CreateGroupData) => {
     const group = await createGroup(createGroupData)
@@ -150,7 +158,7 @@ export const HomePage = () =>  {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    onClick={() => navigate("/group/1/chat/1")}
+                    onClick={() => navigate(`test/group/${row.original.id}/room/${undefined}`)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>

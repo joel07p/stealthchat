@@ -25,6 +25,17 @@ let MessageService = MessageService_1 = class MessageService {
         this.roomRepository = roomRepository;
         this.logger = new common_1.Logger(MessageService_1.name);
     }
+    async getMessage(roomId, relations) {
+        return await this.messageRepository.findOne({ where: { room: { id: roomId } }, relations });
+    }
+    async getMessages(userId, roomId) {
+        this.logger.log(`Trying to get messages for room ${roomId}`);
+        return await this.messageRepository.find({
+            where: { room: { id: roomId } },
+            relations: ['room'],
+            order: { sentAt: 'DESC' },
+        });
+    }
     async addMessage({ message, username, roomId }) {
         this.logger.log(`Trying to create message in room ${roomId}`);
         const messageInstance = new message_entity_1.Message(message, username, null);
@@ -32,6 +43,16 @@ let MessageService = MessageService_1 = class MessageService {
         await this.addMessageToRoom(roomId, savedMessage);
         this.logger.log("Message created");
         return savedMessage;
+    }
+    async deleteMessage({ messageId, roomId }) {
+        this.logger.log(`Trying to delete message with id ${roomId} in room ${roomId}`);
+        const message = await this.getMessage(messageId, ['room']);
+        if (message && (message.room.id === roomId)) {
+            return await this.messageRepository.delete(message);
+        }
+        else {
+            throw new common_1.NotFoundException(`Message ${messageId} not found`);
+        }
     }
     async addMessageToRoom(roomId, message) {
         this.logger.log(`Trying to save message in room ${roomId}`);

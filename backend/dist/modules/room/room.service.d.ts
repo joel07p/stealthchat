@@ -17,6 +17,7 @@ export declare class RoomService {
     renameRoom({ roomId, newName }: RenameRoom): Promise<Room>;
     deleteRoom(roomId: string): Promise<import("typeorm").DeleteResult>;
     private setPermissionsToRoom;
+    checkIfUserHasPermission(userId: string, room: Room): Promise<boolean>;
     private checkIfPermissionsExist;
     private saveRoomToGroup;
 }

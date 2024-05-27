@@ -13,8 +13,8 @@ exports.Message = void 0;
 const class_validator_1 = require("class-validator");
 const crypto_1 = require("crypto");
 const typeorm_1 = require("typeorm");
-const room_entity_1 = require("../room/room.entity");
 const attachment_entity_1 = require("../file/attachment.entity");
+const room_entity_1 = require("../room/room.entity");
 let Message = class Message {
     constructor(message, username, attachment) {
         this.id = (0, crypto_1.randomUUID)();

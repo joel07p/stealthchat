@@ -33,7 +33,7 @@ export class RoomService {
             .where("room.group.id = :groupId", { groupId })
             .andWhere("permission.name = :permission", { permission: userPermission })
             .getMany();
-
+            
         return rooms
     }
 
@@ -95,6 +95,21 @@ export class RoomService {
                 }
             }
         }
+    }
+
+    async checkIfUserHasPermission(userId: string, room: Room) {
+        const userPermission = await this.userService.getUserProperty(userId, "permission")
+        const roomWithPermissions = await this.roomRepository.findOne({where: {id: room.id}, relations: ['permissions']})
+        let hasPermission = false;
+        log(userPermission)
+        roomWithPermissions.permissions.forEach(permission => {
+            if(permission.name === userPermission) {
+                log("permission name: " + permission.name)
+                hasPermission = true
+            }
+        })
+
+        return hasPermission
     }
 
     private async checkIfPermissionsExist(permissionName: string) {

@@ -14,23 +14,39 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoomController = void 0;
 const common_1 = require("@nestjs/common");
-const room_service_1 = require("./room.service");
+const decorators_1 = require("../../common/decorators");
 const dtos_1 = require("./dtos");
+const room_service_1 = require("./room.service");
 let RoomController = class RoomController {
     constructor(roomService) {
         this.roomService = roomService;
     }
-    createRoom(data) {
-        return this.roomService.createRoom(data);
+    getRooms(userId, groupId) {
+        return this.roomService.getRooms({ groupId, userId });
+    }
+    async createRoom(userId, data) {
+        const room = await this.roomService.createRoom(data);
+        if (await this.roomService.checkIfUserHasPermission(userId, room)) {
+            return room;
+        }
     }
 };
 exports.RoomController = RoomController;
 __decorate([
-    (0, common_1.Post)('/create'),
-    __param(0, (0, common_1.Body)()),
+    (0, common_1.Get)(':groupId'),
+    __param(0, (0, decorators_1.User)("sub")),
+    __param(1, (0, common_1.Param)('groupId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dtos_1.CreateRoomDTO]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
+], RoomController.prototype, "getRooms", null);
+__decorate([
+    (0, common_1.Post)('/create'),
+    __param(0, (0, decorators_1.User)("sub")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, dtos_1.CreateRoomDTO]),
+    __metadata("design:returntype", Promise)
 ], RoomController.prototype, "createRoom", null);
 exports.RoomController = RoomController = __decorate([
     (0, common_1.Controller)('room'),

@@ -22,8 +22,9 @@ let AgainstViewerGuard = AgainstViewerGuard_1 = class AgainstViewerGuard {
     async canActivate(context) {
         this.logger.log("Try to active against viewer guard");
         const socket = context.switchToWs().getClient();
+        (0, console_1.log)(socket.handshake);
         const userId = socket.userId;
-        const groupId = (socket.handshake.headers.groupid || socket.handshake.headers['groupid'] || socket.handshake.headers['groupId']).toString();
+        const groupId = socket.handshake.query.groupId?.toString();
         console.log(userId);
         (0, console_1.log)(groupId);
         if (!userId || !groupId)

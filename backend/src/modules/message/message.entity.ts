@@ -1,8 +1,8 @@
 import { IsString, IsUUID, Length } from "class-validator";
 import { randomUUID } from "crypto";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
-import { Room } from "../room/room.entity";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn } from "typeorm";
 import { Attachment } from "../file/attachment.entity";
+import { Room } from "../room/room.entity";
 
 @Entity({ name: "messages" })
 export class Message {

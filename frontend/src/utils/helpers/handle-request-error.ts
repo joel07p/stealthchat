@@ -8,7 +8,7 @@ export const handleRequestError = (error: unknown) => {
         toast(axiosError.name, {
             description: axiosError.message,
             action: {
-              label: "Undo",
+              label: "Error",
               onClick: () => console.log("Close"),
             },
           })

@@ -90,6 +90,19 @@ let RoomService = RoomService_1 = class RoomService {
             }
         }
     }
+    async checkIfUserHasPermission(userId, room) {
+        const userPermission = await this.userService.getUserProperty(userId, "permission");
+        const roomWithPermissions = await this.roomRepository.findOne({ where: { id: room.id }, relations: ['permissions'] });
+        let hasPermission = false;
+        (0, console_1.log)(userPermission);
+        roomWithPermissions.permissions.forEach(permission => {
+            if (permission.name === userPermission) {
+                (0, console_1.log)("permission name: " + permission.name);
+                hasPermission = true;
+            }
+        });
+        return hasPermission;
+    }
     async checkIfPermissionsExist(permissionName) {
         this.logger.log("Check if permission exists");
         const permission = await this.permissionRepository.findOne({ where: { name: permissionName } });

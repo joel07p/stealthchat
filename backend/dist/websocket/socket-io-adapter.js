@@ -37,7 +37,7 @@ class SocketIOAdapter extends platform_socket_io_1.IoAdapter {
 exports.SocketIOAdapter = SocketIOAdapter;
 const createTokenMiddleware = (authService, logger) => async (socket, next) => {
     (0, console_1.log)(socket.handshake);
-    const token = socket.handshake.auth.authorization || socket.handshake.headers['authorization'];
+    const token = socket.handshake.auth.authorization || socket.handshake.auth.Authorization || socket.handshake.headers['authorization'];
     logger.debug(`Validating auth token before connection: ${token}`);
     try {
         const userId = await authService.verifyToken(token);
