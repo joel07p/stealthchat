@@ -22,7 +22,6 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useGroupStore } from "@/stores/group.store"
 import { columns } from "@/utils/helpers/group-columns"
 import { CreateGroupData, JoinGroupData } from "@/utils/types/group.types"
 import { useNavigate } from "react-router-dom"
@@ -81,10 +80,6 @@ export const HomePage = () =>  {
     } catch (error) {
       console.error("Error fetching groups:", error)
     }
-  }
-
-  const handleNavigate = () => {
-    const groupId = useGroupStore()
   }
 
   const handleCreateGroup = async (createGroupData: CreateGroupData) => {
@@ -153,7 +148,7 @@ export const HomePage = () =>  {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    onClick={() => navigate(`test/group/${row.original.id}/room/${undefined}`)}
+                    onClick={() => navigate(`group/${row.original.id}/room/${undefined}`)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>

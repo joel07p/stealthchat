@@ -42,11 +42,11 @@ import { WebSocketModule } from './websocket/websocket.module';
     PermissionModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: "localhost", // process.env.HOST_DB
-      port: 3306,//parseInt(process.env.PORT_DB),
-      username: "root", //process.env.USERNAME_DB,
-      password: "", //process.env.PASSWORD_DB, 
-      database: "stealthchat_test_1" ,//'dev1',
+      host: process.env.HOST_DB,
+      port: parseInt(process.env.PORT_DB),
+      username: process.env.USERNAME_DB,
+      password: process.env.PASSWORD_DB, 
+      database: "dev2" ,//'dev1',
       entities: [User, Authentication, Group, UserOnGroups, Room, Message, Permission, Invitation],
       synchronize: true
     }),

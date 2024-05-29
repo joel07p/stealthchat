@@ -21,7 +21,6 @@ import {
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -81,7 +80,7 @@ export const ChatPage = () => {
     labels: ["meeting", "work", "important"],
   }
 
-  const handleAddMessage = (e: MouseEvent) => {
+  const handleAddMessage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     console.log("add message")
     addMessage({message: messageText, roomId, attachment: {}})
@@ -191,9 +190,6 @@ export const ChatPage = () => {
                       </span>
                     </Button>
                   </div>
-                </div>
-                <div className="p-2">
-                  <Calendar />
                 </div>
               </PopoverContent>
             </Popover>

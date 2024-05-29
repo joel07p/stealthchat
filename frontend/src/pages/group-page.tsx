@@ -19,7 +19,7 @@ export const GroupPage = () => {
   const { group } = useGroup(groupId)
   const defaultLayout = [400, 440, 655]
   const navCollapsedSize = 4
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, ] = useState(false)
 
   useEffect(() => {
     console.log(roomId)

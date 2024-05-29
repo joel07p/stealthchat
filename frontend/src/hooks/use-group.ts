@@ -3,11 +3,9 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 
 export const useGroup = (groupId: string | undefined) => {
-    const [groupID, setGroupID] = useState<string | undefined>()
     const [group, setGroup] = useState<Group>()
 
     useEffect(() => {
-        if(groupId) setGroupID(groupId)
         getGroup()
         
     }, [groupId])
