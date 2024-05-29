@@ -13,6 +13,6 @@ export declare class MessageGateway implements OnGatewayInit, OnGatewayConnectio
     handleConnection(client: Socket): void;
     handleDisconnect(client: Socket): void;
     test(client: SocketWithAuth): void;
-    addMessage(data: AddMessageDTO): Promise<void>;
+    addMessage(data: AddMessageDTO, client: SocketWithAuth): Promise<void>;
     deleteMessage(data: DeleteMessageDTO): Promise<void>;
 }

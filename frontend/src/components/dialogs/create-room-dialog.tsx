@@ -17,13 +17,13 @@ type CreateRoomProps = {
 }
 
 export const CreateRoomDialog = ({ onCreateRoom }: CreateRoomProps) => {
-    const [name, setName] = useState("");
-    const [permission, setPermission] = useState("")
-    const [permissions, setPermissions] = useState<Array<string>>([])
+  const [name, setName] = useState("");
+  const [permission, setPermission] = useState("")
+	const [permissions, setPermissions] = useState<Array<string>>([])
 
-    return <>
-        <Dialog>
-            <DialogTrigger asChild>
+  return <>
+    <Dialog>
+      <DialogTrigger asChild>
                 <Button
                     variant="link"
                     size="sm"

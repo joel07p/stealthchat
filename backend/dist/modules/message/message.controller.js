@@ -23,8 +23,8 @@ let MessageController = class MessageController {
     getMessages(userId, roomId) {
         return this.messageService.getMessages(userId, roomId);
     }
-    addMessage(message) {
-        return this.messageService.addMessage(message);
+    addMessage(userId, message) {
+        return this.messageService.addMessage(message, userId);
     }
 };
 exports.MessageController = MessageController;
@@ -38,9 +38,10 @@ __decorate([
 ], MessageController.prototype, "getMessages", null);
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, decorators_1.User)("sub")),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], MessageController.prototype, "addMessage", null);
 exports.MessageController = MessageController = __decorate([

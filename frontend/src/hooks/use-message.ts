@@ -7,25 +7,24 @@ export const useMessage = (socket: Socket | undefined, roomId: string | undefine
     const [messages, setMessages] = useState<Array<Message>>([])
 
     useEffect(() => {
-        if (!socket) return;
+        if (!socket) return
         getMessages()
 
         const handleNewMessage = (message: Message) => {
-            setMessages((prevMessages) => [...prevMessages, message]);
+            setMessages((prevMessages) => [...prevMessages, message])
         };
 
-        socket.on('add_message_update', handleNewMessage);
+        socket.on('add_message_update', handleNewMessage)
 
-        // Cleanup listener on unmount or socket change
         return () => {
-            socket.off('add_message_update', handleNewMessage);
-        };
-    }, [socket]);
+            socket.off('add_message_update', handleNewMessage)
+        }
+    }, [socket])
 
     const getMessages = async () => {
         const {data} = await axios.get(`message/${roomId}`)
         console.log(data)
-        setMessages(data.sort((a: Message, b: Message) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()));
+        setMessages(data.sort((a: Message, b: Message) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()))
     } 
 
 
@@ -34,7 +33,7 @@ export const useMessage = (socket: Socket | undefined, roomId: string | undefine
     }
 
     socket?.on('add_messsage_update', (message: Message) => {
-        setMessages((prevMessages) => [...prevMessages, message]);
+        setMessages((prevMessages) => [...prevMessages, message])
     })
 
     return {

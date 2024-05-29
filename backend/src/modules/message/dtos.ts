@@ -5,11 +5,8 @@ export class AddMessageDTO {
     message: string
 
     @IsString()
-    @IsNotEmpty()
-    username: string
-
-    @IsString()
     @IsUUID()
+    @IsNotEmpty()
     roomId: string
 
     attachment: any

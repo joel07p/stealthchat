@@ -44,8 +44,10 @@ let MessageGateway = MessageGateway_1 = class MessageGateway {
         (0, console_1.log)(client.userId);
         this.io.emit("test", { hello: "sui" });
     }
-    async addMessage(data) {
-        const createdMessage = await this.messageService.addMessage(data);
+    async addMessage(data, client) {
+        (0, console_1.log)(data);
+        (0, console_1.log)(client.userId);
+        const createdMessage = await this.messageService.addMessage(data, client.userId);
         if (!createdMessage)
             throw new common_1.ConflictException("Message might not be created");
         (0, message_gateway_1.sendDataToSockets)(this.io, this.roomToSocketsMap, data.roomId, createdMessage, message_event_enum_1.MessageEvent.ADD_MESSAGE_UPDATE);
@@ -74,8 +76,9 @@ __decorate([
     (0, common_1.UseGuards)(guards_1.AgainstViewerGuard, guards_1.UserPermissionGuard),
     (0, websockets_1.SubscribeMessage)("add_message"),
     __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [message_1.AddMessageDTO]),
+    __metadata("design:paramtypes", [message_1.AddMessageDTO, Object]),
     __metadata("design:returntype", Promise)
 ], MessageGateway.prototype, "addMessage", null);
 __decorate([

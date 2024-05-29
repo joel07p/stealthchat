@@ -173,7 +173,7 @@ export class AuthService {
             const payload = this.jwtService.decode(token)
             log(payload)
             const user = await this.userService.getUserProperty(payload.sub, null)
-            return user.id 
+            return user.id
             
         } catch(error) {
             log("Invalid token")

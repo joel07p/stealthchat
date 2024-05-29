@@ -20,12 +20,8 @@ __decorate([
 ], AddMessageDTO.prototype, "message", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], AddMessageDTO.prototype, "username", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsUUID)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], AddMessageDTO.prototype, "roomId", void 0);
 class DeleteMessageDTO {

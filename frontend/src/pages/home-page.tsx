@@ -15,21 +15,18 @@ import * as React from "react"
 
 import { logout } from "@/api/auth.requests"
 import { createGroup, getGroups, joinGroup } from "@/api/home.requests"
+import { AccountSheet } from "@/components/dialogs/account-sheet"
 import { CreateGroupDialog } from "@/components/dialogs/create-group-dialog"
 import { JoinGroupDialog } from "@/components/dialogs/join-group-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useGroupStore } from "@/stores/group.store"
 import { columns } from "@/utils/helpers/group-columns"
 import { CreateGroupData, JoinGroupData } from "@/utils/types/group.types"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-import { AccountSheet } from "@/components/dialogs/account-sheet"
-import { createSocketWithHandlers } from "@/service/socket-io"
-import { group } from "console"
-import { useGroupStore } from "@/stores/group.store"
-import { useSocket } from "@/hooks/use-socket"
 
 export type Group = {
   id: string
@@ -39,8 +36,6 @@ export type Group = {
   users: number
   rooms: number
 }
-
-
 
 export const HomePage = () =>  {
   const navigate = useNavigate()

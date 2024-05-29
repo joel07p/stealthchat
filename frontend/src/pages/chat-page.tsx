@@ -12,6 +12,14 @@ import {
 } from "lucide-react"
 
 import { Message } from "@/components/chat/message"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -35,11 +43,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useMessage } from "@/hooks/use-message"
 import { useRoom } from "@/hooks/use-room"
 import { useSocket } from "@/hooks/use-socket"
-import { useParams } from "react-router-dom"
-import { useMessage } from "@/hooks/use-message"
 import { useEffect, useRef, useState } from "react"
+import { useParams } from "react-router-dom"
+
 
 export const ChatPage = () => {
   const {roomId, groupId} = useParams<{roomId: string, groupId: string}>()
@@ -75,7 +84,7 @@ export const ChatPage = () => {
   const handleAddMessage = (e: MouseEvent) => {
     e.preventDefault()
     console.log("add message")
-    addMessage({message: messageText, username: "Test10", roomId, attachment: {}})
+    addMessage({message: messageText, roomId, attachment: {}})
   }
 
   const scrollToBottom = () => {
@@ -86,8 +95,23 @@ export const ChatPage = () => {
 
   return <>
     <div className="flex h-full flex-col h-screen">
-      <div className="flex items-center p-2">
+      <div className="flex items-center p-2 h-[7vh]">
         <div className="flex items-center gap-2">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/docs/components">{room?.name}</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="icon" disabled={!mail}>
@@ -255,7 +279,7 @@ export const ChatPage = () => {
             {mail.text}
         </div>*/}
           <div className="flex-1 whitespace-pre-wrap p-4 text-sm">
-            <ScrollArea className="w-full h-80 rounded-md p-4">
+            <ScrollArea className="w-full h-[63vh] rounded-md p-4">
               <div ref={chatAreaRef}>
               {
                 messages.map((message) => (
@@ -271,7 +295,7 @@ export const ChatPage = () => {
               
             </ScrollArea>
           </div>
-          <div className="p-4">
+          <div className="p-8 h-[30vh]">
             <form>
               <div className="grid gap-4">
                 <Textarea
@@ -288,7 +312,7 @@ export const ChatPage = () => {
                     thread
                   </Label>
                   <Button
-                    onClick={handleAddMessage}
+                    onClick={(e) => handleAddMessage(e)}
                     size="sm"
                     className="ml-auto"
                   >

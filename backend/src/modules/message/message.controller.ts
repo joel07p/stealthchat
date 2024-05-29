@@ -15,7 +15,7 @@ export class MessageController {
     }
 
     @Post()
-    addMessage(@Body() message: AddMessage) {
-        return this.messageService.addMessage(message)        
+    addMessage(@User("sub") userId: string, @Body() message: AddMessage) {
+        return this.messageService.addMessage(message, userId)        
     }
 }

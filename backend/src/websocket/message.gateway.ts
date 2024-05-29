@@ -47,8 +47,10 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
     @UseGuards(AgainstViewerGuard, UserPermissionGuard)
     @SubscribeMessage("add_message")
-    async addMessage(@MessageBody() data: AddMessageDTO,) {
-        const createdMessage = await this.messageService.addMessage(data)
+    async addMessage(@MessageBody() data: AddMessageDTO, @ConnectedSocket() client: SocketWithAuth) {
+        log(data)
+        log(client.userId)
+        const createdMessage = await this.messageService.addMessage(data, client.userId)
         if(!createdMessage) throw new ConflictException("Message might not be created")
 
         sendDataToSockets(this.io, this.roomToSocketsMap, data.roomId, createdMessage, MessageEvent.ADD_MESSAGE_UPDATE)

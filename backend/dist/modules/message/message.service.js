@@ -18,11 +18,13 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const room_entity_1 = require("../room/room.entity");
+const user_service_1 = require("../user/user.service");
 const message_entity_1 = require("./message.entity");
 let MessageService = MessageService_1 = class MessageService {
-    constructor(messageRepository, roomRepository) {
+    constructor(messageRepository, roomRepository, userService) {
         this.messageRepository = messageRepository;
         this.roomRepository = roomRepository;
+        this.userService = userService;
         this.logger = new common_1.Logger(MessageService_1.name);
     }
     async getMessage(roomId, relations) {
@@ -36,8 +38,9 @@ let MessageService = MessageService_1 = class MessageService {
             order: { sentAt: 'DESC' },
         });
     }
-    async addMessage({ message, username, roomId }) {
+    async addMessage({ message, roomId }, userId) {
         this.logger.log(`Trying to create message in room ${roomId}`);
+        const username = await this.userService.getUserProperty(userId, "username");
         const messageInstance = new message_entity_1.Message(message, username, null);
         const savedMessage = await this.messageRepository.save(messageInstance);
         await this.addMessageToRoom(roomId, savedMessage);
@@ -72,6 +75,7 @@ exports.MessageService = MessageService = MessageService_1 = __decorate([
     __param(0, (0, typeorm_1.InjectRepository)(message_entity_1.Message)),
     __param(1, (0, typeorm_1.InjectRepository)(room_entity_1.Room)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        user_service_1.UserService])
 ], MessageService);
 //# sourceMappingURL=message.service.js.map

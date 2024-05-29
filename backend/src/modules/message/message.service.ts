@@ -2,6 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Room } from '../room/room.entity';
+import { UserService } from '../user/user.service';
 import { Message } from './message.entity';
 import { AddMessage, DeleteMessage } from './types';
 import { log } from 'console';
@@ -13,7 +14,7 @@ export class MessageService {
     constructor(
         @InjectRepository(Message) private readonly messageRepository: Repository<Message>,
         @InjectRepository(Room) private readonly roomRepository: Repository<Room>,
-
+        private readonly userService: UserService
     ) {}
 
     async getMessage(roomId: string, relations: Array<string>) {
@@ -29,9 +30,10 @@ export class MessageService {
         });
     }
 
-    async addMessage({message, username, roomId}: AddMessage) {
+    async addMessage({message, roomId}: AddMessage, userId: string) {
         this.logger.log(`Trying to create message in room ${roomId}`)
 
+        const username = await this.userService.getUserProperty(userId, "username")
         const messageInstance = new Message(message, username, null)
         const savedMessage = await this.messageRepository.save(messageInstance)
         await this.addMessageToRoom(roomId, savedMessage)
