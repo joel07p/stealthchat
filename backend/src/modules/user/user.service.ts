@@ -8,7 +8,7 @@ import { Authentication } from 'src/auth/authentication.entity';
 export class UserService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
-        @InjectRepository(Authentication) private authRepository: Repository<Authentication>    
+        @InjectRepository(Authentication) private authRepository: Repository<Authentication>
     ) {}
 
     async createUser(username: string) {
@@ -20,5 +20,16 @@ export class UserService {
 
         const savedUser = await this.userRepository.save(user)
         console.log(await this.userRepository.findOne({where: {id: savedUser.id}, relations: ["authentication"]}))
+    }
+
+    async getUser(username: string) {
+        return await this.userRepository.findOne({where: {username}})
+    }
+
+    async getUserProperty(userId: string, property: string | undefined | null) {
+        const user = await this.userRepository.findOne({where: {id: userId}})
+
+        if(property) return user[property]
+        return user
     }
 }

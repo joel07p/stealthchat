@@ -1,6 +1,6 @@
 import { IsString, IsUUID, Length } from "class-validator";
 import { randomUUID } from "crypto";
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
 import { Room } from "../room/room.entity";
 
 @Entity({ name: "permissions" })
@@ -19,6 +19,6 @@ export class Permission {
     @Length(0, 50)
     name: string
 
-    @ManyToOne(() => Room, (room) => room.permissions)
-    room: Room
+    @ManyToMany(() => Room, (room) => room.permissions)
+    rooms: Array<Room>
 }

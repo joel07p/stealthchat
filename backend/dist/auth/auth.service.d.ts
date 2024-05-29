@@ -6,16 +6,16 @@ import { DataSource, Repository } from 'typeorm';
 import { Authentication } from './authentication.entity';
 import { BaseAuth, SignUpDTO } from './model';
 import { Tokens } from './types';
-import { UserOnGroups } from 'src/modules/group/user-on-group.entity';
+import { UserService } from 'src/modules/user/user.service';
 export declare class AuthService {
     private userRepository;
-    private useroRepository;
     private authenticationRepository;
     private userContext;
     private jwtService;
     private configService;
     private dataSource;
-    constructor(userRepository: Repository<User>, useroRepository: Repository<UserOnGroups>, authenticationRepository: Repository<Authentication>, userContext: UserContext, jwtService: JwtService, configService: ConfigService, dataSource: DataSource);
+    private userService;
+    constructor(userRepository: Repository<User>, authenticationRepository: Repository<Authentication>, userContext: UserContext, jwtService: JwtService, configService: ConfigService, dataSource: DataSource, userService: UserService);
     signIn(credentials: BaseAuth): Promise<Tokens>;
     signUp(credentials: SignUpDTO): Promise<boolean | User>;
     logout(userId: string): Promise<void>;
@@ -23,4 +23,5 @@ export declare class AuthService {
     updateRtHash(userId: string, rt: string): Promise<void>;
     getTokens(userId: string, username: string): Promise<Tokens>;
     hashData(password: string): Promise<string>;
+    verifyToken(token: string): Promise<any>;
 }

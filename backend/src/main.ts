@@ -2,6 +2,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { SocketIOAdapter } from './websocket/socket-io-adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {cors: true})
@@ -11,6 +12,8 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService)
   const PORT = configService.get<number>('PORT') || 3300
+
+  app.useWebSocketAdapter(new SocketIOAdapter(app, configService))
 
   await app.listen(PORT)
   

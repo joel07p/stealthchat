@@ -1,20 +1,21 @@
-import { BadRequestException, Injectable, Logger } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { UserContext } from "src/modules/user/user-context";
 import { MailService } from "src/service/mail.service";
 import { AuthService } from "./auth.service";
 import { OTPAuth } from "./model";
+import { Tokens } from "./types";
 
 @Injectable()
 export class OTPService {
     private readonly length: number = 6
 
     constructor(
-        private userContext: UserContext,
-        private mailService: MailService,
-        private authService: AuthService
+        private readonly userContext: UserContext,
+        private readonly authService: AuthService,
+        private readonly mailService: MailService,
     ) {}
 
-    generateOTP(): string {
+    private generateOTP(): string {
         let accessCode = '';
     
         for (let index = 0; index < this.length; index++) {
@@ -27,19 +28,19 @@ export class OTPService {
     }
     
 
-    sendOTP(): void {
+    async sendOTP(email: string) {
         const accessCode = this.generateOTP()
-        Logger.log(accessCode)
+
+        this.userContext.setAccessCode(accessCode)
+        return await this.mailService.sendOTP(email, accessCode)
     }
 
-    verifyOTP(credentials: OTPAuth) {
-        const { username, password, otp } = credentials
 
-        const isAuthenticated = this.userContext.getAccessCode() === otp;
-        if(!isAuthenticated) throw new BadRequestException("OTP is invalid")
-        this.userContext.setAccessCode(null)
-        this.userContext.setIsAuthenticated(isAuthenticated);
-
-        return this.authService.signIn({ username, password })
+    async verifyOTP({username, password, otp}: OTPAuth): Promise<Tokens> {
+        if(otp === this.userContext.getAccessCode()) {
+            return await this.authService.signIn({ username, password })
+        } else {
+            throw new ForbiddenException("Invalid OTP or credentials")
+        }
     }
 }

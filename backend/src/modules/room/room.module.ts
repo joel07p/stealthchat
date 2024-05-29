@@ -1,10 +1,22 @@
 import { Module } from '@nestjs/common';
-import { RoomService } from './room.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Group } from '../group/group.entity';
+import { Permission } from '../permission/permission.entity';
+import { User } from '../user/user.entity';
+import { UserService } from '../user/user.service';
 import { RoomController } from './room.controller';
-import { PermissionService } from './permission.service';
+import { Room } from './room.entity';
+import { RoomService } from './room.service';
+import { Authentication } from 'src/auth/authentication.entity';
 
 @Module({
-  providers: [RoomService, PermissionService],
+  imports: [
+    TypeOrmModule.forFeature([Room, Permission, Group, User, Authentication]),
+  ],
+  providers: [
+    RoomService,
+    UserService
+  ],
   controllers: [RoomController]
 })
 export class RoomModule {}

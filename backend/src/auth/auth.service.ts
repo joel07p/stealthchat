@@ -9,25 +9,23 @@ import { DataSource, Repository } from 'typeorm';
 import { Authentication } from './authentication.entity';
 import { BaseAuth, SignUpDTO } from './model';
 import { Tokens } from './types';
-import { UserOnGroups } from 'src/modules/group/user-on-group.entity';
+import { log } from 'console';
+import { UserService } from 'src/modules/user/user.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
-        @InjectRepository(UserOnGroups) private useroRepository: Repository<UserOnGroups>,
         @InjectRepository(Authentication) private authenticationRepository: Repository<Authentication>,
         private userContext: UserContext,
         private jwtService: JwtService,
         private configService: ConfigService,
-        private dataSource: DataSource
+        private dataSource: DataSource,
+        private userService: UserService
     ) {}
 
     async signIn(credentials: BaseAuth) {
         const { username, password } = credentials
-
-        const s = await this.useroRepository.find()
-        console.log(s)
 
         const user = await this.userRepository.findOne({
             where: {
@@ -44,6 +42,7 @@ export class AuthService {
 
         const tokens = await this.getTokens(user.id, user.email)
         await this.updateRtHash(user.id, tokens.refreshToken)
+        this.userContext.setUser(user)
         return tokens
     }
 
@@ -166,5 +165,19 @@ export class AuthService {
 
     hashData(password: string) {
         return bcrypt.hash(password, 10)
+    }
+
+    async verifyToken(token: string) {
+        try {
+            log("validate ws token")
+            const payload = this.jwtService.decode(token)
+            log(payload)
+            const user = await this.userService.getUserProperty(payload.sub, null)
+            return user.id
+            
+        } catch(error) {
+            log("Invalid token")
+            return null
+        }
     }
 }

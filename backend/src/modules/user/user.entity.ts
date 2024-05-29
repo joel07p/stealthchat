@@ -10,6 +10,7 @@ export class User {
         this.id = randomUUID()
         this.username = username
         this.email = email
+        this.permission = "default"
         this.authentication = authentication
     }
 
@@ -21,6 +22,10 @@ export class User {
     @IsString()
     @Length(5, 50)
     username: string;
+
+    @Column({ type: 'varchar', name: "permission", unique: false, nullable: false })
+    @IsString()
+    permission: string
 
     @Column({ type: 'varchar', name: "email", unique: true, nullable: false })
     @IsEmail()

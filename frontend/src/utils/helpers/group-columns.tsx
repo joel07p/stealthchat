@@ -67,6 +67,7 @@ export const columns: ColumnDef<Group>[] = [
       header: () => <div className="text-right">Rooms</div>,
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("rooms"))
+        console.log(row)
   
         return <div className="text-right font-medium">{amount}</div>
       },

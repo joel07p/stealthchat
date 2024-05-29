@@ -4,12 +4,14 @@ import { User } from '../user/user.entity';
 import { CreateGroupDTO, JoinGroupDTO, LeaveGroupDTO } from './group.dto';
 import { Group } from './group.entity';
 import { UserOnGroups } from './user-on-group.entity';
+import { UserService } from '../user/user.service';
 export declare class GroupService {
     private groupRepository;
     private userRepository;
     private userOnGroupsRepository;
     private authenticationRepository;
-    constructor(groupRepository: Repository<Group>, userRepository: Repository<User>, userOnGroupsRepository: Repository<UserOnGroups>, authenticationRepository: Repository<Authentication>);
+    private readonly userService;
+    constructor(groupRepository: Repository<Group>, userRepository: Repository<User>, userOnGroupsRepository: Repository<UserOnGroups>, authenticationRepository: Repository<Authentication>, userService: UserService);
     getGroups(user: any): Promise<{
         id: string;
         name: string;
@@ -18,7 +20,7 @@ export declare class GroupService {
         users: number;
         rooms: number;
     }[]>;
-    createGroup(user: any, data: CreateGroupDTO): Promise<{
+    createGroup(userId: string, data: CreateGroupDTO): Promise<{
         id: string;
         name: string;
         type: string;
@@ -35,6 +37,9 @@ export declare class GroupService {
         rooms: number;
     }>;
     leaveGroup(userId: string, data: LeaveGroupDTO): Promise<UserOnGroups>;
+    getUserRole(userId: string, groupId: string): Promise<string>;
     private getUser;
     private generateJoinCode;
+    getGroup(groupId: string, relations: Array<string>): Promise<Group>;
+    private countRoomsInGroup;
 }

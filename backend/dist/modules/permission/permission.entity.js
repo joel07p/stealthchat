@@ -33,9 +33,9 @@ __decorate([
     __metadata("design:type", String)
 ], Permission.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => room_entity_1.Room, (room) => room.permissions),
-    __metadata("design:type", room_entity_1.Room)
-], Permission.prototype, "room", void 0);
+    (0, typeorm_1.ManyToMany)(() => room_entity_1.Room, (room) => room.permissions),
+    __metadata("design:type", Array)
+], Permission.prototype, "rooms", void 0);
 exports.Permission = Permission = __decorate([
     (0, typeorm_1.Entity)({ name: "permissions" }),
     __metadata("design:paramtypes", [String])

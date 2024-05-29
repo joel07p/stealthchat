@@ -22,15 +22,18 @@ const user_entity_1 = require("../user/user.entity");
 const group_type_enum_1 = require("./group-type.enum");
 const group_entity_1 = require("./group.entity");
 const user_on_group_entity_1 = require("./user-on-group.entity");
+const user_service_1 = require("../user/user.service");
+const console_1 = require("console");
 let GroupService = class GroupService {
-    constructor(groupRepository, userRepository, userOnGroupsRepository, authenticationRepository) {
+    constructor(groupRepository, userRepository, userOnGroupsRepository, authenticationRepository, userService) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
         this.userOnGroupsRepository = userOnGroupsRepository;
         this.authenticationRepository = authenticationRepository;
+        this.userService = userService;
     }
     async getGroups(user) {
-        const thisUser = await this.getUser(user.sub);
+        const thisUser = await this.userService.getUserProperty(user.sub, null);
         const groups = await this.groupRepository
             .createQueryBuilder('group')
             .innerJoinAndSelect(user_on_group_entity_1.UserOnGroups, 'userOnGroups', 'userOnGroups.groupId = group.id')
@@ -47,19 +50,26 @@ let GroupService = class GroupService {
                     }
                 }
             });
+            console.log({
+                id: group.id,
+                name: group.name,
+                type: group.type,
+                users: 0,
+                rooms: await this.countRoomsInGroup(group.id)
+            });
             return {
                 id: group.id,
                 name: group.name,
                 type: group.type,
                 role: thisUserOnGroup ? thisUserOnGroup.role : null,
                 users: 0,
-                rooms: 0
+                rooms: await this.countRoomsInGroup(group.id)
             };
         }));
         return transformedGroups;
     }
-    async createGroup(user, data) {
-        const thisUser = await this.userRepository.findOne({ where: { id: user.sub }, relations: ['authentication'] });
+    async createGroup(userId, data) {
+        const thisUser = await this.userRepository.findOne({ where: { id: userId }, relations: ['authentication'] });
         const { name, description, users } = data;
         if (thisUser)
             users.push(thisUser.authentication.getIdentityCode());
@@ -104,7 +114,7 @@ let GroupService = class GroupService {
             type: group.type,
             role: thisUserOnGroup.role,
             users: 0,
-            rooms: 0
+            rooms: await this.countRoomsInGroup(group.id)
         };
     }
     async joinGroup(userId, data) {
@@ -124,13 +134,21 @@ let GroupService = class GroupService {
             role: user_role_enum_1.UserRole.USER
         });
         await this.userOnGroupsRepository.save(userOnGroup);
+        console.log({
+            id: group.id,
+            name: group.name,
+            type: group.type,
+            role: userOnGroup.role,
+            users: 0,
+            rooms: await this.countRoomsInGroup(group.id)
+        });
         return {
             id: group.id,
             name: group.name,
             type: group.type,
             role: userOnGroup.role,
             users: 0,
-            rooms: 0
+            rooms: await this.countRoomsInGroup(group.id)
         };
     }
     async leaveGroup(userId, data) {
@@ -158,6 +176,20 @@ let GroupService = class GroupService {
             throw new common_1.NotFoundException("Relation not found");
         return await this.userOnGroupsRepository.remove(userOnGroup);
     }
+    async getUserRole(userId, groupId) {
+        const userOnGroup = await this.userOnGroupsRepository.findOne({
+            where: {
+                group: {
+                    id: groupId
+                },
+                user: {
+                    id: userId
+                }
+            }
+        });
+        (0, console_1.log)(userOnGroup);
+        return userOnGroup.role;
+    }
     async getUser(userId) {
         return await this.userRepository.findOne({
             where: {
@@ -174,6 +206,16 @@ let GroupService = class GroupService {
         }
         return result;
     }
+    async getGroup(groupId, relations) {
+        return await this.groupRepository.findOne({ where: { id: groupId }, relations });
+    }
+    async countRoomsInGroup(groupId) {
+        const group = await this.getGroup(groupId, ["rooms"]);
+        if (!group)
+            throw new common_1.NotFoundException(`No such group ${groupId}`);
+        (0, console_1.log)(group.rooms.length);
+        return group.rooms.length.valueOf();
+    }
 };
 exports.GroupService = GroupService;
 exports.GroupService = GroupService = __decorate([
@@ -185,6 +227,7 @@ exports.GroupService = GroupService = __decorate([
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        user_service_1.UserService])
 ], GroupService);
 //# sourceMappingURL=group.service.js.map

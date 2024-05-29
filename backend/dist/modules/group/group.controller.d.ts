@@ -3,6 +3,7 @@ import { GroupService } from './group.service';
 export declare class GroupController {
     private groupService;
     constructor(groupService: GroupService);
+    getGroup(groupId: string): Promise<import("src/modules/group/group.entity").Group>;
     getGroups(user: any): Promise<{
         id: string;
         name: string;
@@ -11,7 +12,7 @@ export declare class GroupController {
         users: number;
         rooms: number;
     }[]>;
-    createGroup(user: any, data: CreateGroupDTO): Promise<{
+    createGroup(userId: string, data: CreateGroupDTO): Promise<{
         id: string;
         name: string;
         type: string;

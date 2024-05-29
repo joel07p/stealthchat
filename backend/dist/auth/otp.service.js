@@ -15,10 +15,10 @@ const user_context_1 = require("../modules/user/user-context");
 const mail_service_1 = require("../service/mail.service");
 const auth_service_1 = require("./auth.service");
 let OTPService = class OTPService {
-    constructor(userContext, mailService, authService) {
+    constructor(userContext, authService, mailService) {
         this.userContext = userContext;
-        this.mailService = mailService;
         this.authService = authService;
+        this.mailService = mailService;
         this.length = 6;
     }
     generateOTP() {
@@ -29,25 +29,25 @@ let OTPService = class OTPService {
         this.userContext.setAccessCode(accessCode);
         return accessCode;
     }
-    sendOTP() {
+    async sendOTP(email) {
         const accessCode = this.generateOTP();
-        common_1.Logger.log(accessCode);
+        this.userContext.setAccessCode(accessCode);
+        return await this.mailService.sendOTP(email, accessCode);
     }
-    verifyOTP(credentials) {
-        const { username, password, otp } = credentials;
-        const isAuthenticated = this.userContext.getAccessCode() === otp;
-        if (!isAuthenticated)
-            throw new common_1.BadRequestException("OTP is invalid");
-        this.userContext.setAccessCode(null);
-        this.userContext.setIsAuthenticated(isAuthenticated);
-        return this.authService.signIn({ username, password });
+    async verifyOTP({ username, password, otp }) {
+        if (otp === this.userContext.getAccessCode()) {
+            return await this.authService.signIn({ username, password });
+        }
+        else {
+            throw new common_1.ForbiddenException("Invalid OTP or credentials");
+        }
     }
 };
 exports.OTPService = OTPService;
 exports.OTPService = OTPService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [user_context_1.UserContext,
-        mail_service_1.MailService,
-        auth_service_1.AuthService])
+        auth_service_1.AuthService,
+        mail_service_1.MailService])
 ], OTPService);
 //# sourceMappingURL=otp.service.js.map
