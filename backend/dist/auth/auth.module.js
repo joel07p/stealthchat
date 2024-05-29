@@ -22,6 +22,7 @@ const user_on_group_entity_1 = require("../modules/group/user-on-group.entity");
 const mailer_1 = require("@nestjs-modules/mailer");
 const mail_service_1 = require("../service/mail.service");
 const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
+const user_service_1 = require("../modules/user/user.service");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -58,7 +59,7 @@ exports.AuthModule = AuthModule = __decorate([
                 }),
             }),
         ],
-        providers: [auth_service_1.AuthService, user_context_1.UserContext, config_1.ConfigService, strategies_1.AtStrategy, strategies_1.RtStrategy, otp_service_1.OTPService, mail_service_1.MailService],
+        providers: [auth_service_1.AuthService, user_context_1.UserContext, config_1.ConfigService, strategies_1.AtStrategy, strategies_1.RtStrategy, otp_service_1.OTPService, mail_service_1.MailService, user_service_1.UserService],
         controllers: [auth_controller_1.AuthController],
     })
 ], AuthModule);

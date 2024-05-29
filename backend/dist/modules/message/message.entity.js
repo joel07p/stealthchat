@@ -13,13 +13,13 @@ exports.Message = void 0;
 const class_validator_1 = require("class-validator");
 const crypto_1 = require("crypto");
 const typeorm_1 = require("typeorm");
+const attachment_entity_1 = require("../file/attachment.entity");
 const room_entity_1 = require("../room/room.entity");
 let Message = class Message {
-    constructor(message, username, content) {
+    constructor(message, username, attachment) {
         this.id = (0, crypto_1.randomUUID)();
         this.message = message;
         this.username = username;
-        this.content = content;
         this.sentAt = new Date();
     }
 };
@@ -36,11 +36,7 @@ __decorate([
     __metadata("design:type", String)
 ], Message.prototype, "message", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "varchar", name: "content" }),
-    __metadata("design:type", Object)
-], Message.prototype, "content", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: "varchar", name: "username", unique: true, nullable: false }),
+    (0, typeorm_1.Column)({ type: "varchar", name: "username", nullable: false }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.Length)(5, 50),
     __metadata("design:type", String)
@@ -55,6 +51,6 @@ __decorate([
 ], Message.prototype, "room", void 0);
 exports.Message = Message = __decorate([
     (0, typeorm_1.Entity)({ name: "messages" }),
-    __metadata("design:paramtypes", [String, String, Object])
+    __metadata("design:paramtypes", [String, String, attachment_entity_1.Attachment])
 ], Message);
 //# sourceMappingURL=message.entity.js.map

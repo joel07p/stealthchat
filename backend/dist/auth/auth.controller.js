@@ -36,11 +36,11 @@ let AuthController = class AuthController {
     refreshTokens(userId, data) {
         return this.authService.refreshTokens(userId, data.refreshToken);
     }
-    getAccessCode() {
-        this.otpService.sendOTP();
+    async getAccessCode({ email }) {
+        return await this.otpService.sendOTP(email);
     }
-    verifyAccessCode(credentials) {
-        return this.otpService.verifyOTP(credentials);
+    async verifyAccessCode(credentials) {
+        return await this.otpService.verifyOTP(credentials);
     }
 };
 exports.AuthController = AuthController;
@@ -79,10 +79,11 @@ __decorate([
 ], AuthController.prototype, "refreshTokens", null);
 __decorate([
     (0, decorators_1.Public)(),
-    (0, common_1.Get)('otp/send'),
+    (0, common_1.Post)('otp/send'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [model_1.Email]),
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getAccessCode", null);
 __decorate([
     (0, decorators_1.Public)(),
@@ -90,7 +91,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [model_1.OTPAuth]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyAccessCode", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),

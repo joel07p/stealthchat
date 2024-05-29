@@ -15,14 +15,16 @@ const group_entity_1 = require("./group.entity");
 const user_on_group_entity_1 = require("./user-on-group.entity");
 const authentication_entity_1 = require("../../auth/authentication.entity");
 const user_entity_1 = require("../user/user.entity");
+const user_service_1 = require("../user/user.service");
 let GroupModule = class GroupModule {
 };
 exports.GroupModule = GroupModule;
 exports.GroupModule = GroupModule = __decorate([
     (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication, group_entity_1.Group, user_on_group_entity_1.UserOnGroups])],
-        providers: [group_service_1.GroupService],
+        providers: [group_service_1.GroupService, user_service_1.UserService],
         controllers: [group_controller_1.GroupController],
+        exports: [group_service_1.GroupService]
     })
 ], GroupModule);
 //# sourceMappingURL=group.module.js.map

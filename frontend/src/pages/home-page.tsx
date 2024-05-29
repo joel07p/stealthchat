@@ -15,6 +15,7 @@ import * as React from "react"
 
 import { logout } from "@/api/auth.requests"
 import { createGroup, getGroups, joinGroup } from "@/api/home.requests"
+import { AccountSheet } from "@/components/dialogs/account-sheet"
 import { CreateGroupDialog } from "@/components/dialogs/create-group-dialog"
 import { JoinGroupDialog } from "@/components/dialogs/join-group-dialog"
 import { Badge } from "@/components/ui/badge"
@@ -25,7 +26,6 @@ import { columns } from "@/utils/helpers/group-columns"
 import { CreateGroupData, JoinGroupData } from "@/utils/types/group.types"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-import { AccountSheet } from "@/components/dialogs/account-sheet"
 
 export type Group = {
   id: string
@@ -35,8 +35,6 @@ export type Group = {
   users: number
   rooms: number
 }
-
-
 
 export const HomePage = () =>  {
   const navigate = useNavigate()
@@ -67,7 +65,7 @@ export const HomePage = () =>  {
   })
 
   React.useEffect(() => {
-    fetchGroups();
+    fetchGroups()
   }, [])
 
   const handleLogout = () => {
@@ -80,9 +78,9 @@ export const HomePage = () =>  {
       if(groups) setGroups(groups)
         console.log(groups)
     } catch (error) {
-      console.error("Error fetching groups:", error);
+      console.error("Error fetching groups:", error)
     }
-  };
+  }
 
   const handleCreateGroup = async (createGroupData: CreateGroupData) => {
     const group = await createGroup(createGroupData)
@@ -150,7 +148,7 @@ export const HomePage = () =>  {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    onClick={() => navigate("/group/1/chat/1")}
+                    onClick={() => navigate(`group/${row.original.id}/room/${undefined}`)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>

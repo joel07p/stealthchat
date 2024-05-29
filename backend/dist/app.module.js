@@ -16,6 +16,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const auth_module_1 = require("./auth/auth.module");
 const authentication_entity_1 = require("./auth/authentication.entity");
+const error_1 = require("./common/error");
 const guards_1 = require("./common/guards");
 const group_entity_1 = require("./modules/group/group.entity");
 const group_module_1 = require("./modules/group/group.module");
@@ -32,6 +33,7 @@ const user_context_1 = require("./modules/user/user-context");
 const user_entity_1 = require("./modules/user/user.entity");
 const user_module_1 = require("./modules/user/user.module");
 const user_service_1 = require("./modules/user/user.service");
+const websocket_module_1 = require("./websocket/websocket.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -56,11 +58,12 @@ exports.AppModule = AppModule = __decorate([
                 port: parseInt(process.env.PORT_DB),
                 username: process.env.USERNAME_DB,
                 password: process.env.PASSWORD_DB,
-                database: 'dev1',
+                database: "dev2",
                 entities: [user_entity_1.User, authentication_entity_1.Authentication, group_entity_1.Group, user_on_group_entity_1.UserOnGroups, room_entity_1.Room, message_entity_1.Message, permission_entity_1.Permission, invitation_entity_1.Invitation],
                 synchronize: true
             }),
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication]),
+            websocket_module_1.WebSocketModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [
@@ -71,6 +74,10 @@ exports.AppModule = AppModule = __decorate([
             {
                 provide: core_1.APP_GUARD,
                 useClass: guards_1.AtGuard
+            },
+            {
+                provide: core_1.APP_FILTER,
+                useClass: error_1.NotFoundExceptionFilter,
             },
         ],
     })

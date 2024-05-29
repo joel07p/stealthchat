@@ -4,6 +4,7 @@ export declare class User {
     constructor(username: string, email: string, authentication: Authentication);
     readonly id: string;
     username: string;
+    permission: string;
     email: string;
     authentication: Authentication;
     userOnGroups: Array<UserOnGroups>;

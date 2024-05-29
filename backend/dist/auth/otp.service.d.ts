@@ -1,14 +1,15 @@
 import { UserContext } from "src/modules/user/user-context";
+import { MailService } from "src/service/mail.service";
 import { AuthService } from "./auth.service";
 import { OTPAuth } from "./model";
-import { MailService } from "src/service/mail.service";
+import { Tokens } from "./types";
 export declare class OTPService {
-    private userContext;
-    private authService;
-    private mailService;
+    private readonly userContext;
+    private readonly authService;
+    private readonly mailService;
     private readonly length;
     constructor(userContext: UserContext, authService: AuthService, mailService: MailService);
-    generateOTP(): string;
-    sendOTP(): void;
-    verifyOTP(credentials: OTPAuth): Promise<import("src/auth/types").Tokens>;
+    private generateOTP;
+    sendOTP(email: string): Promise<boolean>;
+    verifyOTP({ username, password, otp }: OTPAuth): Promise<Tokens>;
 }

@@ -3,5 +3,5 @@ export declare class Permission {
     constructor(name: string);
     readonly id: string;
     name: string;
-    room: Room;
+    rooms: Array<Room>;
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { User } from 'src/common/decorators';
 import { CreateGroupDTO, JoinGroupDTO, LeaveGroupDTO } from './group.dto';
 import { GroupService } from './group.service';
@@ -9,14 +9,19 @@ export class GroupController {
         private groupService: GroupService
     ) {}
 
+    @Get(':id')
+    getGroup(@Param('id') groupId: string) {
+        return this.groupService.getGroup(groupId, [])
+    }
+
     @Get()
     getGroups(@User() user: any) {
         return this.groupService.getGroups(user)
     }
 
     @Post()
-    createGroup(@User() user: any, @Body() data: CreateGroupDTO) {
-        return this.groupService.createGroup(user, data)
+    createGroup(@User('sub') userId: string, @Body() data: CreateGroupDTO) {
+        return this.groupService.createGroup(userId, data)
     }
 
     @Post("join")

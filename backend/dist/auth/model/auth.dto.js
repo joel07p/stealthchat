@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SignUpDTO = exports.OTPAuth = exports.BaseAuth = void 0;
+exports.Email = exports.SignUpDTO = exports.OTPAuth = exports.BaseAuth = void 0;
 const class_validator_1 = require("class-validator");
 class BaseAuth {
 }
@@ -40,4 +40,12 @@ __decorate([
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], SignUpDTO.prototype, "email", void 0);
+class Email {
+}
+exports.Email = Email;
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], Email.prototype, "email", void 0);
 //# sourceMappingURL=auth.dto.js.map

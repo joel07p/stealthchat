@@ -18,25 +18,24 @@ const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
 const bcrypt = require("bcrypt");
-const user_on_group_entity_1 = require("../modules/group/user-on-group.entity");
 const user_context_1 = require("../modules/user/user-context");
 const user_entity_1 = require("../modules/user/user.entity");
 const typeorm_2 = require("typeorm");
 const authentication_entity_1 = require("./authentication.entity");
+const console_1 = require("console");
+const user_service_1 = require("../modules/user/user.service");
 let AuthService = class AuthService {
-    constructor(userRepository, useroRepository, authenticationRepository, userContext, jwtService, configService, dataSource) {
+    constructor(userRepository, authenticationRepository, userContext, jwtService, configService, dataSource, userService) {
         this.userRepository = userRepository;
-        this.useroRepository = useroRepository;
         this.authenticationRepository = authenticationRepository;
         this.userContext = userContext;
         this.jwtService = jwtService;
         this.configService = configService;
         this.dataSource = dataSource;
+        this.userService = userService;
     }
     async signIn(credentials) {
         const { username, password } = credentials;
-        const s = await this.useroRepository.find();
-        console.log(s);
         const user = await this.userRepository.findOne({
             where: {
                 username
@@ -147,19 +146,31 @@ let AuthService = class AuthService {
     hashData(password) {
         return bcrypt.hash(password, 10);
     }
+    async verifyToken(token) {
+        try {
+            (0, console_1.log)("validate ws token");
+            const payload = this.jwtService.decode(token);
+            (0, console_1.log)(payload);
+            const user = await this.userService.getUserProperty(payload.sub, null);
+            return user.id;
+        }
+        catch (error) {
+            (0, console_1.log)("Invalid token");
+            return null;
+        }
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __param(1, (0, typeorm_1.InjectRepository)(user_on_group_entity_1.UserOnGroups)),
-    __param(2, (0, typeorm_1.InjectRepository)(authentication_entity_1.Authentication)),
+    __param(1, (0, typeorm_1.InjectRepository)(authentication_entity_1.Authentication)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.Repository,
         typeorm_2.Repository,
         user_context_1.UserContext,
         jwt_1.JwtService,
         config_1.ConfigService,
-        typeorm_2.DataSource])
+        typeorm_2.DataSource,
+        user_service_1.UserService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

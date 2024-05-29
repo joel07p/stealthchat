@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OTPService = void 0;
 const common_1 = require("@nestjs/common");
 const user_context_1 = require("../modules/user/user-context");
-const auth_service_1 = require("./auth.service");
 const mail_service_1 = require("../service/mail.service");
+const auth_service_1 = require("./auth.service");
 let OTPService = class OTPService {
     constructor(userContext, authService, mailService) {
         this.userContext = userContext;
@@ -29,18 +29,18 @@ let OTPService = class OTPService {
         this.userContext.setAccessCode(accessCode);
         return accessCode;
     }
-    sendOTP() {
+    async sendOTP(email) {
         const accessCode = this.generateOTP();
-        common_1.Logger.log(accessCode);
+        this.userContext.setAccessCode(accessCode);
+        return await this.mailService.sendOTP(email, accessCode);
     }
-    verifyOTP(credentials) {
-        const { username, password, otp } = credentials;
-        const isAuthenticated = this.userContext.getAccessCode() === otp;
-        if (!isAuthenticated)
-            throw new common_1.BadRequestException("OTP is invalid");
-        this.userContext.setAccessCode(null);
-        this.userContext.setIsAuthenticated(isAuthenticated);
-        return this.authService.signIn({ username, password });
+    async verifyOTP({ username, password, otp }) {
+        if (otp === this.userContext.getAccessCode()) {
+            return await this.authService.signIn({ username, password });
+        }
+        else {
+            throw new common_1.ForbiddenException("Invalid OTP or credentials");
+        }
     }
 };
 exports.OTPService = OTPService;
