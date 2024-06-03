@@ -46,7 +46,7 @@ import { WebSocketModule } from './websocket/websocket.module';
       port: parseInt(process.env.PORT_DB),
       username: process.env.USERNAME_DB,
       password: process.env.PASSWORD_DB, 
-      database: "dev2" ,//'dev1',
+      database: 'dev2',
       entities: [User, Authentication, Group, UserOnGroups, Room, Message, Permission, Invitation],
       synchronize: true
     }),

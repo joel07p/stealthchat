@@ -58,7 +58,7 @@ exports.AppModule = AppModule = __decorate([
                 port: parseInt(process.env.PORT_DB),
                 username: process.env.USERNAME_DB,
                 password: process.env.PASSWORD_DB,
-                database: "dev2",
+                database: 'dev2',
                 entities: [user_entity_1.User, authentication_entity_1.Authentication, group_entity_1.Group, user_on_group_entity_1.UserOnGroups, room_entity_1.Room, message_entity_1.Message, permission_entity_1.Permission, invitation_entity_1.Invitation],
                 synchronize: true
             }),
