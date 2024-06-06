@@ -6,6 +6,7 @@ const platform_socket_io_1 = require("@nestjs/platform-socket.io");
 const auth_service_1 = require("../auth/auth.service");
 const console_1 = require("console");
 const room_service_1 = require("../modules/room/room.service");
+const user_service_1 = require("../modules/user/user.service");
 class SocketIOAdapter extends platform_socket_io_1.IoAdapter {
     constructor(app, configService) {
         super(app);
@@ -29,21 +30,26 @@ class SocketIOAdapter extends platform_socket_io_1.IoAdapter {
         };
         const authService = this.app.get(auth_service_1.AuthService);
         const roomService = this.app.get(room_service_1.RoomService);
+        const userService = this.app.get(user_service_1.UserService);
         const server = super.createIOServer(port, optionsWithCORS);
-        server.of('messages').use(createTokenMiddleware(authService, this.logger)).use(createSocketValidationMiddleware(roomService, this.logger));
+        server.of('messages')
+            .use(createTokenMiddleware(authService, userService, this.logger))
+            .use(createSocketValidationMiddleware(roomService, this.logger));
         return server;
     }
 }
 exports.SocketIOAdapter = SocketIOAdapter;
-const createTokenMiddleware = (authService, logger) => async (socket, next) => {
+const createTokenMiddleware = (authService, userService, logger) => async (socket, next) => {
     (0, console_1.log)(socket.handshake);
     const token = socket.handshake.auth.authorization || socket.handshake.auth.Authorization || socket.handshake.headers['authorization'];
     logger.debug(`Validating auth token before connection: ${token}`);
     try {
         const userId = await authService.verifyToken(token);
+        const username = await userService.getUserProperty(userId, "username");
         logger.log(userId);
         if (userId) {
             socket.userId = userId;
+            socket.username = username;
             next();
         }
         else {
@@ -54,7 +60,6 @@ const createTokenMiddleware = (authService, logger) => async (socket, next) => {
         next(new Error('FORBIDDEN'));
     }
 };
-const createEncryptionMiddleware = () => { };
 const createSocketValidationMiddleware = (roomService, logger) => async (client, next) => {
     logger.log(`Trying to validate client ${client.id}`);
     const roomId = client.handshake.query.roomId.toString();

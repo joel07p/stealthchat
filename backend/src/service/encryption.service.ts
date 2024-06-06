@@ -3,29 +3,37 @@ import * as crypto from "crypto"
 
 @Injectable()
 export class EncryptionService {
-  decryptMessage(encryptedMessage: string, privateKey: string): string {
-    const decryptedBuffer = crypto.privateDecrypt(
+  private readonly keys: crypto.KeyPairSyncResult<string, string>
+
+  constructor() {
+    this.keys = this.generateKeyPair()
+  }
+
+  public static decryptMessage(encryptedMessage: string, privateKey: string): string {
+    const decryptedBuffer: Buffer = crypto.privateDecrypt(
       {
         key: privateKey,
         passphrase: '',
       },
       Buffer.from(encryptedMessage, 'base64')
-    );
+    )
+
     return decryptedBuffer.toString('utf-8');
   }
   
-  encryptMessage(message: string, publicKey: string): string {
-    const encryptedBuffer = crypto.publicEncrypt(
+  public static encryptMessage(message: string, publicKey: string): string {
+    const encryptedBuffer: Buffer = crypto.publicEncrypt(
       {
         key: publicKey,
         padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
       },
       Buffer.from(message, 'utf-8')
-    );
+    )
+
     return encryptedBuffer.toString('base64');
   }
 
-  generateKeyPair(): crypto.KeyPairSyncResult<string, string> {
+  private generateKeyPair(): crypto.KeyPairSyncResult<string, string> {
     return crypto.generateKeyPairSync('rsa', {
       modulusLength: 2048,
       publicKeyEncoding: {
@@ -36,6 +44,10 @@ export class EncryptionService {
         type: 'pkcs8',
         format: 'pem',
       },
-    });
+    })
+  }
+
+  public getPublicKey(): string {
+    return this.keys.publicKey
   }
 }

@@ -1,4 +1,4 @@
-import { AddMessage, Message } from "@/utils/types";
+import { AddMessage, DeleteMessage, Message } from "@/utils/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
@@ -36,8 +36,18 @@ export const useMessage = (socket: Socket | undefined, roomId: string | undefine
         setMessages((prevMessages) => [...prevMessages, message])
     })
 
+    const deleteMessage = async (deletedMessage: DeleteMessage) => {
+        socket?.emit('delete_message', deletedMessage)
+    }
+    const handleDeleteMessage = (deletedMessage: Message) => {
+        setMessages((prevMessages) => prevMessages.filter(message => message.id !== deletedMessage.id));
+    };
+    socket?.on('delete_message_update', handleDeleteMessage);
+
+
     return {
         messages,
-        addMessage
+        addMessage,
+        deleteMessage
     }
 }

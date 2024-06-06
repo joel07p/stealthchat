@@ -1,33 +1,67 @@
-import { addHours, format } from "date-fns"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import {
-    ContextMenu,
-    ContextMenuCheckboxItem,
-    ContextMenuContent,
-    ContextMenuItem,
-    ContextMenuLabel,
-    ContextMenuRadioGroup,
-    ContextMenuRadioItem,
-    ContextMenuSeparator,
-    ContextMenuShortcut,
-    ContextMenuSub,
-    ContextMenuSubContent,
-    ContextMenuSubTrigger,
-    ContextMenuTrigger,
-  } from "@/components/ui/context-menu"
-import {DateTime} from "luxon"
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu"
+import { useUser } from "@/hooks/use-user"
+import { DateTime } from "luxon"
+import { ReactElement } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
+import { ImageDisplay } from "./attachments/image-display"
+import { cn } from "@/lib/utils"
 
 type MessageProps = {
+  children?: React.ReactNode
+  id: string
   message: string
   username: string
   sentAt: string
+  type?: string
+  roomId: string | undefined,
+  onDeleteMessage: (messageId: string) => void
 }
 
-export const Message = ({message, username, sentAt}: MessageProps) => {
+enum MessageType {
+  MESSAGE = "message",
+  IMAGE = "image",
+  FILE = "file",
+  CODE = "code",
+}
+
+export const Message = ({id, message, username, sentAt, type, roomId, onDeleteMessage}: MessageProps) => {
+  const {userOwnsMessage} = useUser()
+
+  const copyMessageText = (): void => {
+    navigator.clipboard.writeText(message)
+  }
+
+  const selectComponent = (): ReactElement<any, any> | null | undefined => {
+    if(!type) return null
+    else if(type === MessageType.MESSAGE) return null
+    else if(type === MessageType.IMAGE) return <ImageDisplay roomId={roomId}/>
+  }
+
+  const component = selectComponent()
+
   return <>
     <ContextMenu>
       <ContextMenuTrigger className="text-sm">
         <Card className="mt-6 border border-dashed ">
+          {
+            component === null ?? (
+              <CardContent>{component}</CardContent>
+            )
+          }
           <CardHeader>
             <CardTitle>
               {username}
@@ -42,16 +76,33 @@ export const Message = ({message, username, sentAt}: MessageProps) => {
         </Card>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-64">
-        <ContextMenuItem inset>
-          Back
+        <ContextMenuItem
+          onClick={() => copyMessageText()}
+          inset
+        >
+          Copy
           <ContextMenuShortcut>⌘[</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem inset disabled>
-          Forward
+          Replay
           <ContextMenuShortcut>⌘]</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem inset>
-          Reload
+          Forward
+          <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem inset>
+          Edit
+          <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem
+          className={cn(
+            !userOwnsMessage(username) ? "hidden" : ""
+          )}
+          onClick={() => onDeleteMessage(id)}
+          inset
+        >
+          Delete
           <ContextMenuShortcut>⌘R</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuSub>

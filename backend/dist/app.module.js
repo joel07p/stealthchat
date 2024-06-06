@@ -34,6 +34,7 @@ const user_entity_1 = require("./modules/user/user.entity");
 const user_module_1 = require("./modules/user/user.module");
 const user_service_1 = require("./modules/user/user.service");
 const websocket_module_1 = require("./websocket/websocket.module");
+const file_module_1 = require("./modules/file/file.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -63,6 +64,7 @@ exports.AppModule = AppModule = __decorate([
                 synchronize: true
             }),
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication]),
+            file_module_1.FileModule,
             websocket_module_1.WebSocketModule
         ],
         controllers: [app_controller_1.AppController],

@@ -11,7 +11,6 @@ import {
   getSortedRowModel,
   useReactTable
 } from "@tanstack/react-table"
-import * as React from "react"
 
 import { logout } from "@/api/auth.requests"
 import { createGroup, getGroups, joinGroup } from "@/api/home.requests"
@@ -22,9 +21,9 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useGroupStore } from "@/stores/group.store"
 import { columns } from "@/utils/helpers/group-columns"
 import { CreateGroupData, JoinGroupData } from "@/utils/types/group.types"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 
@@ -37,14 +36,13 @@ export type Group = {
   rooms: number
 }
 
-export const HomePage = () =>  {
+export const HomePage: React.FC = () =>  {
   const navigate = useNavigate()
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
-
-  const [groups, setGroups] = React.useState<Array<Group>>([])
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
+  const [groups, setGroups] = useState<Array<Group>>([])
 
   const table = useReactTable({
     data: groups,
@@ -65,7 +63,7 @@ export const HomePage = () =>  {
     },
   })
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchGroups()
   }, [])
 
@@ -81,10 +79,6 @@ export const HomePage = () =>  {
     } catch (error) {
       console.error("Error fetching groups:", error)
     }
-  }
-
-  const handleNavigate = () => {
-    const groupId = useGroupStore()
   }
 
   const handleCreateGroup = async (createGroupData: CreateGroupData) => {
@@ -153,7 +147,7 @@ export const HomePage = () =>  {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    onClick={() => navigate(`test/group/${row.original.id}/room/${undefined}`)}
+                    onClick={() => navigate(`group/${row.original.id}/room/${undefined}`)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>

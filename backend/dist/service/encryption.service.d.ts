@@ -1,7 +1,8 @@
-/// <reference types="node" />
-import * as crypto from "crypto";
 export declare class EncryptionService {
-    decryptMessage(encryptedMessage: string, privateKey: string): string;
-    encryptMessage(message: string, publicKey: string): string;
-    generateKeyPair(): crypto.KeyPairSyncResult<string, string>;
+    private readonly keys;
+    constructor();
+    static decryptMessage(encryptedMessage: string, privateKey: string): string;
+    static encryptMessage(message: string, publicKey: string): string;
+    private generateKeyPair;
+    getPublicKey(): string;
 }

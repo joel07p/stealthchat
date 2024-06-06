@@ -16,9 +16,20 @@ export class MessageService {
         @InjectRepository(Room) private readonly roomRepository: Repository<Room>,
         private readonly userService: UserService
     ) {}
+    sui() {
+        log("sui")
+    }
 
-    async getMessage(roomId: string, relations: Array<string>) {
-        return await this.messageRepository.findOne({where: {room: {id: roomId}}, relations})
+    async getMessageById(messageId: string) {
+        log("message + " + messageId)
+        return await this.messageRepository.findOne({where: {id: messageId}})
+        return {username: "sui"}
+        //log(await this.messageRepository.findOne({where: {id: messageId}}))
+        //return await this.messageRepository.findOne({where: {id: messageId}})
+    }
+
+    async getMessage(messageId: string, relations: Array<string>) {
+        return await this.messageRepository.findOne({where: {id: messageId}, relations})
     }
 
     async getMessages(userId: string, roomId: string): Promise<Message[]> {
@@ -44,12 +55,13 @@ export class MessageService {
     }
 
     async deleteMessage({messageId, roomId}: DeleteMessage) {
-        this.logger.log(`Trying to delete message with id ${roomId} in room ${roomId}`)
+        this.logger.log(`Trying to delete message with id ${messageId} in room ${roomId}`)
 
         const message = await this.getMessage(messageId, ['room'])
 
         if(message && (message.room.id === roomId)) {
-            return await this.messageRepository.delete(message)
+            await this.messageRepository.delete(message)
+            return message
         } else {
             throw new NotFoundException(`Message ${messageId} not found`)
         }

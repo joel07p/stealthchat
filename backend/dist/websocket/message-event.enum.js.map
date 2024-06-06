@@ -1,1 +1,1 @@
-{"version":3,"file":"message-event.enum.js","sourceRoot":"","sources":["../../src/websocket/message-event.enum.ts"],"names":[],"mappings":";;;AAAA,IAAY,YAGX;AAHD,WAAY,YAAY;IACpB,yDAAyC,CAAA;IACzC,+DAA+C,CAAA;AACnD,CAAC,EAHW,YAAY,4BAAZ,YAAY,QAGvB"}
+{"version":3,"file":"message-event.enum.js","sourceRoot":"","sources":["../../src/websocket/message-event.enum.ts"],"names":[],"mappings":";;;AAAA,IAAY,YAKX;AALD,WAAY,YAAY;IACpB,2CAA2B,CAAA;IAC3B,iDAAiC,CAAA;IACjC,yDAAyC,CAAA;IACzC,+DAA+C,CAAA;AACnD,CAAC,EALW,YAAY,4BAAZ,YAAY,QAKvB"}

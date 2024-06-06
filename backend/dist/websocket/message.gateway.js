@@ -16,16 +16,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageGateway = void 0;
 const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
-const console_1 = require("console");
 const socket_io_1 = require("socket.io");
 const guards_1 = require("../common/guards");
 const message_1 = require("../modules/message");
 const message_service_1 = require("../modules/message/message.service");
+const encryption_service_1 = require("../service/encryption.service");
 const message_gateway_1 = require("../utils/helpers/message-gateway");
 const message_event_enum_1 = require("./message-event.enum");
+const user_owns_message_guard_1 = require("../common/guards/user-owns-message.guard");
 let MessageGateway = MessageGateway_1 = class MessageGateway {
-    constructor(messageService) {
+    constructor(messageService, encryptionService) {
         this.messageService = messageService;
+        this.encryptionService = encryptionService;
         this.logger = new common_1.Logger(MessageGateway_1.name);
         this.roomToSocketsMap = new Map;
     }
@@ -35,18 +37,13 @@ let MessageGateway = MessageGateway_1 = class MessageGateway {
     handleConnection(client) {
         this.roomToSocketsMap = (0, message_gateway_1.addSocket)(client, this.roomToSocketsMap);
         (0, message_gateway_1.logConnectionChange)(this.io, client, this.logger);
+        client.emit("server_public_key", this.encryptionService.getPublicKey());
     }
     handleDisconnect(client) {
         this.roomToSocketsMap = (0, message_gateway_1.removeSocket)(client, this.roomToSocketsMap);
         (0, message_gateway_1.logConnectionChange)(this.io, client, this.logger);
     }
-    test(client) {
-        (0, console_1.log)(client.userId);
-        this.io.emit("test", { hello: "sui" });
-    }
     async addMessage(data, client) {
-        (0, console_1.log)(data);
-        (0, console_1.log)(client.userId);
         const createdMessage = await this.messageService.addMessage(data, client.userId);
         if (!createdMessage)
             throw new common_1.ConflictException("Message might not be created");
@@ -65,16 +62,8 @@ __decorate([
     __metadata("design:type", socket_io_1.Namespace)
 ], MessageGateway.prototype, "io", void 0);
 __decorate([
-    (0, common_1.UseGuards)(guards_1.AgainstViewerGuard),
-    (0, websockets_1.SubscribeMessage)("test"),
-    __param(0, (0, websockets_1.ConnectedSocket)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], MessageGateway.prototype, "test", null);
-__decorate([
     (0, common_1.UseGuards)(guards_1.AgainstViewerGuard, guards_1.UserPermissionGuard),
-    (0, websockets_1.SubscribeMessage)("add_message"),
+    (0, websockets_1.SubscribeMessage)(message_event_enum_1.MessageEvent.ADD_MESSAGE),
     __param(0, (0, websockets_1.MessageBody)()),
     __param(1, (0, websockets_1.ConnectedSocket)()),
     __metadata("design:type", Function),
@@ -82,8 +71,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], MessageGateway.prototype, "addMessage", null);
 __decorate([
-    (0, common_1.UseGuards)(guards_1.AgainstViewerGuard, guards_1.UserPermissionGuard),
-    (0, websockets_1.SubscribeMessage)("delete_message"),
+    (0, common_1.UseGuards)(guards_1.AgainstViewerGuard, guards_1.UserPermissionGuard, user_owns_message_guard_1.UserOwnsMessageGuard),
+    (0, websockets_1.SubscribeMessage)(message_event_enum_1.MessageEvent.DELETE_MESSAGE),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [message_1.DeleteMessageDTO]),
@@ -93,6 +82,7 @@ exports.MessageGateway = MessageGateway = MessageGateway_1 = __decorate([
     (0, websockets_1.WebSocketGateway)({
         namespace: "messages"
     }),
-    __metadata("design:paramtypes", [message_service_1.MessageService])
+    __metadata("design:paramtypes", [message_service_1.MessageService,
+        encryption_service_1.EncryptionService])
 ], MessageGateway);
 //# sourceMappingURL=message.gateway.js.map

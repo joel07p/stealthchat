@@ -9,9 +9,13 @@ export declare class MessageService {
     private readonly userService;
     private logger;
     constructor(messageRepository: Repository<Message>, roomRepository: Repository<Room>, userService: UserService);
-    getMessage(roomId: string, relations: Array<string>): Promise<Message>;
+    sui(): void;
+    getMessageById(messageId: string): Promise<Message | {
+        username: string;
+    }>;
+    getMessage(messageId: string, relations: Array<string>): Promise<Message>;
     getMessages(userId: string, roomId: string): Promise<Message[]>;
     addMessage({ message, roomId }: AddMessage, userId: string): Promise<Message>;
-    deleteMessage({ messageId, roomId }: DeleteMessage): Promise<import("typeorm").DeleteResult>;
+    deleteMessage({ messageId, roomId }: DeleteMessage): Promise<Message>;
     private addMessageToRoom;
 }

@@ -1,11 +1,15 @@
 import { getData } from "@/service/storage"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { io, Socket } from "socket.io-client"
+import { useEncryption } from "./use-encryption"
 
 export const socketUrl = `http://127.0.0.1:3300/messages`
 
 export const useSocket = (roomId: string | undefined, groupId: string | undefined) => {  
     const [socket, setSocket] = useState<Socket>()
+    const {publicKey, setServerPublicKey} = useEncryption()
+    const navigate = useNavigate()
 
     useEffect(() => {
         createSocket()
@@ -29,10 +33,15 @@ export const useSocket = (roomId: string | undefined, groupId: string | undefine
             transports: ['websocket', 'polling']
         })
     
-        console.log(socket)
+        if(!socket) navigate("/navigate")
     
         socket.on('connect', () => {
             console.log(`Connected to socket ${socket.id}`)
+        })
+
+        socket.on('server_public_key', (publicKey: string) => {
+            console.log(publicKey)
+            setServerPublicKey(publicKey)
         })
 
         socket.on('add_message_update', (data) => {

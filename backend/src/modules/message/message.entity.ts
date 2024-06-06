@@ -1,6 +1,6 @@
 import { IsString, IsUUID, Length } from "class-validator";
 import { randomUUID } from "crypto";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
 import { Attachment } from "../file/attachment.entity";
 import { Room } from "../room/room.entity";
 
@@ -30,8 +30,8 @@ export class Message {
 
     @CreateDateColumn({ type: 'timestamp'})
     sentAt: Date;
-/*
-    @OneToOne(() => Attachment)
+
+    /*@OneToOne(() => Attachment)
     @JoinColumn()
     attachment: Attachment*/
 

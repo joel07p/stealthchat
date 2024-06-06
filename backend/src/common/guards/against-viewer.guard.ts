@@ -19,7 +19,7 @@ export class AgainstViewerGuard implements CanActivate {
         const groupId = socket.handshake.query.groupId?.toString()
         //const groupId = (socket.handshake.headers.groupid || socket.handshake.headers['groupid'] || socket.handshake.headers['groupId']).toString()
         
-        console.log(userId)
+        console.log("username" + socket.username)
         log(groupId)
         if(!userId || !groupId) return false
 

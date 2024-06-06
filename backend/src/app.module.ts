@@ -25,6 +25,7 @@ import { User } from './modules/user/user.entity';
 import { UserModule } from './modules/user/user.module';
 import { UserService } from './modules/user/user.service';
 import { WebSocketModule } from './websocket/websocket.module';
+import { FileModule } from './modules/file/file.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { WebSocketModule } from './websocket/websocket.module';
       synchronize: true
     }),
     TypeOrmModule.forFeature([User, Authentication]),
+    FileModule,
     WebSocketModule
   ],
   controllers: [AppController],

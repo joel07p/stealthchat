@@ -25,7 +25,7 @@ let AgainstViewerGuard = AgainstViewerGuard_1 = class AgainstViewerGuard {
         (0, console_1.log)(socket.handshake);
         const userId = socket.userId;
         const groupId = socket.handshake.query.groupId?.toString();
-        console.log(userId);
+        console.log("username" + socket.username);
         (0, console_1.log)(groupId);
         if (!userId || !groupId)
             return false;
