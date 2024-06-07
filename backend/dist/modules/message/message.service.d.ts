@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 import { Room } from '../room/room.entity';
 import { UserService } from '../user/user.service';
 import { Message } from './message.entity';
-import { AddMessage, DeleteMessage } from './types';
+import { AddMessage, DeleteMessage, UpdateMessageText } from './types';
 export declare class MessageService {
     private readonly messageRepository;
     private readonly roomRepository;
@@ -16,6 +16,13 @@ export declare class MessageService {
     getMessage(messageId: string, relations: Array<string>): Promise<Message>;
     getMessages(userId: string, roomId: string): Promise<Message[]>;
     addMessage({ message, roomId }: AddMessage, userId: string): Promise<Message>;
+    updateMessageText({ messageId, roomId, messageText }: UpdateMessageText): Promise<{
+        message: string;
+        id: string;
+        username: string;
+        sentAt: Date;
+        room: Room;
+    } & Message>;
     deleteMessage({ messageId, roomId }: DeleteMessage): Promise<Message>;
     private addMessageToRoom;
 }

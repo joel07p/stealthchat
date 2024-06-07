@@ -49,6 +49,12 @@ let MessageGateway = MessageGateway_1 = class MessageGateway {
             throw new common_1.ConflictException("Message might not be created");
         (0, message_gateway_1.sendDataToSockets)(this.io, this.roomToSocketsMap, data.roomId, createdMessage, message_event_enum_1.MessageEvent.ADD_MESSAGE_UPDATE);
     }
+    async updateessage(data) {
+        const updatedMessage = await this.messageService.updateMessageText(data);
+        if (!updatedMessage)
+            throw new common_1.ConflictException("Message might not be updated");
+        (0, message_gateway_1.sendDataToSockets)(this.io, this.roomToSocketsMap, data.roomId, updatedMessage, message_event_enum_1.MessageEvent.UPDATE_MESSAGE_UPDATE);
+    }
     async deleteMessage(data) {
         const deletedMessage = await this.messageService.deleteMessage(data);
         if (!deletedMessage)
@@ -70,6 +76,14 @@ __decorate([
     __metadata("design:paramtypes", [message_1.AddMessageDTO, Object]),
     __metadata("design:returntype", Promise)
 ], MessageGateway.prototype, "addMessage", null);
+__decorate([
+    (0, common_1.UseGuards)(guards_1.AgainstViewerGuard, guards_1.UserPermissionGuard, user_owns_message_guard_1.UserOwnsMessageGuard),
+    (0, websockets_1.SubscribeMessage)(message_event_enum_1.MessageEvent.UPDATE_MESSAGE),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [message_1.UpdateMessageDTO]),
+    __metadata("design:returntype", Promise)
+], MessageGateway.prototype, "updateessage", null);
 __decorate([
     (0, common_1.UseGuards)(guards_1.AgainstViewerGuard, guards_1.UserPermissionGuard, user_owns_message_guard_1.UserOwnsMessageGuard),
     (0, websockets_1.SubscribeMessage)(message_event_enum_1.MessageEvent.DELETE_MESSAGE),

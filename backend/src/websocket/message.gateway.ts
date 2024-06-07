@@ -2,7 +2,7 @@ import { ConflictException, Logger, UseGuards } from "@nestjs/common";
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Namespace, Socket } from "socket.io";
 import { AgainstViewerGuard, UserPermissionGuard } from "src/common/guards";
-import { AddMessageDTO, DeleteMessageDTO } from "src/modules/message";
+import { AddMessageDTO, DeleteMessageDTO, UpdateMessageDTO } from "src/modules/message";
 import { MessageService } from "src/modules/message/message.service";
 import { EncryptionService } from "src/service/encryption.service";
 import { addSocket, logConnectionChange, removeSocket, sendDataToSockets } from "src/utils/helpers/message-gateway";
@@ -47,6 +47,15 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         if(!createdMessage) throw new ConflictException("Message might not be created")
 
         sendDataToSockets(this.io, this.roomToSocketsMap, data.roomId, createdMessage, MessageEvent.ADD_MESSAGE_UPDATE)
+    }
+
+    @UseGuards(AgainstViewerGuard, UserPermissionGuard, UserOwnsMessageGuard)
+    @SubscribeMessage(MessageEvent.UPDATE_MESSAGE)
+    async updateessage(@MessageBody() data: UpdateMessageDTO) {
+        const updatedMessage = await this.messageService.updateMessageText(data)
+        if(!updatedMessage) throw new ConflictException("Message might not be updated")
+
+        sendDataToSockets(this.io, this.roomToSocketsMap, data.roomId, updatedMessage, MessageEvent.UPDATE_MESSAGE_UPDATE)
     }
 
     @UseGuards(AgainstViewerGuard, UserPermissionGuard, UserOwnsMessageGuard)

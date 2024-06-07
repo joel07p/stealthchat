@@ -21,6 +21,9 @@ let RoomController = class RoomController {
     constructor(roomService) {
         this.roomService = roomService;
     }
+    getRoom(roomId) {
+        return this.roomService.getRoom(roomId);
+    }
     getRooms(userId, groupId) {
         return this.roomService.getRooms({ groupId, userId });
     }
@@ -33,7 +36,14 @@ let RoomController = class RoomController {
 };
 exports.RoomController = RoomController;
 __decorate([
-    (0, common_1.Get)(':groupId'),
+    (0, common_1.Get)(':roomId'),
+    __param(0, (0, common_1.Param)('roomId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], RoomController.prototype, "getRoom", null);
+__decorate([
+    (0, common_1.Get)('/group/:groupId'),
     __param(0, (0, decorators_1.User)("sub")),
     __param(1, (0, common_1.Param)('groupId')),
     __metadata("design:type", Function),

@@ -3,22 +3,19 @@ import {
   ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuRadioGroup,
-  ContextMenuRadioItem,
   ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuSub,
   ContextMenuSubContent,
   ContextMenuSubTrigger,
-  ContextMenuTrigger,
+  ContextMenuTrigger
 } from "@/components/ui/context-menu"
 import { useUser } from "@/hooks/use-user"
+import { cn } from "@/lib/utils"
 import { DateTime } from "luxon"
 import { ReactElement } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { ImageDisplay } from "./attachments/image-display"
-import { cn } from "@/lib/utils"
 
 type MessageProps = {
   children?: React.ReactNode
@@ -28,7 +25,9 @@ type MessageProps = {
   sentAt: string
   type?: string
   roomId: string | undefined,
+  isEditing: boolean
   onDeleteMessage: (messageId: string) => void
+  onUpdateMessage: (messageId: string, messageText: string) => void
 }
 
 enum MessageType {
@@ -38,7 +37,7 @@ enum MessageType {
   CODE = "code",
 }
 
-export const Message = ({id, message, username, sentAt, type, roomId, onDeleteMessage}: MessageProps) => {
+export const Message = ({id, message, username, sentAt, type, roomId, isEditing, onDeleteMessage, onUpdateMessage}: MessageProps) => {
   const {userOwnsMessage} = useUser()
 
   const copyMessageText = (): void => {
@@ -56,7 +55,7 @@ export const Message = ({id, message, username, sentAt, type, roomId, onDeleteMe
   return <>
     <ContextMenu>
       <ContextMenuTrigger className="text-sm">
-        <Card className="mt-6 border border-dashed ">
+        <Card className={cn("mt-6 border border-dashed", isEditing && "border-blue-500")}>
           {
             component === null ?? (
               <CardContent>{component}</CardContent>
@@ -91,7 +90,13 @@ export const Message = ({id, message, username, sentAt, type, roomId, onDeleteMe
           Forward
           <ContextMenuShortcut>⌘R</ContextMenuShortcut>
         </ContextMenuItem>
-        <ContextMenuItem inset>
+        <ContextMenuItem
+          className={cn(
+            !userOwnsMessage(username) ? "hidden" : ""
+          )}
+          onClick={() => onUpdateMessage(id, message)}
+          inset
+        >
           Edit
           <ContextMenuShortcut>⌘R</ContextMenuShortcut>
         </ContextMenuItem>
@@ -125,14 +130,6 @@ export const Message = ({id, message, username, sentAt, type, roomId, onDeleteMe
         </ContextMenuCheckboxItem>
         <ContextMenuCheckboxItem>Show Full URLs</ContextMenuCheckboxItem>
         <ContextMenuSeparator />
-        <ContextMenuRadioGroup value="pedro">
-          <ContextMenuLabel inset>People</ContextMenuLabel>
-          <ContextMenuSeparator />
-          <ContextMenuRadioItem value="pedro">
-            Pedro Duarte
-          </ContextMenuRadioItem>
-          <ContextMenuRadioItem value="colm">Colm Tuite</ContextMenuRadioItem>
-        </ContextMenuRadioGroup>
       </ContextMenuContent>
     </ContextMenu>
   </>

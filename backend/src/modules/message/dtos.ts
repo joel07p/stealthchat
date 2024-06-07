@@ -12,6 +12,22 @@ export class AddMessageDTO {
     attachment: any
 }
 
+export class UpdateMessageDTO {
+    @IsString()
+    @IsUUID()
+    @IsNotEmpty()
+    messageId: string
+
+    @IsString()
+    @IsUUID()
+    @IsNotEmpty()
+    roomId: string
+
+    @IsString()
+    @IsNotEmpty()
+    messageText: string
+}
+
 export class DeleteMessageDTO {
     messageId: string
     roomId: string

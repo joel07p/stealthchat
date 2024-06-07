@@ -17,3 +17,7 @@ export type DeleteMessage = {
     messageId: string
     roomId: string | undefined
 }
+
+export type UpdateMessage = DeleteMessage & {
+    messageText: string
+}

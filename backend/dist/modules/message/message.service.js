@@ -16,11 +16,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const console_1 = require("console");
 const typeorm_2 = require("typeorm");
 const room_entity_1 = require("../room/room.entity");
 const user_service_1 = require("../user/user.service");
 const message_entity_1 = require("./message.entity");
-const console_1 = require("console");
 let MessageService = MessageService_1 = class MessageService {
     constructor(messageRepository, roomRepository, userService) {
         this.messageRepository = messageRepository;
@@ -55,6 +55,14 @@ let MessageService = MessageService_1 = class MessageService {
         await this.addMessageToRoom(roomId, savedMessage);
         this.logger.log("Message created");
         return savedMessage;
+    }
+    async updateMessageText({ messageId, roomId, messageText }) {
+        const message = await this.getMessage(messageId, ["room"]);
+        if (!(message.room.id === roomId))
+            throw new common_1.ForbiddenException();
+        const updatedMessage = await this.messageRepository.save({ ...message, message: messageText });
+        this.logger.log("Message updated");
+        return updatedMessage;
     }
     async deleteMessage({ messageId, roomId }) {
         this.logger.log(`Trying to delete message with id ${messageId} in room ${roomId}`);

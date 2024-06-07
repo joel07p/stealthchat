@@ -47,15 +47,21 @@ import { useRoom } from "@/hooks/use-room"
 import { useSocket } from "@/hooks/use-socket"
 import React, { useEffect, useRef, useState } from "react"
 import { useParams } from "react-router-dom"
+import { useUser } from "@/hooks/use-user"
+import { useGroup } from "@/hooks/use-group"
 
 export const ChatPage: React.FC = () => {
   const [messageText, setMessageText] = useState<string>("")
+  const [updateMessageFlag, setUpdateMessageFlag] = useState<boolean>(false)
+  const [targetMessageId, setTargetMessageId] = useState<string>("")
   const chatAreaRef = useRef<HTMLDivElement | null>(null)
   const {roomId, groupId} = useParams<{roomId: string, groupId: string}>()
   const {room} = useRoom(roomId, groupId)
   const {socket} = useSocket(roomId, groupId)
-  const {messages, addMessage, deleteMessage} = useMessage(socket, roomId)
+  const {messages, addMessage, updateMessage, deleteMessage} = useMessage(socket, roomId)
   const today = new Date()
+  const {username} = useUser()
+  const {group} = useGroup(groupId)
 
   useEffect(() => {
     scrollToBottom()
@@ -66,15 +72,31 @@ export const ChatPage: React.FC = () => {
     chatAreaRef.current.scrollIntoView(false)
   }
 
-  const handleAddMessage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+  const handleAddMessage = (e: any): void => {
     e.preventDefault()
-    console.log("add message")
-    addMessage({message: messageText, roomId, attachment: {}})
+    if(updateMessageFlag) {
+      updateMessage({messageId: targetMessageId, roomId, messageText})
+      setUpdateMessageFlag(false)
+      setTargetMessageId("")
+    } else {
+      addMessage({message: messageText, roomId, attachment: {}})
+    }
+    setMessageText("")
   }
 
   const handleDeleteMessage = (messageId: string): void => {
     deleteMessage({messageId, roomId})
   }
+
+  const handleUpdateMessage = (messageId: string, messageText: string): void => {
+    setUpdateMessageFlag(true)
+    setMessageText(messageText)
+    setTargetMessageId(messageId)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent): void => {
+    if(e.key === "Enter") handleAddMessage(e)
+  } 
 
   return <>
     <div className="flex h-full flex-col h-screen">
@@ -83,15 +105,15 @@ export const ChatPage: React.FC = () => {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">User Name</BreadcrumbLink>
+                <BreadcrumbLink href="/">{username}</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/docs/components">Group Name</BreadcrumbLink>
+                <BreadcrumbLink href="/docs/components">{group?.name}</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Room Name {room?.id}</BreadcrumbPage>
+                <BreadcrumbPage>{room?.name}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -244,7 +266,9 @@ export const ChatPage: React.FC = () => {
                     sentAt={message.sentAt}
                     type={message.type}
                     roomId={roomId}
+                    isEditing={message.id === targetMessageId}
                     onDeleteMessage={(messageId: string) => handleDeleteMessage(messageId)}
+                    onUpdateMessage={(messageId: string, messageText: string) => handleUpdateMessage(messageId, messageText)}
                   /> 
                 ))
               }
@@ -257,7 +281,9 @@ export const ChatPage: React.FC = () => {
               <Textarea
                 className="p-4"
                 placeholder={`Reply...`}
+                value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e)}
               />
               <div className="flex items-center">
                 <Label
