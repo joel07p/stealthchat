@@ -21,7 +21,6 @@ import {
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -72,7 +71,11 @@ export const ChatPage: React.FC = () => {
     chatAreaRef.current.scrollIntoView(false)
   }
 
+<<<<<<< HEAD
   const handleAddMessage = (e: any): void => {
+=======
+  const handleAddMessage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+>>>>>>> 998973386d70ce879356b6b41b7df5a708a5217e
     e.preventDefault()
     if(updateMessageFlag) {
       updateMessage({messageId: targetMessageId, roomId, messageText})
@@ -196,9 +199,6 @@ export const ChatPage: React.FC = () => {
                       </span>
                     </Button>
                   </div>
-                </div>
-                <div className="p-2">
-                  <Calendar />
                 </div>
               </PopoverContent>
             </Popover>

@@ -21,9 +21,6 @@ class SocketIOAdapter extends platform_socket_io_1.IoAdapter {
                 `http://localhost:${3300}`,
             ],
         };
-        this.logger.log('Configuring SocketIO server with custom CORS options', {
-            cors,
-        });
         const optionsWithCORS = {
             ...options,
             cors,

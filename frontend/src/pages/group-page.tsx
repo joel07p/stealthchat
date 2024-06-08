@@ -21,6 +21,15 @@ export const GroupPage: React.FC = () => {
   
   const defaultLayout = [400, 440, 655]
   const navCollapsedSize = 4
+<<<<<<< HEAD
+=======
+  const [isCollapsed, ] = useState(false)
+
+  useEffect(() => {
+    console.log(roomId)
+    console.log(typeof roomId)
+  }, [groupId, roomId])
+>>>>>>> 998973386d70ce879356b6b41b7df5a708a5217e
 
   return (
     <>
