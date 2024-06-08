@@ -1,10 +1,10 @@
 import { getData } from "@/service/storage"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { io, Socket } from "socket.io-client"
+import { Socket, io } from "socket.io-client"
 import { useEncryption } from "./use-encryption"
 
-export const socketUrl = `http://127.0.0.1:3300/messages`
+export const socketUrl =  import.meta.env.VITE_SOCKET
 
 export const useSocket = (roomId: string | undefined, groupId: string | undefined) => {  
     const [socket, setSocket] = useState<Socket>()
