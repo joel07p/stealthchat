@@ -25,7 +25,8 @@ type MessageProps = {
   sentAt: string
   type?: string
   roomId: string | undefined,
-  isEditing: boolean
+  isEditing: boolean,
+  className: string
   onDeleteMessage: (messageId: string) => void
   onUpdateMessage: (messageId: string, messageText: string) => void
 }
@@ -37,7 +38,7 @@ enum MessageType {
   CODE = "code",
 }
 
-export const Message = ({id, message, username, sentAt, type, roomId, isEditing, onDeleteMessage, onUpdateMessage}: MessageProps) => {
+export const Message: React.FC<MessageProps> = ({id, message, username, sentAt, type, roomId, isEditing, className, onDeleteMessage, onUpdateMessage}: MessageProps) => {
   const {userOwnsMessage} = useUser()
 
   const copyMessageText = (): void => {
@@ -51,11 +52,12 @@ export const Message = ({id, message, username, sentAt, type, roomId, isEditing,
   }
 
   const component = selectComponent()
+  console.log(userOwnsMessage(username))
 
   return <>
     <ContextMenu>
-      <ContextMenuTrigger className="text-sm">
-        <Card className={cn("mt-6 border border-dashed", isEditing && "border-blue-500")}>
+      <ContextMenuTrigger className={cn("text-sm")}>
+        <Card className={cn("mt-6 border border-dashed", isEditing && "border-blue-500", "w-[60%]", className)}>
           {
             component === null ?? (
               <CardContent>{component}</CardContent>

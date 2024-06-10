@@ -39,7 +39,7 @@ export const SignUpCard = ({ onSubmit }: RegisterCardProps) => {
                 </div>
                 <div className="space-y-1">
                     <Label htmlFor="password">Password</Label>
-                    <Input id="password" ref={passwordRef} defaultValue="123" />
+                    <Input id="password" ref={passwordRef} defaultValue="123"  type="password"/>
                 </div>
             </CardContent>
             <CardFooter>

@@ -50,7 +50,7 @@ export const SignInCard = ({ onSubmit }: LoginCardProps) => {
                 </div>
                 <div className="space-y-1">
                     <Label htmlFor="password">Password</Label>
-                    <Input id="password" ref={passwordRef} defaultValue="123" />
+                    <Input id="password" ref={passwordRef} defaultValue="123" type="password"/>
                 </div>
                 <div className="flex items-center space-x-3">
                     <Switch id="airplane-mode" className="mt-3" checked={switchState} onCheckedChange={setSwitchState} />

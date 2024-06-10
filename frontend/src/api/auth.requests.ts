@@ -1,3 +1,4 @@
+import { useAuth } from "@/components/provider/auth-provider"
 import { getData, setData } from "@/service/storage"
 import { handleRequestError } from "@/utils/helpers/handle-request-error"
 import { Credentials, OTPCredentials, RegisterCredentials } from "@/utils/types"
@@ -9,9 +10,7 @@ type SetSignedInStateCallback = (state: boolean) => void;
 
 export const login = async (credentials: Credentials, setSignedInState: SetSignedInStateCallback, navigate: NavigateFunction) => {
     try {
-        const response: AxiosResponse = await axios.post('auth/signin', credentials)
-
-        const { data, status } = response
+        const {data, status}: AxiosResponse = await axios.post('auth/signin', credentials)
 
         if(status >= 200 && status < 300) {
             setData("accessToken", data.accessToken)
@@ -80,6 +79,9 @@ export const logout = async (navigate: NavigateFunction) => {
         await axios.post('auth/logout', { refreshToken })
         navigate('/auth')
         toast.info("User logged out")
+        setData('accessToken', "")
+        const {setSignedInState} = useAuth()
+        setSignedInState(false)
     } catch(error) {
         console.log(error)
     }

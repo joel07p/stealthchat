@@ -42,13 +42,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useGroup } from "@/hooks/use-group"
 import { useMessage } from "@/hooks/use-message"
 import { useRoom } from "@/hooks/use-room"
 import { useSocket } from "@/hooks/use-socket"
+import { useUser } from "@/hooks/use-user"
 import React, { useEffect, useRef, useState } from "react"
 import { useParams } from "react-router-dom"
-import { useUser } from "@/hooks/use-user"
-import { useGroup } from "@/hooks/use-group"
 
 export const ChatPage: React.FC = () => {
   const [messageText, setMessageText] = useState<string>("")
@@ -109,7 +109,7 @@ export const ChatPage: React.FC = () => {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/docs/components">{group?.name}</BreadcrumbLink>
+                <BreadcrumbLink href={`/group/${group?.id}/room/undefined`}>{group?.name}</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
@@ -259,6 +259,7 @@ export const ChatPage: React.FC = () => {
               {
                 messages.map((message) => (
                   <Message
+                    className={username === message.username ? "justify-" : "float-left"}
                     key={message.id}
                     id={message.id}
                     message={message.message}

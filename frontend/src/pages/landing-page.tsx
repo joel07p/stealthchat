@@ -1,5 +1,5 @@
 export const LandingPage = () => {
-    return <>
-        Landing
-    </>
+    return (
+        <div>Landing</div>
+    )
 }

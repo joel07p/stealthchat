@@ -34,6 +34,7 @@ export type Group = {
   role: "admin" | "user" | "viewer"
   users: number
   rooms: number
+  joinCode: string
 }
 
 export const HomePage: React.FC = () =>  {
@@ -99,12 +100,15 @@ export const HomePage: React.FC = () =>  {
     }
   }
 
-  return (
+  return <>
     <div className="flex justify-center">
       <div className="w-[70%] mt-6">
         <h1 className="text-6xl font-semibold mb-2">Your Groups</h1>
         <Badge variant="outline" className="mb-2">
           <p className="text-green-400">New Release</p>
+        </Badge>
+        <Badge variant="outline" className="mb-2">
+          <p className="text-green-400">Alpha Version 1.1</p>
         </Badge>
         <div className="flex items-center py-4 flex-wrap">
           <Input
@@ -174,5 +178,5 @@ export const HomePage: React.FC = () =>  {
         </div>
     </div>
   </div>  
-  )
+  </>
 }

@@ -7,7 +7,7 @@ export const useEncryption = () => {
     const [serverPublicKey, setServerPublicKey] = useState<string>()
 
     useEffect(() => {
-        //generateKeyPair()
+        generateKeyPair()
     })
 
     const generateKeyPair = () => {
