@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom"
 import { io, Socket } from "socket.io-client"
 import { useEncryption } from "./use-encryption"
 
-export const socketUrl = `http://127.0.0.1:3300/messages`
+export const socketUrl = import.meta.env.VITE_SOCKET
 
 export const useSocket = (roomId: string | undefined, groupId: string | undefined) => {  
     const [socket, setSocket] = useState<Socket>()
-    const {publicKey, setServerPublicKey} = useEncryption()
+    const {setServerPublicKey} = useEncryption()
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -42,10 +42,6 @@ export const useSocket = (roomId: string | undefined, groupId: string | undefine
         socket.on('server_public_key', (publicKey: string) => {
             console.log(publicKey)
             setServerPublicKey(publicKey)
-        })
-
-        socket.on('add_message_update', (data) => {
-            console.log(data)
         })
 
         setSocket(socket)

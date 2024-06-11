@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom"
 export const AuthenticationPage: React.FC = () => {
     const { setSignedInState } = useAuth()
     const navigate = useNavigate()
-    const [openedTab, setOpenedTab] = useState("login")
+    const [openedTab, setOpenedTab] = useState<string>("login")
 
     const handleLogin = (username: string, password: string): void => {
         login({ username, password }, setSignedInState, navigate)

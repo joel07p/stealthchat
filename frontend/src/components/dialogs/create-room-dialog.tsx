@@ -19,15 +19,15 @@ type CreateRoomProps = {
 export const CreateRoomDialog = ({ onCreateRoom }: CreateRoomProps) => {
   const [name, setName] = useState("");
   const [permission, setPermission] = useState("")
-	const [permissions, setPermissions] = useState<Array<string>>([])
+	const [permissions, setPermissions] = useState<Array<string>>(["default"])
 
   return <>
     <Dialog>
       <DialogTrigger asChild>
-                <Button
-                    variant="link"
-                    size="sm"
-                >Create</Button>
+        <Button
+            variant="link"
+            size="sm"
+        >Create</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>

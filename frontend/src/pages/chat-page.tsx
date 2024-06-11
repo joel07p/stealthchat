@@ -21,7 +21,6 @@ import {
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -197,9 +196,6 @@ export const ChatPage: React.FC = () => {
                     </Button>
                   </div>
                 </div>
-                <div className="p-2">
-                  <Calendar />
-                </div>
               </PopoverContent>
             </Popover>
             <TooltipContent>Snooze</TooltipContent>
@@ -259,7 +255,7 @@ export const ChatPage: React.FC = () => {
               {
                 messages.map((message) => (
                   <Message
-                    className={username === message.username ? "justify-" : "float-left"}
+                    className={username === message.username ? "bg-gray-800" : ""}
                     key={message.id}
                     id={message.id}
                     message={message.message}

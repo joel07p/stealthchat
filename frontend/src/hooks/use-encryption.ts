@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react"
 import * as crypto from "crypto"
+import { useEffect, useState } from "react"
 
 export const useEncryption = () => {
-    const [publicKey, setPublicKey] = useState<string>()
-    const [privateKey, setPrivateKey] = useState<string>()
+    const [publicKey] = useState<string>()
+    const [privateKey] = useState<string>()
     const [serverPublicKey, setServerPublicKey] = useState<string>()
 
     useEffect(() => {
-        generateKeyPair()
+        //generateKeyPair()
     })
 
-    const generateKeyPair = () => {
+    /*const generateKeyPair = () => {
         const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
             modulusLength: 2048,
             publicKeyEncoding: {
@@ -25,7 +25,7 @@ export const useEncryption = () => {
       
         setPublicKey(publicKey)
         setPrivateKey(privateKey)
-    }
+    }*/
 
     const encryptMessage = (message: string) => {
         if (!serverPublicKey) {
