@@ -2,8 +2,8 @@ import { Room } from "@/utils/types"
 import axios from "axios"
 import { useEffect, useState } from "react"
 
-export const useRoom = (_roomId: string | undefined, groupId: string | undefined) => {
-    const [room] = useState<Room>()
+export const useRoom = (roomId: string | undefined, groupId: string | undefined) => {
+    const [room, setRoom] = useState<Room>()
     const [rooms, setRooms] = useState<Array<Room>>()
 
     useEffect(() => {
