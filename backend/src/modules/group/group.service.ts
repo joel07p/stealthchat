@@ -4,12 +4,11 @@ import { Authentication } from 'src/auth/authentication.entity';
 import { Repository } from 'typeorm';
 import { UserRole } from '../user/user-role.enum';
 import { User } from '../user/user.entity';
+import { UserService } from '../user/user.service';
 import { GroupType } from './group-type.enum';
 import { CreateGroupDTO, JoinGroupDTO, LeaveGroupDTO } from './group.dto';
 import { Group } from './group.entity';
 import { UserOnGroups } from './user-on-group.entity';
-import { UserService } from '../user/user.service';
-import { log } from 'console';
 
 @Injectable()
 export class GroupService {
@@ -41,24 +40,23 @@ export class GroupService {
                     }
                 }
             })
-            console.log({
-                id: group.id,
-                name: group.name,
-                type: group.type,
-                users: 0,
-                rooms: await this.countRoomsInGroup(group.id)
-            })
+
             return {
                 id: group.id,
                 name: group.name,
                 type: group.type,
                 role: thisUserOnGroup ? thisUserOnGroup.role : null,
-                users: 0,//group.userOnGroups.length,
-                rooms: await this.countRoomsInGroup(group.id)//group.userOnGroups.length,
+                joinCode: group.joinCode,
+                users: await this.countUsersInGroup(group.id),
+                rooms: await this.countRoomsInGroup(group.id)
             };
         }))
 
         return transformedGroups
+    }
+
+    private async countUsersInGroup(groupId: string) {
+        return await this.userOnGroupsRepository.countBy({group: {id: groupId}})
     }
     //make save to bad data
     async createGroup(userId: string, data: CreateGroupDTO) {
@@ -107,14 +105,12 @@ export class GroupService {
             }
         })
 
-        console.log(thisUserOnGroup)
-
         return {
             id: group.id,
             name: group.name,
             type: group.type,
             role: thisUserOnGroup.role,
-            users: 0,
+            users: await this.countUsersInGroup(group.id),
             rooms: await this.countRoomsInGroup(group.id)
         }
     }
@@ -122,7 +118,6 @@ export class GroupService {
     async joinGroup(userId: string, data: JoinGroupDTO) {   
         const thisUser = await this.getUser(userId)
         const { joinCode } = data
-        console.log(joinCode)
 
         const group = await this.groupRepository.findOne({
             where: {
@@ -140,28 +135,18 @@ export class GroupService {
 
         await this.userOnGroupsRepository.save(userOnGroup)
 
-        console.log({
-            id: group.id,
-            name: group.name,
-            type: group.type,
-            role: userOnGroup.role,
-            users: 0,
-            rooms: await this.countRoomsInGroup(group.id)
-        })
         return {
             id: group.id,
             name: group.name,
             type: group.type,
             role: userOnGroup.role,
-            users: 0,
+            users: await this.countUsersInGroup(group.id),
             rooms: await this.countRoomsInGroup(group.id)
         }
     }
 
     async leaveGroup(userId: string, data: LeaveGroupDTO) {
         const { groupId } = data
-        console.log(groupId)
-        console.log(userId)
 
         const group = await this.groupRepository.findOne({
             where: {
@@ -184,7 +169,10 @@ export class GroupService {
 
         if(!userOnGroup) throw new NotFoundException("Relation not found")
 
-        return await this.userOnGroupsRepository.remove(userOnGroup)
+        const leftGroup = await this.userOnGroupsRepository.remove(userOnGroup)
+        await this.changeGroupType(groupId)
+        
+        return leftGroup
     }
 
     async getUserRole(userId: string, groupId: string) {
@@ -198,7 +186,6 @@ export class GroupService {
                 }
             }
         })
-        log(userOnGroup)
 
         return userOnGroup.role
     }
@@ -229,7 +216,17 @@ export class GroupService {
         const group = await this.getGroup(groupId, ["rooms"])
 
         if(!group) throw new NotFoundException(`No such group ${groupId}`)
-        log(group.rooms.length)
         return group.rooms.length.valueOf()
+    }
+
+    private async changeGroupType(groupId: string) {
+        const usersInGroup = await this.countUsersInGroup(groupId)
+
+        const group = await this.groupRepository.findOne({where: {id: groupId}})
+
+        await this.groupRepository.save({
+            ...group,
+            type: usersInGroup < 3 ? GroupType.SINGLE : GroupType.MULTI
+        })
     }
 }

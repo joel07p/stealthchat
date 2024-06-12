@@ -5,7 +5,7 @@ const config_1 = require("@nestjs/config");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const socket_io_adapter_1 = require("./websocket/socket-io-adapter");
-async function bootstrap() {
+const bootstrap = async () => {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, { cors: true });
     app.useGlobalPipes(new common_1.ValidationPipe());
     app.enableCors({});
@@ -15,6 +15,6 @@ async function bootstrap() {
     app.useWebSocketAdapter(new socket_io_adapter_1.SocketIOAdapter(app, configService));
     await app.listen(PORT);
     common_1.Logger.log("App listens on port: " + PORT);
-}
+};
 bootstrap();
 //# sourceMappingURL=main.js.map

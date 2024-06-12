@@ -9,6 +9,7 @@ export declare class GroupController {
         name: string;
         type: string;
         role: string;
+        joinCode: string;
         users: number;
         rooms: number;
     }[]>;

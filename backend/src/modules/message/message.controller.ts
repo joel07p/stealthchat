@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { User } from 'src/common/decorators';
 import { MessageService } from './message.service';
 import { AddMessage } from './types';
-import { User } from 'src/common/decorators';
 
 @Controller('message')
 export class MessageController {
@@ -12,6 +12,11 @@ export class MessageController {
     @Get(':roomId')
     getMessages(@User('sub') userId: string, @Param('roomId') roomId: string) {
         return this.messageService.getMessages(userId, roomId)
+    }
+
+    @Get()
+    getMessage(@Body() messageId: any) {
+        return this.messageService.getMessageById(messageId.messageId)
     }
 
     @Post()

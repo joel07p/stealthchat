@@ -16,6 +16,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const console_1 = require("console");
 const typeorm_2 = require("typeorm");
 const room_entity_1 = require("../room/room.entity");
 const user_service_1 = require("../user/user.service");
@@ -27,8 +28,16 @@ let MessageService = MessageService_1 = class MessageService {
         this.userService = userService;
         this.logger = new common_1.Logger(MessageService_1.name);
     }
-    async getMessage(roomId, relations) {
-        return await this.messageRepository.findOne({ where: { room: { id: roomId } }, relations });
+    sui() {
+        (0, console_1.log)("sui");
+    }
+    async getMessageById(messageId) {
+        (0, console_1.log)("message + " + messageId);
+        return await this.messageRepository.findOne({ where: { id: messageId } });
+        return { username: "sui" };
+    }
+    async getMessage(messageId, relations) {
+        return await this.messageRepository.findOne({ where: { id: messageId }, relations });
     }
     async getMessages(userId, roomId) {
         this.logger.log(`Trying to get messages for room ${roomId}`);
@@ -47,11 +56,20 @@ let MessageService = MessageService_1 = class MessageService {
         this.logger.log("Message created");
         return savedMessage;
     }
+    async updateMessageText({ messageId, roomId, messageText }) {
+        const message = await this.getMessage(messageId, ["room"]);
+        if (!(message.room.id === roomId))
+            throw new common_1.ForbiddenException();
+        const updatedMessage = await this.messageRepository.save({ ...message, message: messageText });
+        this.logger.log("Message updated");
+        return updatedMessage;
+    }
     async deleteMessage({ messageId, roomId }) {
-        this.logger.log(`Trying to delete message with id ${roomId} in room ${roomId}`);
+        this.logger.log(`Trying to delete message with id ${messageId} in room ${roomId}`);
         const message = await this.getMessage(messageId, ['room']);
         if (message && (message.room.id === roomId)) {
-            return await this.messageRepository.delete(message);
+            await this.messageRepository.delete(message);
+            return message;
         }
         else {
             throw new common_1.NotFoundException(`Message ${messageId} not found`);

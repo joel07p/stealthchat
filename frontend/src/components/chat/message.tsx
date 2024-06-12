@@ -3,30 +3,66 @@ import {
   ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuRadioGroup,
-  ContextMenuRadioItem,
   ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuSub,
   ContextMenuSubContent,
   ContextMenuSubTrigger,
-  ContextMenuTrigger,
+  ContextMenuTrigger
 } from "@/components/ui/context-menu"
+import { useUser } from "@/hooks/use-user"
+import { cn } from "@/lib/utils"
 import { DateTime } from "luxon"
+import { ReactElement } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
+import { ImageDisplay } from "./attachments/image-display"
 
 type MessageProps = {
+  children?: React.ReactNode
+  id: string
   message: string
   username: string
   sentAt: string
+  type?: string
+  roomId: string | undefined,
+  isEditing: boolean,
+  className: string
+  onDeleteMessage: (messageId: string) => void
+  onUpdateMessage: (messageId: string, messageText: string) => void
 }
 
-export const Message = ({message, username, sentAt}: MessageProps) => {
+enum MessageType {
+  MESSAGE = "message",
+  IMAGE = "image",
+  FILE = "file",
+  CODE = "code",
+}
+
+export const Message: React.FC<MessageProps> = ({id, message, username, sentAt, type, roomId, isEditing, className, onDeleteMessage, onUpdateMessage}: MessageProps) => {
+  const {userOwnsMessage} = useUser()
+
+  const copyMessageText = (): void => {
+    navigator.clipboard.writeText(message)
+  }
+
+  const selectComponent = (): ReactElement<any, any> | null | undefined => {
+    if(!type) return null
+    else if(type === MessageType.MESSAGE) return null
+    else if(type === MessageType.IMAGE) return <ImageDisplay roomId={roomId}/>
+  }
+
+  const component = selectComponent()
+  console.log(userOwnsMessage(username))
+
   return <>
     <ContextMenu>
-      <ContextMenuTrigger className="text-sm">
-        <Card className="mt-6 border border-dashed ">
+      <ContextMenuTrigger className={cn("text-sm")}>
+        <Card className={cn("mt-6 border border-dashed", isEditing && "border-blue-500", "w-[60%]", className)}>
+          {
+            component === null ?? (
+              <CardContent>{component}</CardContent>
+            )
+          }
           <CardHeader>
             <CardTitle>
               {username}
@@ -41,16 +77,39 @@ export const Message = ({message, username, sentAt}: MessageProps) => {
         </Card>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-64">
-        <ContextMenuItem inset>
-          Back
+        <ContextMenuItem
+          onClick={() => copyMessageText()}
+          inset
+        >
+          Copy
           <ContextMenuShortcut>⌘[</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem inset disabled>
-          Forward
+          Replay
           <ContextMenuShortcut>⌘]</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem inset>
-          Reload
+          Forward
+          <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem
+          className={cn(
+            !userOwnsMessage(username) ? "hidden" : ""
+          )}
+          onClick={() => onUpdateMessage(id, message)}
+          inset
+        >
+          Edit
+          <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem
+          className={cn(
+            !userOwnsMessage(username) ? "hidden" : ""
+          )}
+          onClick={() => onDeleteMessage(id)}
+          inset
+        >
+          Delete
           <ContextMenuShortcut>⌘R</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuSub>
@@ -73,14 +132,6 @@ export const Message = ({message, username, sentAt}: MessageProps) => {
         </ContextMenuCheckboxItem>
         <ContextMenuCheckboxItem>Show Full URLs</ContextMenuCheckboxItem>
         <ContextMenuSeparator />
-        <ContextMenuRadioGroup value="pedro">
-          <ContextMenuLabel inset>People</ContextMenuLabel>
-          <ContextMenuSeparator />
-          <ContextMenuRadioItem value="pedro">
-            Pedro Duarte
-          </ContextMenuRadioItem>
-          <ContextMenuRadioItem value="colm">Colm Tuite</ContextMenuRadioItem>
-        </ContextMenuRadioGroup>
       </ContextMenuContent>
     </ContextMenu>
   </>

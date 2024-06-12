@@ -4,7 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SocketIOAdapter } from './websocket/socket-io-adapter';
 
-async function bootstrap() {
+const bootstrap = async () => {
   const app = await NestFactory.create(AppModule, {cors: true})
   app.useGlobalPipes(new ValidationPipe())
   app.enableCors({})

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteMessageDTO = exports.AddMessageDTO = void 0;
+exports.DeleteMessageDTO = exports.UpdateMessageDTO = exports.AddMessageDTO = void 0;
 const class_validator_1 = require("class-validator");
 class AddMessageDTO {
 }
@@ -24,6 +24,26 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], AddMessageDTO.prototype, "roomId", void 0);
+class UpdateMessageDTO {
+}
+exports.UpdateMessageDTO = UpdateMessageDTO;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsUUID)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], UpdateMessageDTO.prototype, "messageId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsUUID)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], UpdateMessageDTO.prototype, "roomId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], UpdateMessageDTO.prototype, "messageText", void 0);
 class DeleteMessageDTO {
 }
 exports.DeleteMessageDTO = DeleteMessageDTO;

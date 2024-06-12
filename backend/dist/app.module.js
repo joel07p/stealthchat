@@ -34,6 +34,7 @@ const user_entity_1 = require("./modules/user/user.entity");
 const user_module_1 = require("./modules/user/user.module");
 const user_service_1 = require("./modules/user/user.service");
 const websocket_module_1 = require("./websocket/websocket.module");
+const file_module_1 = require("./modules/file/file.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -58,11 +59,12 @@ exports.AppModule = AppModule = __decorate([
                 port: parseInt(process.env.PORT_DB),
                 username: process.env.USERNAME_DB,
                 password: process.env.PASSWORD_DB,
-                database: "dev2",
+                database: process.env.DB_NAME,
                 entities: [user_entity_1.User, authentication_entity_1.Authentication, group_entity_1.Group, user_on_group_entity_1.UserOnGroups, room_entity_1.Room, message_entity_1.Message, permission_entity_1.Permission, invitation_entity_1.Invitation],
                 synchronize: true
             }),
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, authentication_entity_1.Authentication]),
+            file_module_1.FileModule,
             websocket_module_1.WebSocketModule
         ],
         controllers: [app_controller_1.AppController],

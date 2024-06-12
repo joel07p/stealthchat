@@ -52,7 +52,7 @@ export const columns: ColumnDef<Group>[] = [
       accessorKey: "type",
       header: "Type",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("type")}</div>
+        <div className="capitalize">{row.getValue("users") as number <= 2 ? "Single" : "Multi"}</div>
       ),
     },
     {
@@ -98,7 +98,7 @@ export const columns: ColumnDef<Group>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(group.id)}
+                onClick={() => navigator.clipboard.writeText(group.joinCode)}
               >
                 Copy Group ID
               </DropdownMenuItem>

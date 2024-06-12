@@ -6,13 +6,16 @@ import { AuthService } from "src/auth/auth.service";
 import { SocketWithAuth } from "./types";
 import { log } from "console";
 import { RoomService } from "src/modules/room/room.service";
+import { EncryptionService } from "src/service/encryption.service";
+import { NextFunction } from "express";
+import { UserService } from "src/modules/user/user.service";
 
 export class SocketIOAdapter extends IoAdapter {
     private readonly logger = new Logger(SocketIOAdapter.name)
 
     constructor(
-        private app: INestApplication,
-        private configService: ConfigService
+        private readonly app: INestApplication,
+        private readonly configService: ConfigService
     ) {
         super(app)
     }
@@ -23,7 +26,6 @@ export class SocketIOAdapter extends IoAdapter {
         const cors = {
           origin: [
             `http://localhost:${3300}`,
-            //new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${3300}$/`),
           ],
         };
     
@@ -38,16 +40,22 @@ export class SocketIOAdapter extends IoAdapter {
     
         const authService = this.app.get(AuthService)
         const roomService = this.app.get(RoomService)
+        const userService = this.app.get(UserService)
+        //const encryptionService = this.app.get(EncryptionService)
+
         const server: Server = super.createIOServer(port, optionsWithCORS)
 
-        server.of('messages').use(createTokenMiddleware(authService, this.logger)).use(createSocketValidationMiddleware(roomService, this.logger))
+        server.of('messages')
+          .use(createTokenMiddleware(authService, userService, this.logger))
+          .use(createSocketValidationMiddleware(roomService, this.logger))
+          //.use(createEncryptionMiddleware(encryptionService, this.logger))
 
         return server
       }
 }
 
 const createTokenMiddleware =
-  (authService: AuthService, logger: Logger) =>
+  (authService: AuthService, userService: UserService, logger: Logger) =>
   async (socket: SocketWithAuth, next) => {
     log(socket.handshake)
     const token =
@@ -57,9 +65,11 @@ const createTokenMiddleware =
 
     try {
       const userId = await authService.verifyToken(token)
+      const username= await userService.getUserProperty(userId, "username")
       logger.log(userId)
       if(userId) {
         socket.userId = userId
+        socket.username = username
         next();
       } else {
         next(new Error('FORBIDDEN'))
@@ -69,11 +79,15 @@ const createTokenMiddleware =
     }
   };
 
-const createEncryptionMiddleware = () => {}
+/*const createEncryptionMiddleware =
+  (encryptionService: EncryptionService, logger: Logger) =>
+  async (client: SocketWithAuth, next: NextFunction) => {
+    
+  }*/
 
 const createSocketValidationMiddleware =
   (roomService: RoomService, logger: Logger) =>
-  async (client: SocketWithAuth, next) => {
+  async (client: SocketWithAuth, next: NextFunction) => {
     logger.log(`Trying to validate client ${client.id}`)
 
     const roomId = client.handshake.query.roomId.toString()

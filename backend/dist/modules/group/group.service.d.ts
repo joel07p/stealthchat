@@ -1,10 +1,10 @@
 import { Authentication } from 'src/auth/authentication.entity';
 import { Repository } from 'typeorm';
 import { User } from '../user/user.entity';
+import { UserService } from '../user/user.service';
 import { CreateGroupDTO, JoinGroupDTO, LeaveGroupDTO } from './group.dto';
 import { Group } from './group.entity';
 import { UserOnGroups } from './user-on-group.entity';
-import { UserService } from '../user/user.service';
 export declare class GroupService {
     private groupRepository;
     private userRepository;
@@ -17,9 +17,11 @@ export declare class GroupService {
         name: string;
         type: string;
         role: string;
+        joinCode: string;
         users: number;
         rooms: number;
     }[]>;
+    private countUsersInGroup;
     createGroup(userId: string, data: CreateGroupDTO): Promise<{
         id: string;
         name: string;
@@ -42,4 +44,5 @@ export declare class GroupService {
     private generateJoinCode;
     getGroup(groupId: string, relations: Array<string>): Promise<Group>;
     private countRoomsInGroup;
+    private changeGroupType;
 }

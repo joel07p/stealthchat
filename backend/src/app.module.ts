@@ -25,6 +25,7 @@ import { User } from './modules/user/user.entity';
 import { UserModule } from './modules/user/user.module';
 import { UserService } from './modules/user/user.service';
 import { WebSocketModule } from './websocket/websocket.module';
+import { FileModule } from './modules/file/file.module';
 
 @Module({
   imports: [
@@ -46,11 +47,12 @@ import { WebSocketModule } from './websocket/websocket.module';
       port: parseInt(process.env.PORT_DB),
       username: process.env.USERNAME_DB,
       password: process.env.PASSWORD_DB, 
-      database: "dev2" ,//'dev1',
+      database: process.env.DB_NAME,
       entities: [User, Authentication, Group, UserOnGroups, Room, Message, Permission, Invitation],
       synchronize: true
     }),
     TypeOrmModule.forFeature([User, Authentication]),
+    FileModule,
     WebSocketModule
   ],
   controllers: [AppController],

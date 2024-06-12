@@ -9,7 +9,12 @@ export class RoomController {
         private readonly roomService: RoomService
     ) {}
 
-    @Get(':groupId')
+    @Get(':roomId')
+    getRoom(@Param('roomId') roomId: string) {
+        return this.roomService.getRoom(roomId)
+    }
+
+    @Get('/group/:groupId')
     getRooms(@User("sub") userId: string, @Param('groupId') groupId: string) {
         return this.roomService.getRooms({ groupId, userId })
     }

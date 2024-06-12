@@ -6,7 +6,6 @@ import { HomePage } from '@/pages/home-page'
 import { LandingPage } from '@/pages/landing-page'
 import { createBrowserRouter } from 'react-router-dom'
 
-
 export const router = createBrowserRouter([
     {
         path: '/auth',
@@ -30,7 +29,7 @@ export const router = createBrowserRouter([
                 path: 'room/:roomId',
                 element: <ChatPage />
             }
-        ] 
+        ]
     },
     {
         path: '/landing',

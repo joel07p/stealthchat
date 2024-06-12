@@ -47,7 +47,7 @@ let AuthService = class AuthService {
         const passwordMatches = await bcrypt.compare(password, user.authentication.getHash());
         if (!passwordMatches)
             throw new common_1.ForbiddenException("Password does not match");
-        const tokens = await this.getTokens(user.id, user.email);
+        const tokens = await this.getTokens(user.id, user.username);
         await this.updateRtHash(user.id, tokens.refreshToken);
         this.userContext.setUser(user);
         return tokens;

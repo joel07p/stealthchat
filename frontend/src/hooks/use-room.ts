@@ -7,11 +7,17 @@ export const useRoom = (_roomId: string | undefined, groupId: string | undefined
     const [rooms, setRooms] = useState<Array<Room>>()
 
     useEffect(() => {
+        getRoom()
         getRooms()
-    }, [groupId])
+    }, [groupId, roomId])
+
+    const getRoom = async () => {
+        const {data} = await axios.get(`room/${roomId}`)
+        setRoom(data)
+    }
 
     const getRooms = async () => {
-        const {data} = await axios.get(`room/${groupId}`)
+        const {data} = await axios.get(`room/group/${groupId}`)
         setRooms(data)
     }
 

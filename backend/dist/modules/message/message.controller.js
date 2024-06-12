@@ -14,14 +14,17 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageController = void 0;
 const common_1 = require("@nestjs/common");
-const message_service_1 = require("./message.service");
 const decorators_1 = require("../../common/decorators");
+const message_service_1 = require("./message.service");
 let MessageController = class MessageController {
     constructor(messageService) {
         this.messageService = messageService;
     }
     getMessages(userId, roomId) {
         return this.messageService.getMessages(userId, roomId);
+    }
+    getMessage(messageId) {
+        return this.messageService.getMessageById(messageId.messageId);
     }
     addMessage(userId, message) {
         return this.messageService.addMessage(message, userId);
@@ -36,6 +39,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], MessageController.prototype, "getMessages", null);
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], MessageController.prototype, "getMessage", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, decorators_1.User)("sub")),

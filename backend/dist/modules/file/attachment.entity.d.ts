@@ -1,2 +1,2 @@
-export declare class Attachment extends File {
+export declare class Attachment {
 }

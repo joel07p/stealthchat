@@ -1,6 +1,6 @@
-import { useGroup } from "@/hooks/use-group"
-import { useEffect, useState } from "react"
-import { Outlet, useParams } from "react-router-dom"
+import { ChatFallback } from "@/components/chat-fallback"
+import GroupInfoBar from "@/components/chat/group-info-bar"
+import { Button } from "@/components/ui/button"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -8,23 +8,19 @@ import {
 } from "@/components/ui/resizable"
 import { Separator } from "@/components/ui/separator"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { useGroup } from "@/hooks/use-group"
 import { cn } from "@/lib/utils"
+import { useState } from "react"
+import { Outlet, useParams } from "react-router-dom"
 import { RoomNavigation } from "./components/nav"
-import GroupInfoBar from "@/components/chat/group-info-bar"
-import { ChatFallback } from "@/components/chat-fallback"
-import { Button } from "@/components/ui/button"
 
-export const GroupPage = () => {
-  const { groupId, roomId } = useParams<{ groupId: string, roomId: string }>()
-  const { group } = useGroup(groupId)
+export const GroupPage: React.FC = () => {
+  const [isCollapsed, ] = useState(false)
+  const {groupId, roomId} = useParams<{ groupId: string, roomId: string }>()
+  const {group} = useGroup(groupId)
+  
   const defaultLayout = [400, 440, 655]
   const navCollapsedSize = 4
-  const [isCollapsed, ] = useState(false)
-
-  useEffect(() => {
-    console.log(roomId)
-    console.log(typeof roomId)
-  }, [groupId, roomId])
 
   return (
     <>

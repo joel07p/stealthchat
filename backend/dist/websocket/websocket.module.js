@@ -22,6 +22,7 @@ const user_service_1 = require("../modules/user/user.service");
 const authentication_entity_1 = require("../auth/authentication.entity");
 const room_service_1 = require("../modules/room/room.service");
 const permission_entity_1 = require("../modules/permission/permission.entity");
+const encryption_service_1 = require("../service/encryption.service");
 let WebSocketModule = class WebSocketModule {
 };
 exports.WebSocketModule = WebSocketModule;
@@ -31,7 +32,7 @@ exports.WebSocketModule = WebSocketModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([message_entity_1.Message, user_entity_1.User, group_entity_1.Group, user_on_group_entity_1.UserOnGroups, room_entity_1.Room, authentication_entity_1.Authentication, permission_entity_1.Permission]),
             group_module_1.GroupModule
         ],
-        providers: [message_gateway_1.MessageGateway, message_service_1.MessageService, jwt_1.JwtService, user_service_1.UserService, room_service_1.RoomService],
+        providers: [message_gateway_1.MessageGateway, message_service_1.MessageService, jwt_1.JwtService, user_service_1.UserService, room_service_1.RoomService, encryption_service_1.EncryptionService],
         exports: []
     })
 ], WebSocketModule);

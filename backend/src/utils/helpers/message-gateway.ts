@@ -3,13 +3,10 @@ import { log } from "console";
 import { Namespace, Socket } from "socket.io";
 import { SocketWithAuth } from "src/websocket";
 
-
-
 export const addSocket = (client: Socket, roomToSocketsMap: Map<string, Set<string>>) => {
     const roomId = client.handshake.query.roomId?.toString()
 
     if(!roomId) return roomToSocketsMap
-
     if (!roomToSocketsMap.has(roomId)) {
         log(roomId)
         roomToSocketsMap.set(roomId, new Set());
@@ -38,9 +35,7 @@ export const logConnectionChange = (io: Namespace, client: SocketWithAuth, logge
 
 export const sendDataToSockets = (io: Namespace, roomToSocketsMap: Map<string, Set<string>>, roomId: string, data: any, eventName: string) => {
     const targetSockets = roomToSocketsMap.get(roomId)
-    log("target socket" + targetSockets)
     targetSockets.forEach((socket: string) => {
-        log(data)
         io.to(socket).emit(eventName, data)
     })
 }

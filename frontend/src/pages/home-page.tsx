@@ -11,7 +11,6 @@ import {
   getSortedRowModel,
   useReactTable
 } from "@tanstack/react-table"
-import * as React from "react"
 
 import { logout } from "@/api/auth.requests"
 import { createGroup, getGroups, joinGroup } from "@/api/home.requests"
@@ -24,6 +23,7 @@ import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { columns } from "@/utils/helpers/group-columns"
 import { CreateGroupData, JoinGroupData } from "@/utils/types/group.types"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 
@@ -34,16 +34,16 @@ export type Group = {
   role: "admin" | "user" | "viewer"
   users: number
   rooms: number
+  joinCode: string
 }
 
-export const HomePage = () =>  {
+export const HomePage: React.FC = () =>  {
   const navigate = useNavigate()
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
-
-  const [groups, setGroups] = React.useState<Array<Group>>([])
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
+  const [groups, setGroups] = useState<Array<Group>>([])
 
   const table = useReactTable({
     data: groups,
@@ -64,7 +64,7 @@ export const HomePage = () =>  {
     },
   })
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchGroups()
   }, [])
 
@@ -100,12 +100,15 @@ export const HomePage = () =>  {
     }
   }
 
-  return (
+  return <>
     <div className="flex justify-center">
       <div className="w-[70%] mt-6">
         <h1 className="text-6xl font-semibold mb-2">Your Groups</h1>
         <Badge variant="outline" className="mb-2">
           <p className="text-green-400">New Release</p>
+        </Badge>
+        <Badge variant="outline" className="mb-2">
+          <p className="text-green-400">Alpha Version 1.1</p>
         </Badge>
         <div className="flex items-center py-4 flex-wrap">
           <Input
@@ -175,5 +178,5 @@ export const HomePage = () =>  {
         </div>
     </div>
   </div>  
-  )
+  </>
 }

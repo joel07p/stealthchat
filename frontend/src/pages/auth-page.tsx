@@ -6,16 +6,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-export const AuthenticationPage = () => {
+export const AuthenticationPage: React.FC = () => {
     const { setSignedInState } = useAuth()
     const navigate = useNavigate()
-    const [openedTab, setOpenedTab] = useState("login")
+    const [openedTab, setOpenedTab] = useState<string>("login")
 
-    const handleLogin = (username: string, password: string) => {
+    const handleLogin = (username: string, password: string): void => {
         login({ username, password }, setSignedInState, navigate)
     }
 
-    const handleRegister = async (username: string, password: string, email: string) => {
+    const handleRegister = async (username: string, password: string, email: string): Promise<void> => {
         const userCreated = await register({ username, email, password })
         if(userCreated) setOpenedTab("login")
     }

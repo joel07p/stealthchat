@@ -1,14 +1,12 @@
 "use client"
 
-import * as React from "react"
 import {
   CaretSortIcon,
   CheckIcon,
-  HomeIcon,
-//  PlusCircledIcon,
+  HomeIcon
 } from "@radix-ui/react-icons"
+import * as React from "react"
 
-import { cn } from "@/lib/utils"
 import {
   Avatar,
   AvatarFallback,
@@ -47,6 +45,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { cn } from "@/lib/utils"
 import { Group } from "@/pages/home-page"
 
 const groups = [

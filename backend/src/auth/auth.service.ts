@@ -40,7 +40,7 @@ export class AuthService {
 
         if(!passwordMatches) throw new ForbiddenException("Password does not match")
 
-        const tokens = await this.getTokens(user.id, user.email)
+        const tokens = await this.getTokens(user.id, user.username)
         await this.updateRtHash(user.id, tokens.refreshToken)
         this.userContext.setUser(user)
         return tokens
