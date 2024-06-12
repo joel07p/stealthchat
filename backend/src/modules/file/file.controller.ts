@@ -5,7 +5,7 @@ import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 @Controller('file')
-export class FileController {
+export class FileController {/* 
     @Post('upload')
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
@@ -16,13 +16,13 @@ export class FileController {
             },
         }),
     }))
-    uploadFile(@UploadedFiles() file: Express.Multer.File) {
+    uploadFile(@UploadedFiles()) {
         return {
-            //originalname: file.originalname,
+            /* originalname: file.originalname,
             filename: file.filename,
             mimetype: file.mimetype,
             size: file.size,
-            path: `uploads/${file.filename}`,
+            path: `uploads/${file.filename}`, 
         };
-    }
+    } */
 }
